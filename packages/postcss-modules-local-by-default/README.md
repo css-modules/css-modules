@@ -6,15 +6,18 @@
 
 [PostCSS] plugin to transform global selectors into the [local scope] format of [Webpack]'s [css-loader].
 
-[PostCSS]:     https://github.com/postcss/postcss
-[ci-img]:      https://img.shields.io/travis/markdalgleish/postcss-local-scope/master.svg?style=flat-square
-[ci]:          https://travis-ci.org/markdalgleish/postcss-local-scope
-[Webpack]:     http://webpack.github.io
-[css-loader]:  https://github.com/webpack/css-loader
-[local scope]: https://github.com/webpack/css-loader#local-scope
+## Why?
+
+Avoiding global scope in CSS is an amazing way to keep your styles clean.
+
+Webpack allows this with [css-loader], but it's opt-in. This plugin is for those who want local scope to be the default, and global styles to be the exception.
+
+## Usage
 
 ```css
 .foo { /* ... */ }
+
+/* Break out of local scope when necessary */
 
 :global(.global .selector) { /* ... */ }
 
@@ -36,3 +39,10 @@ postcss([ require('postcss-local-scope') ])
 ```
 
 See [PostCSS] docs for examples for your environment.
+
+[PostCSS]:     https://github.com/postcss/postcss
+[ci-img]:      https://img.shields.io/travis/markdalgleish/postcss-local-scope/master.svg?style=flat-square
+[ci]:          https://travis-ci.org/markdalgleish/postcss-local-scope
+[Webpack]:     http://webpack.github.io
+[css-loader]:  https://github.com/webpack/css-loader
+[local scope]: https://github.com/webpack/css-loader#local-scope
