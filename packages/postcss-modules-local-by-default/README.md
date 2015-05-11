@@ -1,4 +1,4 @@
-[![Build Status][ci-img]][ci]
+[![Build Status][ci-img]][ci] [![npm][npm-img]][npm]
 
 # PostCSS Local Scope
 
@@ -43,6 +43,8 @@ See [PostCSS] docs for examples for your environment.
 [PostCSS]:     https://github.com/postcss/postcss
 [ci-img]:      https://img.shields.io/travis/markdalgleish/postcss-local-scope/master.svg?style=flat-square
 [ci]:          https://travis-ci.org/markdalgleish/postcss-local-scope
+[npm-img]:     https://img.shields.io/npm/v/postcss-local-scope.svg?style=flat-square
+[npm]:         https://www.npmjs.com/package/postcss-local-scope
 [Webpack]:     http://webpack.github.io
 [css-loader]:  https://github.com/webpack/css-loader
 [local scope]: https://github.com/webpack/css-loader#local-scope
