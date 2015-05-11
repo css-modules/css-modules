@@ -38,6 +38,26 @@ var tests = [
     should: 'ignore selectors that are already local',
     input: '.local[foobar] {}',
     expected: '.local[foobar] {}'
+  },
+  {
+    should: 'ignore nested selectors that are already local',
+    input: '.local[foo] .local[bar] {}',
+    expected: '.local[foo] .local[bar] {}'
+  },
+  {
+    should: 'ignore multiple selectors that are already local',
+    input: '.local[foo], .local[bar] {}',
+    expected: '.local[foo], .local[bar] {}'
+  },
+  {
+    should: 'ignore sibling selectors that are already local',
+    input: '.local[foo] ~ .local[bar] {}',
+    expected: '.local[foo] ~ .local[bar] {}'
+  },
+  {
+    should: 'ignore psuedo elements that are already local',
+    input: '.local[foo]:after {}',
+    expected: '.local[foo]:after {}'
   }
 ];
 
