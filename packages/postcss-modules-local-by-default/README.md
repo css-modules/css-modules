@@ -15,10 +15,14 @@
 
 ```css
 .foo { /* ... */ }
+
+.global[selector=".some .global .selector"] { /* ... */ }
 ```
 
 ```css
 .local[foo] { /* ... */ }
+
+.some .global .selector { /* ... */ }
 ```
 
 ## Usage

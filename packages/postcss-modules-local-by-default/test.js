@@ -28,6 +28,11 @@ var tests = [
     should: 'scope media queries',
     input: '@media only screen { .foo {} }',
     expected: '@media only screen { .local[foo] {} }'
+  },
+  {
+    should: 'allow global selectors with special .global[selector="..."] syntax',
+    input: '.global[selector=".foo .bar"] {}',
+    expected: '.foo .bar {}'
   }
 ];
 
