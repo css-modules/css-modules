@@ -35,6 +35,11 @@ var tests = [
     expected: '.foo .bar {}'
   },
   {
+    should: 'allow multiple global selectors',
+    input: '.global[selector=".foo"], .global[selector=".bar"] {}',
+    expected: '.foo, .bar {}'
+  },
+  {
     should: 'ignore selectors that are already local',
     input: '.local[foobar] {}',
     expected: '.local[foobar] {}'
