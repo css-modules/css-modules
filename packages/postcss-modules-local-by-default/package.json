@@ -1,0 +1,27 @@
+{
+  "name": "postcss-local-scope",
+  "version": "0.0.0",
+  "description": "PostCSS plugin to transform global selectors into the local scope format of Webpack's css-loader",
+  "keywords": [
+    "postcss",
+    "css",
+    "postcss-plugin",
+    "webpack",
+    "css-loader"
+  ],
+  "author": "Mark Dalgleish",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/markdalgleish/postcss-local-scope.git"
+  },
+  "dependencies": {
+    "postcss": "^4.1.5"
+  },
+  "devDependencies": {
+    "tape": "^4.0.0"
+  },
+  "scripts": {
+    "test": "tape test.js"
+  }
+}
