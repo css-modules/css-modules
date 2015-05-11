@@ -2,9 +2,11 @@
 
 # PostCSS Local Scope
 
-*WARNING: This plugin is still a work in progress and not yet ready for production.*
+*This project is currently unpublished and not yet ready for production.*
 
 [PostCSS] plugin to transform global selectors into the [local scope] format of [Webpack]'s [css-loader].
+
+**WARNING: This project depends on [css-loader]'s [local scope] feature, which is marked as experimental and is very likely to change in the future.**
 
 ## Why?
 
@@ -12,7 +14,7 @@ Avoiding global scope in CSS is an amazing way to keep your styles clean.
 
 Webpack allows this with [css-loader], but it's opt-in. This plugin is for those who want local scope to be the default, and global styles to be the exception.
 
-## Usage
+## Syntax
 
 ```css
 .foo { /* ... */ }
