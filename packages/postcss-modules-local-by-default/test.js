@@ -13,6 +13,16 @@ var tests = [
     should: 'scope multiple selectors',
     input: '.foo, .baz {}',
     expected: '.local[foo], .local[baz] {}'
+  },
+  {
+    should: 'scope sibling selectors',
+    input: '.foo ~ .baz {}',
+    expected: '.local[foo] ~ .local[baz] {}'
+  },
+  {
+    should: 'scope psuedo elements',
+    input: '.foo:after {}',
+    expected: '.local[foo]:after {}'
   }
 ];
 
