@@ -23,6 +23,11 @@ var tests = [
     should: 'scope psuedo elements',
     input: '.foo:after {}',
     expected: '.local[foo]:after {}'
+  },
+  {
+    should: 'scope media queries',
+    input: '@media only screen { .foo {} }',
+    expected: '@media only screen { .local[foo] {} }'
   }
 ];
 
