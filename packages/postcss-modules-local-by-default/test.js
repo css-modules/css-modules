@@ -30,14 +30,34 @@ var tests = [
     expected: '@media only screen { .local[foo] {} }'
   },
   {
-    should: 'allow global selectors with special .global[selector="..."] syntax',
-    input: '.global[selector=".foo .bar"] {}',
+    should: 'allow narrow global selectors',
+    input: ':global(.foo .bar) {}',
     expected: '.foo .bar {}'
   },
   {
-    should: 'allow multiple global selectors',
-    input: '.global[selector=".foo"], .global[selector=".bar"] {}',
+    should: 'allow broad global selectors',
+    input: ':global .foo .bar {}',
+    expected: '.foo .bar {}'
+  },
+  {
+    should: 'allow multiple narrow global selectors',
+    input: ':global(.foo), :global(.bar) {}',
     expected: '.foo, .bar {}'
+  },
+  {
+    should: 'allow multiple broad global selectors',
+    input: ':global .foo, :global .bar {}',
+    expected: '.foo, .bar {}'
+  },
+  {
+    should: 'allow narrow global selectors nested inside local styles',
+    input: '.foo :global(.foo .bar) {}',
+    expected: '.local[foo] .foo .bar {}'
+  },
+  {
+    should: 'allow broad global selectors nested inside local styles',
+    input: '.foo :global .foo .bar {}',
+    expected: '.local[foo] .foo .bar {}'
   },
   {
     should: 'ignore selectors that are already local',

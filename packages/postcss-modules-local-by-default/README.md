@@ -16,13 +16,17 @@
 ```css
 .foo { /* ... */ }
 
-.global[selector=".some .global .selector"] { /* ... */ }
+:global(.global .selector) { /* ... */ }
+
+:global .another .global .selector { /* ... */ }
 ```
 
 ```css
 .local[foo] { /* ... */ }
 
-.some .global .selector { /* ... */ }
+.global .selector { /* ... */ }
+
+.another .global .selector { /* ... */ }
 ```
 
 ## Usage
