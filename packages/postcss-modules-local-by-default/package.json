@@ -22,6 +22,7 @@
     "tape": "^4.0.0"
   },
   "scripts": {
-    "test": "tape test.js"
+    "test": "tape test.js",
+    "prepublish": "npm prune && npm test"
   }
 }
