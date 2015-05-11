@@ -33,6 +33,11 @@ var tests = [
     should: 'allow global selectors with special .global[selector="..."] syntax',
     input: '.global[selector=".foo .bar"] {}',
     expected: '.foo .bar {}'
+  },
+  {
+    should: 'ignore selectors that are already local',
+    input: '.local[foobar] {}',
+    expected: '.local[foobar] {}'
   }
 ];
 
