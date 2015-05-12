@@ -8,35 +8,71 @@
 
 ## Why?
 
-Avoiding global scope in CSS is an amazing way to keep your styles clean.
+Everyone agrees that dumping JavaScript in the global scope is a terrible idea. Why is CSS any different?
 
-Webpack allows this with [css-loader], but it's opt-in. This plugin is for those who want local scope to be the default, and global styles to be the exception.
+Imagine if we could import the CSS components need without leaking selectors into the global scope. We wouldn't need naming conventions like [BEM] to avoid naming collisions, and we could prevent accidental coupling between components by ensuring our CSS follows the same scoping rules as any JavaScript module.
 
-## Syntax
+Webpack allows [local scope] in CSS with [css-loader], but it's opt-in via a special `.local[identifier]` syntax.
+
+This plugin transforms standard class selectors into local identifiers so that [local scope] is the default and global styles are the exception, just like any sane module system.
+
+## Usage Example
+
+Local identifiers use standard class syntax:
 
 ```css
 .foo { /* ... */ }
 
-/* Break out of local scope when necessary */
+.foo .bar { /* ... */ }
+```
 
+Any global selectors need to be explicitly prefixed:
+
+```css
 :global(.global .selector) { /* ... */ }
 
 :global .another .global .selector { /* ... */ }
 ```
 
+These selectors are then transformed into a format that [css-loader] understands. To use these scoped classes, [Webpack] now allows us to import them like any other module.
+
+For example, when using [React]:
+
+```js
+import styles from './MyComponent.css';
+
+import React from 'react';
+
+export default class MyComponent extends React.Component {
+  render() {
+    return (
+      <div className={styles.foo}>
+        <div className={styles.bar}>
+          Local scope!
+        </div>
+      </div>
+    );
+  }
+};
+```
+
+In this case, `styles` is an object that maps identifiers to classes.
+
+Classes are dynamically generated at build time by [css-loader], so components are unable to depend on classes that they haven't explicitly imported.
+
+## Transformation Examples
+
 ```css
-.local[foo] { /* ... */ }
+.foo { ... } /* => */ .local[foo] { ... }
 
-.global .selector { /* ... */ }
+.foo .bar { ... } /* => */ .local[foo] .local[bar] { ... }
 
-.another .global .selector { /* ... */ }
+:global .foo .bar { ... } /* => */ .foo .bar { ... }
+
+:global(.foo) .bar { ... } /* => */ .foo .local[bar] { ... }
 ```
 
 ## Usage
-
-```js
-postcss([ require('postcss-local-scope') ])
-```
 
 See [PostCSS] docs for examples for your environment.
 
@@ -48,3 +84,5 @@ See [PostCSS] docs for examples for your environment.
 [Webpack]:     http://webpack.github.io
 [css-loader]:  https://github.com/webpack/css-loader
 [local scope]: https://github.com/webpack/css-loader#local-scope
+[BEM]:         https://css-tricks.com/bem-101
+[React]:       http://facebook.github.io/react
