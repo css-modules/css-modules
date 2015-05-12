@@ -10,7 +10,7 @@
 
 Everyone agrees that dumping JavaScript in the global scope is a terrible idea. Why is CSS any different?
 
-Imagine if we could import the CSS components need without leaking selectors into the global scope. We wouldn't need naming conventions like [BEM] to avoid naming collisions, and we could prevent accidental coupling between components by ensuring our CSS follows the same scoping rules as any JavaScript module.
+Imagine if we could import the CSS that a component needs without leaking selectors into the global scope. We wouldn't need naming conventions like [BEM] to avoid naming collisions, and we could prevent accidental coupling between components by ensuring our CSS follows the same scoping rules as any JavaScript module.
 
 Webpack allows [local scope] in CSS with [css-loader], but it's opt-in via a special `.local[identifier]` syntax.
 
