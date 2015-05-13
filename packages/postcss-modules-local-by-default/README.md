@@ -72,9 +72,9 @@ Classes are dynamically generated at build time by [css-loader], so components a
 :global(.foo) .bar { ... } /* => */ .foo .local[bar] { ... }
 ```
 
-## Usage
+## Show me working example
 
-See [PostCSS] docs for examples for your environment.
+[Okay.](https://github.com/markdalgleish/postcss-local-scope-example)
 
 [PostCSS]:     https://github.com/postcss/postcss
 [ci-img]:      https://img.shields.io/travis/markdalgleish/postcss-local-scope/master.svg?style=flat-square
