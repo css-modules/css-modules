@@ -16,7 +16,7 @@ Webpack allows [local scope] in CSS with [css-loader], but it's opt-in via a spe
 
 This plugin transforms standard class selectors into local identifiers so that [local scope] is the default and global styles are the exception, just like any sane module system.
 
-## Usage Example
+## Usage example
 
 Local identifiers use standard class syntax:
 
@@ -68,7 +68,11 @@ In this case, `styles` is an object that maps identifiers to classes.
 
 Classes are dynamically generated at build time by [css-loader], so components are unable to depend on classes that they haven't explicitly imported.
 
-## Transformation Examples
+## Show me working example
+
+[Okay.](https://github.com/markdalgleish/postcss-local-scope-example)
+
+## Transformation examples
 
 ```css
 .foo { ... } /* => */ .local[foo] { ... }
@@ -78,11 +82,15 @@ Classes are dynamically generated at build time by [css-loader], so components a
 :global .foo .bar { ... } /* => */ .foo .bar { ... }
 
 :global(.foo) .bar { ... } /* => */ .foo .local[bar] { ... }
+
+.foo :global .bar { ... } /* => */ .local[foo] .bar { ... }
+
+.foo:global(.bar) { ... } /* => */ .local[foo].bar { ... }
+
+.foo :global(.bar) .baz { ... } /* => */ .local[foo] .bar .local[baz] { ... }
+
+.foo:global(.bar) .baz { ... } /* => */ .local[foo].bar .local[baz] { ... }
 ```
-
-## Show me working example
-
-[Okay.](https://github.com/markdalgleish/postcss-local-scope-example)
 
 [PostCSS]:     https://github.com/postcss/postcss
 [ci-img]:      https://img.shields.io/travis/markdalgleish/postcss-local-scope/master.svg?style=flat-square

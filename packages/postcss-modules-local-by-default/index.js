@@ -1,6 +1,6 @@
 var postcss = require('postcss');
 
-var ESCAPED_DOT = '___LOCAL_SCOPE__ESCAPED_DOT___';
+var ESCAPED_DOT = ' ___LOCAL_SCOPE__ESCAPED_DOT___ ';
 
 module.exports = postcss.plugin('postcss-local-scope', function () {
   return function(css) {
