@@ -1,6 +1,6 @@
 {
   "name": "postcss-local-scope",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "PostCSS plugin to transform global selectors into the local scope format of Webpack's css-loader",
   "keywords": [
     "postcss",
