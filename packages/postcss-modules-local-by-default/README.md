@@ -79,11 +79,15 @@ Classes are dynamically generated at build time by [css-loader], so components a
 
 .foo .bar { ... } /* => */ .local[foo] .local[bar] { ... }
 
+/* Shorthand global selector */
+
 :global .foo .bar { ... } /* => */ .foo .bar { ... }
 
-:global(.foo) .bar { ... } /* => */ .foo .local[bar] { ... }
-
 .foo :global .bar { ... } /* => */ .local[foo] .bar { ... }
+
+/* Targeted global selector */
+
+:global(.foo) .bar { ... } /* => */ .foo .local[bar] { ... }
 
 .foo:global(.bar) { ... } /* => */ .local[foo].bar { ... }
 
