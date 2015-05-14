@@ -68,7 +68,7 @@ In this case, `styles` is an object that maps identifiers to classes.
 
 Classes are dynamically generated at build time by [css-loader], so components are unable to depend on classes that they haven't explicitly imported.
 
-## Show me working example
+## Show me a working example
 
 [Okay.](https://github.com/markdalgleish/postcss-local-scope-example)
 
