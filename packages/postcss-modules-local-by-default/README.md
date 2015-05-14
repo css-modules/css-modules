@@ -34,6 +34,14 @@ Any global selectors need to be explicitly prefixed:
 :global .another .global .selector { /* ... */ }
 ```
 
+Local and global selectors can also be used simultaneously:
+
+```css
+.foo :global .global { /* ... */ }
+
+.foo :global(.global) .bar { /* ... */ }
+```
+
 These selectors are then transformed into a format that [css-loader] understands. To use these scoped classes, [Webpack] now allows us to import them like any other module.
 
 For example, when using [React]:
