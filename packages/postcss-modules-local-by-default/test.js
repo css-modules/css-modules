@@ -104,6 +104,59 @@ test(name, function (t) {
     });
 });
 
+
+var errorTests = [
+  {
+    should: 'reject naked element selectors',
+    input: 'input {}',
+    reason: 'Global selector detected in local context. Does this selector really need to be global? If so, you need to explicitly export it into the global scope with ":global", e.g. ":global input"'
+  },
+  {
+    should: 'reject naked element selectors in a collection',
+    input: '.foo, input {}',
+    reason: 'Global selector detected in local context. Does this selector really need to be global? If so, you need to explicitly export it into the global scope with ":global", e.g. ":global input"'
+  },
+  {
+    should: 'reject naked psuedo classes',
+    input: ':focus {}',
+    reason: 'Global selector detected in local context. Does this selector really need to be global? If so, you need to explicitly export it into the global scope with ":global", e.g. ":global :focus"'
+  },
+  {
+    should: 'reject naked psuedo classes in a collection',
+    input: '.foo, :focus {}',
+    reason: 'Global selector detected in local context. Does this selector really need to be global? If so, you need to explicitly export it into the global scope with ":global", e.g. ":global :focus"'
+  },
+  {
+    should: 'reject naked attribute selectors',
+    input: '[data-foobar] {}',
+    reason: 'Global selector detected in local context. Does this selector really need to be global? If so, you need to explicitly export it into the global scope with ":global", e.g. ":global [data-foobar]"'
+  },
+  {
+    should: 'reject naked attribute selectors in a collection',
+    input: '.foo, [data-foobar] {}',
+    reason: 'Global selector detected in local context. Does this selector really need to be global? If so, you need to explicitly export it into the global scope with ":global", e.g. ":global [data-foobar]"'
+  }
+];
+
+function processError (css, options) {
+  try {
+    postcss(plugin(options)).process(css).css;
+  } catch (error) {
+    return error;
+  }
+}
+
+test(name, function (t) {
+  t.plan(errorTests.length);
+
+  errorTests.forEach(function (test) {
+    var options = test.options || {};
+    var error = processError(test.input, options);
+    t.equal(error.reason, test.reason, 'should ' + test.should);
+  });
+});
+
+
 test('should use the postcss plugin api', function (t) {
     t.plan(2);
     t.ok(plugin().postcssVersion, 'should be able to access version');
