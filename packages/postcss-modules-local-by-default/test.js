@@ -7,27 +7,27 @@ var tests = [
   {
     should: 'scope selectors',
     input: '.foobar {}',
-    expected: '.local[foobar] {}'
+    expected: ':local(.foobar) {}'
   },
   {
     should: 'scope multiple selectors',
     input: '.foo, .baz {}',
-    expected: '.local[foo], .local[baz] {}'
+    expected: ':local(.foo), :local(.baz) {}'
   },
   {
     should: 'scope sibling selectors',
     input: '.foo ~ .baz {}',
-    expected: '.local[foo] ~ .local[baz] {}'
+    expected: ':local(.foo) ~ :local(.baz) {}'
   },
   {
     should: 'scope psuedo elements',
     input: '.foo:after {}',
-    expected: '.local[foo]:after {}'
+    expected: ':local(.foo):after {}'
   },
   {
     should: 'scope media queries',
     input: '@media only screen { .foo {} }',
-    expected: '@media only screen { .local[foo] {} }'
+    expected: '@media only screen { :local(.foo) {} }'
   },
   {
     should: 'allow narrow global selectors',
@@ -52,42 +52,62 @@ var tests = [
   {
     should: 'allow narrow global selectors nested inside local styles',
     input: '.foo :global(.foo .bar) {}',
-    expected: '.local[foo] .foo .bar {}'
+    expected: ':local(.foo) .foo .bar {}'
   },
   {
     should: 'allow broad global selectors nested inside local styles',
     input: '.foo :global .foo .bar {}',
-    expected: '.local[foo] .foo .bar {}'
+    expected: ':local(.foo) .foo .bar {}'
   },
   {
     should: 'allow narrow global selectors appended to local styles',
     input: '.foo:global(.foo.bar) {}',
-    expected: '.local[foo].foo.bar {}'
+    expected: ':local(.foo).foo.bar {}'
   },
   {
     should: 'ignore selectors that are already local',
-    input: '.local[foobar] {}',
-    expected: '.local[foobar] {}'
+    input: ':local(.foobar) {}',
+    expected: ':local(.foobar) {}'
   },
   {
     should: 'ignore nested selectors that are already local',
-    input: '.local[foo] .local[bar] {}',
-    expected: '.local[foo] .local[bar] {}'
+    input: ':local(.foo) :local(.bar) {}',
+    expected: ':local(.foo) :local(.bar) {}'
   },
   {
     should: 'ignore multiple selectors that are already local',
-    input: '.local[foo], .local[bar] {}',
-    expected: '.local[foo], .local[bar] {}'
+    input: ':local(.foo), :local(.bar) {}',
+    expected: ':local(.foo), :local(.bar) {}'
   },
   {
     should: 'ignore sibling selectors that are already local',
-    input: '.local[foo] ~ .local[bar] {}',
-    expected: '.local[foo] ~ .local[bar] {}'
+    input: ':local(.foo) ~ :local(.bar) {}',
+    expected: ':local(.foo) ~ :local(.bar) {}'
   },
   {
     should: 'ignore psuedo elements that are already local',
+    input: ':local(.foo):after {}',
+    expected: ':local(.foo):after {}'
+  },
+  {
+    should: 'convert nested selectors that are already local using the old syntax into the new local syntax',
+    input: '.local[foo] .local[bar] {}',
+    expected: ':local(.foo) :local(.bar) {}'
+  },
+  {
+    should: 'convert multiple selectors that are already local using the old syntax into the new local syntax',
+    input: '.local[foo], .local[bar] {}',
+    expected: ':local(.foo), :local(.bar) {}'
+  },
+  {
+    should: 'convert sibling selectors that are already local using the old syntax into the new local syntax',
+    input: '.local[foo] ~ .local[bar] {}',
+    expected: ':local(.foo) ~ :local(.bar) {}'
+  },
+  {
+    should: 'convert psuedo elements that are already local using the old syntax into the new local syntax',
     input: '.local[foo]:after {}',
-    expected: '.local[foo]:after {}'
+    expected: ':local(.foo):after {}'
   }
 ];
 

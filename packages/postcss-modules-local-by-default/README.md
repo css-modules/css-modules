@@ -4,7 +4,7 @@
 
 [PostCSS] plugin to transform global selectors into the [local scope] format of [Webpack]'s [css-loader].
 
-**WARNING: This project depends on [css-loader]'s [local scope] feature, which is marked as experimental and is very likely to change in the future.**
+**WARNING: This project depends on [css-loader]'s [local scope] feature, which is marked as experimental and is very likely to change in the future. Always ensure you're using the latest version of both [css-loader] and postcss-local-scope together.**
 
 ## Why?
 
@@ -12,7 +12,7 @@ Everyone agrees that dumping JavaScript in the global scope is a terrible idea. 
 
 Imagine if we could import the CSS that a component needs without leaking selectors into the global scope. We wouldn't need naming conventions like [BEM] to avoid naming collisions, and we could prevent accidental coupling between components by ensuring our CSS follows the same scoping rules as any JavaScript module.
 
-Webpack allows [local scope] in CSS with [css-loader], but it's opt-in via a special `.local[identifier]` syntax.
+Webpack allows [local scope] in CSS with [css-loader], but it's opt-in via a special `:local(.identifier)` syntax.
 
 This plugin transforms standard class selectors into local identifiers so that [local scope] is the default and global styles are the exception, just like any sane module system.
 
@@ -75,25 +75,25 @@ Classes are dynamically generated at build time by [css-loader], so components a
 ## Transformation examples
 
 ```css
-.foo { ... } /* => */ .local[foo] { ... }
+.foo { ... } /* => */ :local(.foo) { ... }
 
-.foo .bar { ... } /* => */ .local[foo] .local[bar] { ... }
+.foo .bar { ... } /* => */ :local(.foo) :local(.bar) { ... }
 
 /* Shorthand global selector */
 
 :global .foo .bar { ... } /* => */ .foo .bar { ... }
 
-.foo :global .bar { ... } /* => */ .local[foo] .bar { ... }
+.foo :global .bar { ... } /* => */ :local(.foo) .bar { ... }
 
 /* Targeted global selector */
 
-:global(.foo) .bar { ... } /* => */ .foo .local[bar] { ... }
+:global(.foo) .bar { ... } /* => */ .foo :local(.bar) { ... }
 
-.foo:global(.bar) { ... } /* => */ .local[foo].bar { ... }
+.foo:global(.bar) { ... } /* => */ :local(.foo).bar { ... }
 
-.foo :global(.bar) .baz { ... } /* => */ .local[foo] .bar .local[baz] { ... }
+.foo :global(.bar) .baz { ... } /* => */ :local(.foo) .bar :local(.baz) { ... }
 
-.foo:global(.bar) .baz { ... } /* => */ .local[foo].bar .local[baz] { ... }
+.foo:global(.bar) .baz { ... } /* => */ :local(.foo).bar :local(.baz) { ... }
 ```
 
 [PostCSS]:     https://github.com/postcss/postcss
