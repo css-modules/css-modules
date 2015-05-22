@@ -114,6 +114,16 @@ var tests = [
     input: 'input {}',
     expected: 'input {}'
   },
+  {
+    should: 'support :extends',
+    input: '.foo:extends(.className) {}',
+    expected: ':local(.foo):extends(.className) {}'
+  },
+  {
+    should: 'support imported :extends',
+    input: '.foo:extends(.button from "library/button.css") {}',
+    expected: ':local(.foo):extends(.button from "library/button.css") {}'
+  }
 ];
 
 function process (css, options) {

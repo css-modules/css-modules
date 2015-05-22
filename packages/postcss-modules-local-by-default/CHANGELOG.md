@@ -3,8 +3,8 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][unreleased]
-### Changed
-- Nothing yet.
+### Added
+- Support for css-loader [inheritance](https://github.com/webpack/css-loader#inheriting) and [local imports](https://github.com/webpack/css-loader#importing-local-class-names).
 
 ## [0.0.4] - 2015-05-22
 ### Changed

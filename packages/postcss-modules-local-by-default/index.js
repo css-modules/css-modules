@@ -28,6 +28,7 @@ function transformSelector(options, rule, selector) {
   return selector
     .replace(/\:global\((.*?)\)/g, escapeDots)
     .replace(/\:global (.*)/g, escapeDots)
+    .replace(/(\:extends\((.*?)\))/g, escapeDots)
     .replace(/\.local\[(-?[_a-zA-Z]+[_a-zA-Z0-9-]*)\]/g, '.$1') // source: http://stackoverflow.com/questions/448981/what-characters-are-valid-in-css-class-names-selectors
     .replace(/\:local\(\.(-?[_a-zA-Z]+[_a-zA-Z0-9-]*)\)/g, '.$1')
     .replace(/\.(-?[_a-zA-Z]+[_a-zA-Z0-9-]*)/g, ':local(.$1)')
