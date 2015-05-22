@@ -108,7 +108,12 @@ var tests = [
     should: 'convert psuedo elements that are already local using the old syntax into the new local syntax',
     input: '.local[foo]:after {}',
     expected: ':local(.foo):after {}'
-  }
+  },
+  {
+    should: 'not reject non-global element selectors when lint mode is not enabled',
+    input: 'input {}',
+    expected: 'input {}'
+  },
 ];
 
 function process (css, options) {
@@ -127,32 +132,32 @@ test(name, function (t) {
 
 var errorTests = [
   {
-    should: 'reject naked element selectors',
+    should: 'reject non-global element selectors',
     input: 'input {}',
     reason: 'Global selector detected in local context. Does this selector really need to be global? If so, you need to explicitly export it into the global scope with ":global", e.g. ":global input"'
   },
   {
-    should: 'reject naked element selectors in a collection',
+    should: 'reject non-global element selectors in a collection',
     input: '.foo, input {}',
     reason: 'Global selector detected in local context. Does this selector really need to be global? If so, you need to explicitly export it into the global scope with ":global", e.g. ":global input"'
   },
   {
-    should: 'reject naked psuedo classes',
+    should: 'reject non-global psuedo classes',
     input: ':focus {}',
     reason: 'Global selector detected in local context. Does this selector really need to be global? If so, you need to explicitly export it into the global scope with ":global", e.g. ":global :focus"'
   },
   {
-    should: 'reject naked psuedo classes in a collection',
+    should: 'reject non-global psuedo classes in a collection',
     input: '.foo, :focus {}',
     reason: 'Global selector detected in local context. Does this selector really need to be global? If so, you need to explicitly export it into the global scope with ":global", e.g. ":global :focus"'
   },
   {
-    should: 'reject naked attribute selectors',
+    should: 'reject non-global attribute selectors',
     input: '[data-foobar] {}',
     reason: 'Global selector detected in local context. Does this selector really need to be global? If so, you need to explicitly export it into the global scope with ":global", e.g. ":global [data-foobar]"'
   },
   {
-    should: 'reject naked attribute selectors in a collection',
+    should: 'reject non-global attribute selectors in a collection',
     input: '.foo, [data-foobar] {}',
     reason: 'Global selector detected in local context. Does this selector really need to be global? If so, you need to explicitly export it into the global scope with ":global", e.g. ":global [data-foobar]"'
   }
@@ -170,7 +175,7 @@ test(name, function (t) {
   t.plan(errorTests.length);
 
   errorTests.forEach(function (test) {
-    var options = test.options || {};
+    var options = { lint: true };
     var error = processError(test.input, options);
     t.equal(error.reason, test.reason, 'should ' + test.should);
   });

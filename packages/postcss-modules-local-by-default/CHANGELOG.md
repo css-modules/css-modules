@@ -4,7 +4,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][unreleased]
 ### Changed
-- Nothing yet.
+- Hide global leak detection behind undocumented `lint` option until it's more robust.
 
 ## [0.0.3] - 2015-05-22
 ### Changed
