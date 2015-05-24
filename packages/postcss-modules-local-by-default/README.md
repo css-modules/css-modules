@@ -1,5 +1,7 @@
 [![Build Status][ci-img]][ci] [![npm][npm-img]][npm]
 
+> **PLEASE NOTE: This project is now deprecated. Instead, use [css-loader]'s [CSS Modules mode](https://github.com/webpack/css-loader#module-mode).**
+
 # PostCSS Local Scope
 
 [PostCSS] plugin to transform global selectors into the [local scope] format of [Webpack]'s [css-loader].
