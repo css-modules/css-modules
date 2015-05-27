@@ -89,9 +89,11 @@ i. e. with less.js
 * [css-modules/webpack-demo](https://github.com/css-modules/webpack-demo);
 * [Theming](examples/theming.md)
 
-# webpack implementation
+## Implementations
 
-The css-loader replaces every local-scoped identifier with a global unique name (hashed from module name and local identifier by default) and exports the used identifer.
+### webpack
+
+Webpacks [css-loader](https://github.com/webpack/css-loader) in module mode replaces every local-scoped identifier with a global unique name (hashed from module name and local identifier by default) and exports the used identifer.
 
 Extending adds the source class name(s) to the exports.
 
