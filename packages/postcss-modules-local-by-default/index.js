@@ -2,7 +2,7 @@ var postcss = require('postcss');
 
 var ESCAPED_DOT = ' ___LOCAL_SCOPE__ESCAPED_DOT___ ';
 
-module.exports = postcss.plugin('postcss-local-scope', function (config) {
+module.exports = postcss.plugin('postcss-modules-local-by-default', function (config) {
   var options = config || {};
   return function(css, result) {
     css.eachRule(function(rule) {
@@ -20,7 +20,7 @@ function transformSelector(options, rule, selector) {
   if (options.lint) {
     if (!/^\./.test(trimmedSelector) && !/^\:local/.test(trimmedSelector)) {
       if (!/^\:global/.test(trimmedSelector)) {
-        throw rule.error('Global selector detected in local context. Does this selector really need to be global? If so, you need to explicitly export it into the global scope with ":global", e.g. ":global '+trimmedSelector+'"', { plugin: 'postcss-local-scope' });
+        throw rule.error('Global selector detected in local context. Does this selector really need to be global? If so, you need to explicitly export it into the global scope with ":global", e.g. ":global '+trimmedSelector+'"', { plugin: 'postcss-modules-local-by-default' });
       }
     }
   }

@@ -1,19 +1,18 @@
 {
-  "name": "postcss-local-scope",
+  "name": "postcss-modules-local-by-default",
   "version": "0.0.5",
-  "description": "PostCSS plugin to transform global selectors into the local scope format of Webpack's css-loader",
+  "description": "A CSS Modules transform to make local scope the default",
   "keywords": [
+    "css-modules",
     "postcss",
     "css",
-    "postcss-plugin",
-    "webpack",
-    "css-loader"
+    "postcss-plugin"
   ],
   "author": "Mark Dalgleish",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/markdalgleish/postcss-local-scope.git"
+    "url": "https://github.com/css-modules/postcss-modules-local-by-default.git"
   },
   "dependencies": {
     "postcss": "^4.1.5"
