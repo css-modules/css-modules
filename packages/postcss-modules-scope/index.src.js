@@ -1,28 +1,40 @@
 import postcss from 'postcss'
-import {CssSelectorParser} from 'css-selector-parser'
+
+const localRegexp = /^\:local\(\.(\w+)\)$/
 
 const processor = (css, result) => {
-  const parser = new CssSelectorParser;
   let exports = {};
 
   // Find any :local declarations
   css.eachRule(rule => {
-    let parsed = parser.parse(rule.selector),
-      selectors = parsed.type === 'ruleSet' ? [parsed] : parsed.selectors,
-      converted = selectors.map(selector => {
-        let pseudos = selector.rule.pseudos || []
-        pseudos.forEach(pseudo => {
-          if (pseudo.name === "local") {
-
-          }
-        })
-        return parser.render(selector)
-      })
-    rule.selector = converted.join(',')
+    let match = rule.selector.match(localRegexp)
+    if (match) {
+      let [_, exportedName] = match,
+        generatedClassName = processor.generateClassName(css.source.input.from, exportedName)
+      exports[exportedName] = exports[exportedName] || []
+      exports[exportedName].push(generatedClassName)
+      rule.selector = `.${generatedClassName}`
+    }
   })
 
-  // If we found any :locals, insert :export rules
-  Objects.keys()
+  // If we found any :locals, insert an :export rule
+  let exportedNames = Object.keys(exports)
+  if (exportedNames.length > 0) {
+    css.prepend(postcss.rule({
+      selector: `:export`,
+      before: "\n",
+      nodes: exportedNames.map(exportedName => postcss.decl({
+        prop: exportedName,
+        value: exports[exportedName].join(" "),
+        before: "\n  "
+      }))
+    }))
+  }
+}
+
+processor.generateClassName = (path, exportedName) => {
+  let sanitisedPath = path.replace(/\.[^\.\/\\]+$/, '').replace(/[\W_]+/g, '_').replace(/^_|_$/g,'')
+  return `_${sanitisedPath}__${exportedName}`
 }
 
 export default processor

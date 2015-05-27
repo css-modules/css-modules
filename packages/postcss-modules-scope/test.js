@@ -14,18 +14,16 @@ describe("processor", () => {
     `:local(.exportName) { color: green; }`,
     `
 :export {
-  exportName: _input_css_1__exportName;
-}
-:local { color: green; }`
+  exportName: _input_css_1__exportName; }
+._input_css_1__exportName { color: green; }`
   )
 
   check("should extract and export a class with the path in there",
     `:local(.exportName) { color: green; }`,
     `
 :export {
-  exportName: _lib_components_button__exportName;
-}
-:local { color: green; }`,
+  exportName: _lib_components_button__exportName; }
+._lib_components_button__exportName { color: green; }`,
     '/lib/components/button.css'
   )
 
