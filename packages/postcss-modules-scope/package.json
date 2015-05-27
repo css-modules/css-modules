@@ -31,6 +31,7 @@
     "babel": "^5.4.7",
     "babelify": "^6.1.2",
     "chokidar-cli": "^0.2.1",
+    "css-selector-parser": "^1.0.4",
     "mocha": "^2.2.5"
   }
 }

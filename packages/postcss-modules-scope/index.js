@@ -10,12 +10,29 @@ var _postcss = require('postcss');
 
 var _postcss2 = _interopRequireDefault(_postcss);
 
-var processor = function processor(css, result) {};
+var _cssSelectorParser = require('css-selector-parser');
 
-processor.defaultRandomStr = function () {
-  return Math.random().toString(36).substr(2, 8);
+var processor = function processor(css, result) {
+  var parser = new _cssSelectorParser.CssSelectorParser();
+  var exports = {};
+
+  // Find any :local declarations
+  css.eachRule(function (rule) {
+    var parsed = parser.parse(rule.selector),
+        selectors = parsed.type === 'ruleSet' ? [parsed] : parsed.selectors,
+        converted = selectors.map(function (selector) {
+      var pseudos = selector.rule.pseudos || [];
+      pseudos.forEach(function (pseudo) {
+        if (pseudo.name === 'local') {}
+      });
+      return parser.render(selector);
+    });
+    rule.selector = converted.join(',');
+  });
+
+  // If we found any :locals, insert :export rules
+  Objects.keys();
 };
-processor.getRandomStr = processor.defaultRandomStr; // Easy to be mocked out
 
 exports['default'] = processor;
 module.exports = exports['default'];
