@@ -21,14 +21,21 @@ var processor = function processor(css, result) {
   css.eachRule(function (rule) {
     var match = rule.selector.match(localRegexp);
     if (match) {
-      var _match = _slicedToArray(match, 2);
+      (function () {
+        var _match = _slicedToArray(match, 2);
 
-      var _ = _match[0];
-      var exportedName = _match[1];
-      var generatedClassName = processor.generateClassName(css.source.input.from, exportedName);
-      exports[exportedName] = exports[exportedName] || [];
-      exports[exportedName].push(generatedClassName);
-      rule.selector = "." + generatedClassName;
+        var _ = _match[0];
+        var exportedName = _match[1];
+        var generatedClassName = processor.generateClassName(css.source.input.from, exportedName);
+        exports[exportedName] = exports[exportedName] || [];
+        exports[exportedName].push(generatedClassName);
+        rule.selector = "." + generatedClassName;
+        rule.eachDecl(/extends/, function (decl) {
+          var classes = decl.value.split(/ from /)[0];
+          exports[exportedName].push(classes);
+          decl.removeSelf();
+        });
+      })();
     }
   });
 

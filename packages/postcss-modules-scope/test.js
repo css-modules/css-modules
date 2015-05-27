@@ -49,4 +49,22 @@ describe("processor", () => {
   color: blue;
 }`,
     '/lib/components/button.css')*/
+
+  check("should hoist a single extends class",
+    `:local(.exportName) { extends: otherClass; color: green; }`,
+    `
+:export {
+  exportName: _lib_extender__exportName otherClass; }
+._lib_extender__exportName { color: green; }`,
+    "/lib/extender.css"
+  )
+
+  check("should hoist multiple extends class",
+    `:local(.exportName) { extends: otherClass andAgain; extends: aThirdClass; color: green; }`,
+    `
+:export {
+  exportName: _lib_extender__exportName otherClass andAgain aThirdClass; }
+._lib_extender__exportName { color: green; }`,
+    "/lib/extender.css"
+  )
 })

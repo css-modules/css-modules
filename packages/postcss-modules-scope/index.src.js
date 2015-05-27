@@ -14,6 +14,11 @@ const processor = (css, result) => {
       exports[exportedName] = exports[exportedName] || []
       exports[exportedName].push(generatedClassName)
       rule.selector = `.${generatedClassName}`
+      rule.eachDecl(/extends/, decl => {
+        let classes = decl.value.split(/ from /)[0]
+        exports[exportedName].push(classes)
+        decl.removeSelf()
+      })
     }
   })
 
