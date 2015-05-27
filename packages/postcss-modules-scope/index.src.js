@@ -1,24 +1,36 @@
 import postcss from 'postcss'
 
-const localRegexp = /^\:local\(\.(\w+)\)$/
+const localRegexp = /^\:local\(\.?([\w-]+)\)$/
 
 const processor = (css, result) => {
-  let exports = {};
+  let exports = {}
 
-  // Find any :local declarations
+  // Find any :local classes
   css.eachRule(rule => {
     let match = rule.selector.match(localRegexp)
     if (match) {
       let [_, exportedName] = match,
-        generatedClassName = processor.generateClassName(css.source.input.from, exportedName)
+        scopedName = processor.generateScopedName(css.source.input.from, exportedName)
       exports[exportedName] = exports[exportedName] || []
-      exports[exportedName].push(generatedClassName)
-      rule.selector = `.${generatedClassName}`
+      exports[exportedName].push(scopedName)
+      rule.selector = `.${scopedName}`
       rule.eachDecl(/extends/, decl => {
         let classes = decl.value.split(/ from /)[0]
         exports[exportedName].push(classes)
         decl.removeSelf()
       })
+    }
+  })
+
+  // Find any :local keyframes
+  css.eachAtRule("keyframes", atRule => {
+    let match = atRule.params.match(localRegexp)
+    if (match) {
+      let [_, exportedName] = match,
+        scopedName = processor.generateScopedName(css.source.input.from, exportedName)
+      exports[exportedName] = exports[exportedName] || []
+      exports[exportedName].push(scopedName)
+      atRule.params = scopedName
     }
   })
 
@@ -37,7 +49,7 @@ const processor = (css, result) => {
   }
 }
 
-processor.generateClassName = (path, exportedName) => {
+processor.generateScopedName = (path, exportedName) => {
   let sanitisedPath = path.replace(/\.[^\.\/\\]+$/, '').replace(/[\W_]+/g, '_').replace(/^_|_$/g,'')
   return `_${sanitisedPath}__${exportedName}`
 }

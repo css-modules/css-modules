@@ -67,4 +67,12 @@ describe("processor", () => {
 ._lib_extender__exportName { color: green; }`,
     "/lib/extender.css"
   )
+
+  check("local keyframes should be available too",
+    `@keyframes :local(fade-in) { from { opacity: 0; } }`,
+    `
+:export {
+  fade-in: _animations__fade-in; } @keyframes _animations__fade-in { from { opacity: 0; } }`,
+    "/animations.css"
+  )
 })
