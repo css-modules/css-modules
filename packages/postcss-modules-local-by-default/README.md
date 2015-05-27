@@ -2,7 +2,7 @@
 
 # CSS Modules: Local by Default
 
-Transforms:
+Transformation examples:
 
 ```css
 .foo { ... } /* => */ :local(.foo) { ... }
