@@ -24,6 +24,7 @@ Transforms:
 .foo :global(.bar) .baz { ... } /* => */ :local(.foo) .bar :local(.baz) { ... }
 
 .foo:global(.bar) .baz { ... } /* => */ :local(.foo).bar :local(.baz) { ... }
+```
 
 ## Development
 
