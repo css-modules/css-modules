@@ -87,7 +87,7 @@ i. e. with less.js
 ## Examples
 
 * [css-modules/webpack-demo](https://github.com/css-modules/webpack-demo);
-* [Theming](https://github.com/webpack/css-modules/blob/master/examples/theming.md)
+* [Theming](examples/theming.md)
 
 # webpack implementation
 
