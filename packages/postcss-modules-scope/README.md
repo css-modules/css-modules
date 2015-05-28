@@ -74,10 +74,11 @@ npm build
 npm test
 ```
 
+[![Build Status](https://travis-ci.org/css-modules/postcss-modules-scope.svg?branch=master)](https://travis-ci.org/css-modules/postcss-modules-scope) [![Coverage Status](https://coveralls.io/repos/css-modules/postcss-modules-scope/badge.svg?branch=master)](https://coveralls.io/r/css-modules/postcss-modules-scope?branch=master)
 ## Development
 
-- `npm watch` will watch `index.src.js` for changes and rebuild
-- `npm autotest` will watch `index.src.js` and `test.js` for changes and retest
+- `npm watch` will watch `src` for changes and rebuild
+- `npm autotest` will watch `src` and `test` for changes and retest
 
 ## License
 

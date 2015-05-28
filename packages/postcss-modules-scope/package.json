@@ -2,12 +2,18 @@
   "name": "postcss-modules-scope",
   "version": "0.0.1",
   "description": "A CSS Modules transform to extract export statements from local-scope classes",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
-    "watch": "chokidar index.src.js -c 'npm run build'",
-    "build": "babel -o index.js index.src.js",
-    "test": "mocha --compilers js:babel/register",
-    "autotest": "chokidar index.src.js test.js -c 'npm test'"
+    "lint": "eslint src",
+    "build": "babel --out-dir lib src",
+    "watch": "chokidar src -c 'npm run build'",
+    "pretest": "npm run lint && npm run build",
+    "test": "mocha",
+    "autotest": "chokidar src test -c 'npm test'",
+    "precover": "npm run lint && npm run build",
+    "cover": "istanbul cover node_modules/mocha/bin/_mocha",
+    "travis": "npm run cover -- --report lcovonly",
+    "prepublish": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -29,9 +35,13 @@
   },
   "devDependencies": {
     "babel": "^5.4.7",
+    "babel-eslint": "^3.1.9",
     "babelify": "^6.1.2",
     "chokidar-cli": "^0.2.1",
+    "coveralls": "^2.11.2",
     "css-selector-parser": "^1.0.4",
+    "eslint": "^0.21.2",
+    "istanbul": "^0.3.14",
     "mocha": "^2.2.5"
   }
 }

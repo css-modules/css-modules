@@ -1,0 +1,9 @@
+
+:export {
+  fade-in: _input__fade-in;
+}
+@keyframes _input__fade-in {
+  from {
+    opacity: 0;
+  }
+}
