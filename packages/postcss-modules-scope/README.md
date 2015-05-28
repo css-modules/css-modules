@@ -79,6 +79,8 @@ npm test
 * Lines: [![Coverage Status](https://coveralls.io/repos/css-modules/postcss-modules-scope/badge.svg?branch=master)](https://coveralls.io/r/css-modules/postcss-modules-scope?branch=master)
 * Statements: [![codecov.io](http://codecov.io/github/css-modules/postcss-modules-scope/coverage.svg?branch=master)](http://codecov.io/github/css-modules/postcss-modules-scope?branch=master)
 
+## Development
+
 - `npm watch` will watch `src` for changes and rebuild
 - `npm autotest` will watch `src` and `test` for changes and retest
 
