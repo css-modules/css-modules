@@ -9,7 +9,7 @@ A **CSS Module** is a CSS file in which all class names and animation names are 
 }
 ```
 
-When importing the **CSS Module** from an JS Module, it exports global names for all local names. As default export an object with all mappings is exported.
+When importing the **CSS Module** from a JS Module, it exports an object with all mappings from local names to global names.
 
 ``` js
 import styles from "./style.css";
@@ -20,7 +20,7 @@ return '<div class="' + styles.className + '">';
 
 ## Naming
 
-For local class names camelCase naming is recommended (but not enforced).
+For local class names camelCase naming is recommended, but not enforced.
 
 ## Exceptions
 
@@ -48,7 +48,7 @@ It's possible to extend a selector.
 }
 ```
 
-There can be multiple `extends` rules, but `extends` rules must be before other rules. Extending works only for local-scoped selectors and only if the selector is a single class name. When a class name extends from another class name, the CSS Module exports both class names for the local class. This can add up to multiple class names.
+There can be multiple `extends` rules, but `extends` rules must be before other rules. Extending works only for local-scoped selectors and only if the selector is a single class name. When a class name extends from another class name, the **CSS Module** exports both class names for the local class. This can add up to multiple class names.
 
 It's possible to extend from multiple classes with `extends: classNameA classNameB;`.
 
@@ -93,7 +93,7 @@ i. e. with less.js
 
 ### webpack
 
-Webpacks [css-loader](https://github.com/webpack/css-loader) in module mode replaces every local-scoped identifier with a global unique name (hashed from module name and local identifier by default) and exports the used identifer.
+Webpack's [css-loader](https://github.com/webpack/css-loader) in module mode replaces every local-scoped identifier with a global unique name (hashed from module name and local identifier by default) and exports the used identifer.
 
 Extending adds the source class name(s) to the exports.
 
