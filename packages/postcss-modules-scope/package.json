@@ -41,6 +41,7 @@
     "babel-eslint": "^3.1.9",
     "babelify": "^6.1.2",
     "chokidar-cli": "^0.2.1",
+    "codecov.io": "^0.1.2",
     "coveralls": "^2.11.2",
     "css-selector-parser": "^1.0.4",
     "eslint": "^0.21.2",
