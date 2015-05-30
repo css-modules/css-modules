@@ -88,41 +88,6 @@ var tests = [
     should: 'ignore psuedo elements that are already local',
     input: ':local(.foo):after {}',
     expected: ':local(.foo):after {}'
-  },
-  {
-    should: 'convert nested selectors that are already local using the old syntax into the new local syntax',
-    input: '.local[foo] .local[bar] {}',
-    expected: ':local(.foo) :local(.bar) {}'
-  },
-  {
-    should: 'convert multiple selectors that are already local using the old syntax into the new local syntax',
-    input: '.local[foo], .local[bar] {}',
-    expected: ':local(.foo), :local(.bar) {}'
-  },
-  {
-    should: 'convert sibling selectors that are already local using the old syntax into the new local syntax',
-    input: '.local[foo] ~ .local[bar] {}',
-    expected: ':local(.foo) ~ :local(.bar) {}'
-  },
-  {
-    should: 'convert psuedo elements that are already local using the old syntax into the new local syntax',
-    input: '.local[foo]:after {}',
-    expected: ':local(.foo):after {}'
-  },
-  {
-    should: 'not reject non-global element selectors when lint mode is not enabled',
-    input: 'input {}',
-    expected: 'input {}'
-  },
-  {
-    should: 'support :extends',
-    input: '.foo:extends(.className) {}',
-    expected: ':local(.foo):extends(.className) {}'
-  },
-  {
-    should: 'support imported :extends',
-    input: '.foo:extends(.button from "library/button.css") {}',
-    expected: ':local(.foo):extends(.button from "library/button.css") {}'
   }
 ];
 
@@ -137,58 +102,6 @@ test(name, function (t) {
         var options = test.options || {};
         t.equal(process(test.input, options), test.expected, 'should ' + test.should);
     });
-});
-
-
-var errorTests = [
-  {
-    should: 'reject non-global element selectors',
-    input: 'input {}',
-    reason: 'Global selector detected in local context. Does this selector really need to be global? If so, you need to explicitly export it into the global scope with ":global", e.g. ":global input"'
-  },
-  {
-    should: 'reject non-global element selectors in a collection',
-    input: '.foo, input {}',
-    reason: 'Global selector detected in local context. Does this selector really need to be global? If so, you need to explicitly export it into the global scope with ":global", e.g. ":global input"'
-  },
-  {
-    should: 'reject non-global psuedo classes',
-    input: ':focus {}',
-    reason: 'Global selector detected in local context. Does this selector really need to be global? If so, you need to explicitly export it into the global scope with ":global", e.g. ":global :focus"'
-  },
-  {
-    should: 'reject non-global psuedo classes in a collection',
-    input: '.foo, :focus {}',
-    reason: 'Global selector detected in local context. Does this selector really need to be global? If so, you need to explicitly export it into the global scope with ":global", e.g. ":global :focus"'
-  },
-  {
-    should: 'reject non-global attribute selectors',
-    input: '[data-foobar] {}',
-    reason: 'Global selector detected in local context. Does this selector really need to be global? If so, you need to explicitly export it into the global scope with ":global", e.g. ":global [data-foobar]"'
-  },
-  {
-    should: 'reject non-global attribute selectors in a collection',
-    input: '.foo, [data-foobar] {}',
-    reason: 'Global selector detected in local context. Does this selector really need to be global? If so, you need to explicitly export it into the global scope with ":global", e.g. ":global [data-foobar]"'
-  }
-];
-
-function processError (css, options) {
-  try {
-    postcss(plugin(options)).process(css).css;
-  } catch (error) {
-    return error;
-  }
-}
-
-test(name, function (t) {
-  t.plan(errorTests.length);
-
-  errorTests.forEach(function (test) {
-    var options = { lint: true };
-    var error = processError(test.input, options);
-    t.equal(error.reason, test.reason, 'should ' + test.should);
-  });
 });
 
 

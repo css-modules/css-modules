@@ -1,40 +1,54 @@
 var postcss = require('postcss');
+var Tokenizer = require('css-selector-tokenizer');
 
-var ESCAPED_DOT = ' ___LOCAL_SCOPE__ESCAPED_DOT___ ';
+function localizeNodes(nodes) {
+  var isGlobalContext = false;
 
-module.exports = postcss.plugin('postcss-modules-local-by-default', function (config) {
-  var options = config || {};
+  return nodes
+    .map(function(node, i) {
+      var newNode = node;
+
+      if (isGlobal(newNode)) {
+        isGlobalContext = true;
+        return null;
+      }
+
+      if (newNode.type === 'spacing' && isGlobal(nodes[i-1])) {
+        return null;
+      }
+
+      if (!isGlobalContext && node.type === 'class') {
+        newNode = { type: 'nested-pseudo-class', name: 'local', nodes: [node] }
+      } else if (isNestedGlobal(newNode)) {
+        newNode = node.nodes[0];
+      } else if (!isNestedLocal(newNode) && newNode.nodes) {
+        newNode.nodes = localizeNodes(newNode.nodes);
+      }
+
+      return newNode;
+    }).filter(function(node) {
+      return node !== null
+    });
+}
+
+function isGlobal(node) {
+  return node.type === 'pseudo-class' && node.name === 'global';
+}
+
+function isNestedGlobal(node) {
+  return node.type === 'nested-pseudo-class' && node.name === 'global';
+}
+
+function isNestedLocal(node) {
+ return node.type === 'nested-pseudo-class' && node.name === 'local';
+}
+
+module.exports = postcss.plugin('postcss-modules-local-by-default', function () {
   return function(css, result) {
     css.eachRule(function(rule) {
-      rule.selector = rule.selector
-        .split(',')
-        .map(transformSelector.bind(null, options, rule))
-        .join(',');
+      var selector = Tokenizer.parse(rule.selector);
+      selector.nodes = localizeNodes(selector.nodes);
+      rule.selector = Tokenizer.stringify(selector).trim();
     });
   };
 });
-
-function transformSelector(options, rule, selector) {
-  var trimmedSelector = selector.trim();
-
-  if (options.lint) {
-    if (!/^\./.test(trimmedSelector) && !/^\:local/.test(trimmedSelector)) {
-      if (!/^\:global/.test(trimmedSelector)) {
-        throw rule.error('Global selector detected in local context. Does this selector really need to be global? If so, you need to explicitly export it into the global scope with ":global", e.g. ":global '+trimmedSelector+'"', { plugin: 'postcss-modules-local-by-default' });
-      }
-    }
-  }
-
-  return selector
-    .replace(/\:global\((.*?)\)/g, escapeDots)
-    .replace(/\:global (.*)/g, escapeDots)
-    .replace(/(\:extends\((.*?)\))/g, escapeDots)
-    .replace(/\.local\[(-?[_a-zA-Z]+[_a-zA-Z0-9-]*)\]/g, '.$1') // source: http://stackoverflow.com/questions/448981/what-characters-are-valid-in-css-class-names-selectors
-    .replace(/\:local\(\.(-?[_a-zA-Z]+[_a-zA-Z0-9-]*)\)/g, '.$1')
-    .replace(/\.(-?[_a-zA-Z]+[_a-zA-Z0-9-]*)/g, ':local(.$1)')
-    .replace(new RegExp(ESCAPED_DOT, 'g'), '.');
-}
-
-function escapeDots(match, p1) {
-  return p1.replace(/\./g, ESCAPED_DOT);
-}

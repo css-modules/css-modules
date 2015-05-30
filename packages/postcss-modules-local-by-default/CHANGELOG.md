@@ -4,7 +4,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][unreleased]
 ### Changed
-- Nothing yet.
+- Migrated to `css-selector-tokenizer`.
 
 ## [0.0.6] - 2015-05-28
 ### Changed

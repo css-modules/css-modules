@@ -15,6 +15,7 @@
     "url": "https://github.com/css-modules/postcss-modules-local-by-default.git"
   },
   "dependencies": {
+    "css-selector-tokenizer": "^0.3.1",
     "postcss": "^4.1.5"
   },
   "devDependencies": {
