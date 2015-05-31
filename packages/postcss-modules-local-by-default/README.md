@@ -1,4 +1,4 @@
-[![Build Status][ci-img]][ci] [![npm][npm-img]][npm]
+[![Build Status][ci-img]][ci] [![coveralls][coveralls-img]][coveralls] [![npm][npm-img]][npm]
 
 # CSS Modules: Local by Default
 
@@ -26,11 +26,21 @@ Transformation examples:
 .foo:global(.bar) .baz { ... } /* => */ :local(.foo).bar :local(.baz) { ... }
 ```
 
-## Development
+## Building
 
 ```bash
 $ npm install
 $ npm test
+```
+
+ - Build: [![Build Status][ci-img]][ci]
+ - Lines: [![coveralls][coveralls-img]][coveralls]
+ - Statements: [![codecov][codecov-img]][codecov]
+
+## Development
+
+```bash
+$ npm run autotest
 ```
 
 ## License
@@ -42,7 +52,11 @@ MIT
  - [Tobias Koppers](https://github.com/sokra)
  - [Glen Maddern](https://github.com/geelen)
 
-[ci-img]:  https://img.shields.io/travis/css-modules/postcss-modules-local-by-default/master.svg?style=flat-square
-[ci]:      https://travis-ci.org/css-modules/postcss-modules-local-by-default
-[npm-img]: https://img.shields.io/npm/v/postcss-modules-local-by-default.svg?style=flat-square
-[npm]:     https://www.npmjs.com/package/postcss-modules-local-by-default
+[ci-img]:        https://img.shields.io/travis/css-modules/postcss-modules-local-by-default/master.svg?style=flat-square
+[ci]:            https://travis-ci.org/css-modules/postcss-modules-local-by-default
+[npm-img]:       https://img.shields.io/npm/v/postcss-modules-local-by-default.svg?style=flat-square
+[npm]:           https://www.npmjs.com/package/postcss-modules-local-by-default
+[coveralls-img]: https://img.shields.io/coveralls/css-modules/postcss-modules-local-by-default/master.svg?style=flat-square
+[coveralls]:     https://coveralls.io/r/css-modules/postcss-modules-local-by-default?branch=master
+[codecov-img]:   https://img.shields.io/codecov/c/github/css-modules/postcss-modules-local-by-default/master.svg?style=flat-square
+[codecov]:       https://codecov.io/github/css-modules/postcss-modules-local-by-default?branch=master

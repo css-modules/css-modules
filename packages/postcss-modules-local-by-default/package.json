@@ -19,10 +19,21 @@
     "postcss": "^4.1.5"
   },
   "devDependencies": {
+    "chokidar-cli": "^0.2.1",
+    "codecov.io": "^0.1.2",
+    "coveralls": "^2.11.2",
+    "eslint": "^0.22.1",
+    "istanbul": "^0.3.14",
     "tape": "^4.0.0"
   },
   "scripts": {
+    "lint": "eslint index.js",
+    "pretest": "npm run lint",
     "test": "tape test.js",
+    "autotest": "chokidar index.js test.js -c 'npm test'",
+    "precover": "npm run lint",
+    "cover": "istanbul cover test.js",
+    "travis": "npm run cover -- --report lcovonly",
     "prepublish": "npm prune && npm test"
   }
 }
