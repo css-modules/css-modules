@@ -88,6 +88,16 @@ var tests = [
     should: 'ignore psuedo elements that are already local',
     input: ':local(.foo):after {}',
     expected: ':local(.foo):after {}'
+  },
+  {
+    should: 'ignore :export statemtents',
+    input: ':export { foo: __foo; }',
+    expected: ':export { foo: __foo; }'
+  },
+  {
+    should: 'ignore :import statemtents',
+    input: ':import("~/lol.css") { foo: __foo; }',
+    expected: ':import("~/lol.css") { foo: __foo; }'
   }
 ];
 
