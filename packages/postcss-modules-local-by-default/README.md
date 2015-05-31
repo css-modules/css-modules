@@ -52,6 +52,9 @@ MIT
  - [Tobias Koppers](https://github.com/sokra)
  - [Glen Maddern](https://github.com/geelen)
 
+---
+Mark Dalgleish, 2015.
+
 [ci-img]:        https://img.shields.io/travis/css-modules/postcss-modules-local-by-default/master.svg?style=flat-square
 [ci]:            https://travis-ci.org/css-modules/postcss-modules-local-by-default
 [npm-img]:       https://img.shields.io/npm/v/postcss-modules-local-by-default.svg?style=flat-square
