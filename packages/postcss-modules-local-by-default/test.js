@@ -60,6 +60,11 @@ var tests = [
     expected: ':local(.foo) .foo .bar {}'
   },
   {
+    should: 'allow parentheses inside narrow global selectors',
+    input: '.foo :global(.foo:not(.bar)) {}',
+    expected: ':local(.foo) .foo:not(.bar) {}'
+  },
+  {
     should: 'allow narrow global selectors appended to local styles',
     input: '.foo:global(.foo.bar) {}',
     expected: ':local(.foo).foo.bar {}'
