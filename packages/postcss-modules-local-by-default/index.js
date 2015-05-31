@@ -48,7 +48,7 @@ module.exports = postcss.plugin('postcss-modules-local-by-default', function () 
     css.eachRule(function(rule) {
       var selector = Tokenizer.parse(rule.selector);
       selector.nodes = localizeNodes(selector.nodes);
-      rule.selector = Tokenizer.stringify(selector).trim();
+      rule.selector = Tokenizer.stringify(selector);
     });
   };
 });
