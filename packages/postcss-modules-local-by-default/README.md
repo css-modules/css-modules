@@ -1,4 +1,4 @@
-[![Build Status][ci-img]][ci] [![coveralls][coveralls-img]][coveralls] [![npm][npm-img]][npm]
+[![Build Status][ci-img]][ci] [![codecov][codecov-img]][codecov] [![npm][npm-img]][npm]
 
 # CSS Modules: Local by Default
 
