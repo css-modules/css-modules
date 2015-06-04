@@ -55,19 +55,19 @@ This is the key capability that is new to modern multi-format loaders like Webpa
 CSS Interchange Format (CIF) is a superset of standard CSS, making use of two additional pseudo-selectors:
 
 ```css
-:exports {
+:export {
   exportedKey: exportedValue;
 	/* ... */
 }
-:imports("path") {
-  importedKey: localAlias;
+:import("path/to/dep.css") {
+  localAlias: keyFromDep;
   /* ... */
 }
 ```
 
-### :exports
+### :export
 
-An `:exports` block defines the symbols that are going to exported to the consumer. It can be thought of functionally equivalent to the following JS:
+An `:export` block defines the symbols that are going to exported to the consumer. It can be thought of functionally equivalent to the following JS:
 
 ```js
 module.exports = {
@@ -80,8 +80,8 @@ The following restrictions are placed on the `:export` syntax:
 - It must be at the top level, but can be anywhere in the file.
 - If there is more than one in a file, the keys and values are combined and exported together.
 - If a particular `exportedKey` is duplicated, the last (in source order) takes precedence.
-- Exported values may contain any character valid for CSS declaration values.
-- Exported values do not need to be quoted, they are treated as a literal string anyway.
+- An `exportedValue` may contain any character valid for CSS declaration values (including spaces).
+- An `exportedValue` does not need to be quoted, it is already treated as a literal string.
 
 The following are desirable for output readability, but not enforced:
 
