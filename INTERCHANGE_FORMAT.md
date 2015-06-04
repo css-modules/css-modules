@@ -115,6 +115,7 @@ And the following properties are desirable for readability but not enforced:
 
 - There should be one import per dependency
 - All imports should be at the top of the file
+- Local aliases should be prefixed with double-underscore
 
 # Contributions
 
