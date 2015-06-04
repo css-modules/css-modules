@@ -2,6 +2,11 @@
 :export {
   exportName: _input__exportName;
 }
+
 ._input__exportName {
   color: green;
+}
+
+._input__exportName:hover {
+  color: red;
 }

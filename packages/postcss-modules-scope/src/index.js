@@ -1,6 +1,6 @@
 import postcss from 'postcss';
 
-const localRegexp = /^\:local\(\.?([\w-]+)\)$/;
+const localRegexp = /^\:local\(\.?([\w-]+)\)(\:\w+)?$/;
 
 const processor = (css) => {
   let exports = {};
@@ -9,11 +9,13 @@ const processor = (css) => {
   css.eachRule(rule => {
     let match = rule.selector.match(localRegexp);
     if (match) {
-      let [/*match*/, exportedName] = match;
+      let [/*match*/, exportedName, pseudo] = match;
       let scopedName = processor.generateScopedName(css.source.input.from, exportedName);
       exports[exportedName] = exports[exportedName] || [];
-      exports[exportedName].push(scopedName);
-      rule.selector = `.${scopedName}`;
+      if (exports[exportedName].indexOf(scopedName) === -1) {
+        exports[exportedName].push(scopedName);
+      }
+      rule.selector = `.${scopedName}${pseudo || ''}`;
       rule.eachDecl(/extends/, decl => {
         let classes = decl.value.split(/ from /)[0];
         exports[exportedName].push(classes);
