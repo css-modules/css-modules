@@ -1,6 +1,6 @@
 <img src="https://raw.githubusercontent.com/css-modules/logos/master/css-modules-logo.png" width="150" height="150" />
 
-# CSS Interchange Format (CIF)
+# CSS Interchange format (CSSI)
 
 This document describes the specification of the low-level file format that enabled CSS Modules. This is designed for loader-implementers, not for end-users. For the high-level specification, see the full [CSS Modules](https://github.com/css-modules/css-modules/blob/master/README.md) spec.
 
@@ -52,7 +52,7 @@ This is the key capability that is new to modern multi-format loaders like Webpa
 
 ## Specification
 
-CSS Interchange Format (CIF) is a superset of standard CSS, making use of two additional pseudo-selectors:
+CSS Interchange (CSSI) is a superset of standard CSS, making use of two additional pseudo-selectors:
 
 ```css
 :export {
@@ -121,7 +121,7 @@ And the following properties are desirable for readability but not enforced:
 
 Edit this file and make your change to the spec, then send a PR with your argument for why the change should be made. All contributions are welcome.
 
-## Acknowledgements
+# Acknowledgements
 
 With thanks to:
 - Mark Dalgleish
