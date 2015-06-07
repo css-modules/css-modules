@@ -16,7 +16,7 @@ const processor = (css) => {
         exports[exportedName].push(scopedName);
       }
       rule.selector = `.${scopedName}${pseudo || ''}`;
-      rule.eachDecl(/extends/, decl => {
+      rule.eachDecl("composes", decl => {
         let classes = decl.value.split(/ from /)[0];
         exports[exportedName].push(classes);
         decl.removeSelf();

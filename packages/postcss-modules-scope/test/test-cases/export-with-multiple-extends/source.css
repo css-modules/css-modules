@@ -1,1 +1,1 @@
-:local(.exportName) { extends: otherClass andAgain; extends: aThirdClass; color: green; }
+:local(.exportName) { composes: otherClass andAgain; composes: aThirdClass; color: green; }
