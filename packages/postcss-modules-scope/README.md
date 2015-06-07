@@ -40,7 +40,7 @@ Since we're exporting class names, there's no reason to export only one. This ca
   box-shadow: 0 0 4px -2px;
 }
 :local(.continueButton) {
-  extends: globalButtonStyle;
+  composes: globalButtonStyle;
   color: green;
 }
 ```
