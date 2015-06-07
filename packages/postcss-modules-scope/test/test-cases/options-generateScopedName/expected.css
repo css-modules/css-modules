@@ -1,0 +1,11 @@
+:export {
+  exportName: _exportName_;
+}
+
+._exportName_ {
+  color: green;
+}
+
+._exportName_:hover {
+  color: red;
+}

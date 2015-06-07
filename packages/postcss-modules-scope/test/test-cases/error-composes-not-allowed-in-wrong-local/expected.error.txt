@@ -1,0 +1,1 @@
+composes is only allowed when selector is single :local class name not in ":local\(\.a\.b\)", "\.a\.b" is weird

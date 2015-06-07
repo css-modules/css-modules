@@ -1,0 +1,7 @@
+:local(.exportName):not(:local(.otherExportName).global) {
+  color: green;
+}
+
+:local(.exportName):has(:local(.otherExportName), :local(.otherExportName2)) {
+  color: red;
+}

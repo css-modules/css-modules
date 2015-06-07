@@ -1,57 +1,139 @@
 import postcss from 'postcss';
+import Tokenizer from 'css-selector-tokenizer';
 
-const localRegexp = /^\:local\(\.?([\w-]+)\)(\:\w+)?$/;
+function getSingleLocalNamesForComposes(selectors) {
+  return selectors.nodes.map((node) => {
+    if(node.type !== 'selector' || node.nodes.length !== 1) {
+      throw new Error('composes is only allowed when selector is single :local class name not in "' +
+        Tokenizer.stringify(selectors) + '"');
+    }
+    node = node.nodes[0];
+    if(node.type !== 'nested-pseudo-class' || node.name !== 'local' || node.nodes.length !== 1) {
+      throw new Error('composes is only allowed when selector is single :local class name not in "' +
+        Tokenizer.stringify(selectors) + '", "' + Tokenizer.stringify(node) + '" is weird');
+    }
+    node = node.nodes[0];
+    if(node.type !== 'selector' || node.nodes.length !== 1) {
+      throw new Error('composes is only allowed when selector is single :local class name not in "' +
+        Tokenizer.stringify(selectors) + '", "' + Tokenizer.stringify(node) + '" is weird');
+    }
+    node = node.nodes[0];
+    if(node.type !== 'class') { // 'id' is not possible, because you can't compose ids
+      throw new Error('composes is only allowed when selector is single :local class name not in "' +
+        Tokenizer.stringify(selectors) + '", "' + Tokenizer.stringify(node) + '" is weird');
+    }
+    return node.name;
+  });
+}
 
-const processor = (css) => {
-  let exports = {};
+const processor = postcss.plugin('postcss-modules-scope', function(options) {
+  return (css) => {
+    let generateScopedName = options && options.generateScopedName || processor.generateScopedName;
 
-  // Find any :local classes
-  css.eachRule(rule => {
-    let match = rule.selector.match(localRegexp);
-    if (match) {
-      let [/*match*/, exportedName, pseudo] = match;
-      let scopedName = processor.generateScopedName(css.source.input.from, exportedName);
-      exports[exportedName] = exports[exportedName] || [];
-      if (exports[exportedName].indexOf(scopedName) === -1) {
-        exports[exportedName].push(scopedName);
+    let exports = {};
+
+    function exportScopedName(name) {
+      let scopedName = generateScopedName(name, css.source.input.from);
+      exports[name] = exports[name] || [];
+      if(exports[name].indexOf(scopedName) < 0) {
+        exports[name].push(scopedName);
       }
-      rule.selector = `.${scopedName}${pseudo || ''}`;
+      return scopedName;
+    }
+
+    function localizeNode(node) {
+      let newNode = Object.create(node);
+      switch(node.type) {
+        case "selector":
+          newNode.nodes = node.nodes.map(localizeNode);
+          return newNode;
+        case "class":
+        case "id":
+          let scopedName = exportScopedName(node.name);
+          newNode.name = scopedName;
+          return newNode;
+      }
+      throw new Error(node.type + ' ("' + Tokenizer.stringify(node) + '") is not allowed in a :local block');
+    }
+
+    function traverseNode(node) {
+      switch(node.type) {
+        case 'nested-pseudo-class':
+          if(node.name === "local") {
+            if(node.nodes.length !== 1) {
+              throw new Error('Unexpected comma (",") in :local block');
+            }
+            return localizeNode(node.nodes[0]);
+          }
+          /* falls through */
+        case 'selectors':
+        case 'selector':
+          let newNode = Object.create(node);
+          newNode.nodes = node.nodes.map(traverseNode);
+          return newNode;
+      }
+      return node;
+    }
+
+    // Find any :local classes
+    css.eachRule(rule => {
+      let selector = Tokenizer.parse(rule.selector);
+      let newSelector = traverseNode(selector);
+      rule.selector = Tokenizer.stringify(newSelector);
       rule.eachDecl("composes", decl => {
-        let classes = decl.value.split(/ from /)[0];
-        exports[exportedName].push(classes);
+        let localNames = getSingleLocalNamesForComposes(selector);
+        let classes = decl.value.split(/\s+/);
+        classes.forEach((className) => {
+          localNames.forEach((exportedName) => {
+            exports[exportedName].push(className);
+          });
+        });
         decl.removeSelf();
       });
+      rule.eachDecl(decl => {
+        var tokens = decl.value.split(/(,|'[^']*'|"[^"]*")/);
+        tokens = tokens.map((token, idx) => {
+          if(idx === 0 || tokens[idx - 1] === ',') {
+            let localMatch = /^(\s*):local\s*\((.+?)\)/.exec(token);
+            if(localMatch) {
+              return localMatch[1] + exportScopedName(localMatch[2]) + token.substr(localMatch[0].length);
+            } else {
+              return token;
+            }
+          } else {
+            return token;
+          }
+        });
+        decl.value = tokens.join('');
+      });
+    });
+
+    // Find any :local keyframes
+    css.eachAtRule(atrule => {
+      if(/keyframes$/.test(atrule.name)) {
+        var localMatch = /^\s*:local\s*\((.+?)\)\s*$/.exec(atrule.params);
+        if(localMatch) {
+          atrule.params = exportScopedName(localMatch[1]);
+        }
+      }
+    });
+
+    // If we found any :locals, insert an :export rule
+    let exportedNames = Object.keys(exports);
+    if (exportedNames.length > 0) {
+      css.prepend(postcss.rule({
+        selector: `:export`,
+        nodes: exportedNames.map(exportedName => postcss.decl({
+          prop: exportedName,
+          value: exports[exportedName].join(" "),
+          before: "\n  "
+        }))
+      }));
     }
-  });
+  };
+});
 
-  // Find any :local keyframes
-  css.eachAtRule("keyframes", atRule => {
-    let match = atRule.params.match(localRegexp);
-    if (match) {
-      let [/*match*/, exportedName] = match,
-        scopedName = processor.generateScopedName(css.source.input.from, exportedName);
-      exports[exportedName] = exports[exportedName] || [];
-      exports[exportedName].push(scopedName);
-      atRule.params = scopedName;
-    }
-  });
-
-  // If we found any :locals, insert an :export rule
-  let exportedNames = Object.keys(exports);
-  if (exportedNames.length > 0) {
-    css.prepend(postcss.rule({
-      selector: `:export`,
-      before: "\n",
-      nodes: exportedNames.map(exportedName => postcss.decl({
-        prop: exportedName,
-        value: exports[exportedName].join(" "),
-        before: "\n  "
-      }))
-    }));
-  }
-};
-
-processor.generateScopedName = (path, exportedName) => {
+processor.generateScopedName = function(exportedName, path) {
   let sanitisedPath = path.replace(/\.[^\.\/\\]+$/, '').replace(/[\W_]+/g, '_').replace(/^_|_$/g, '');
   return `_${sanitisedPath}__${exportedName}`;
 };

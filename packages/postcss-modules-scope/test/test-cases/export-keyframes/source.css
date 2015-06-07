@@ -3,3 +3,13 @@
     opacity: 0;
   }
 }
+
+@keyframes fade {
+  from {
+    opacity: 0.5;
+  }
+}
+
+:local(.fadeIn) {
+  animation-name: _colon_local(fade-in);
+}

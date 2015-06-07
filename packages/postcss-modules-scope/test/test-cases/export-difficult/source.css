@@ -1,0 +1,17 @@
+@keyframes :local(fade-in) {
+  from {
+    opacity: 0;
+  }
+}
+
+@-webkit-keyframes :local(fade-out) {
+  to {
+    opacity: 0;
+  }
+}
+
+:local(.fadeIn) {
+  animation: _colon_local(fade-in) 5s,/* some, :local(comment) */
+    _colon_local(fade-out) 1s _colon_local(wrong);
+  content: _colon_local(fade-in), wrong, "difficult, :local(wrong)" _colon_local(wrong);
+}

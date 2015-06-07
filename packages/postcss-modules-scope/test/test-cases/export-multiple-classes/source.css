@@ -1,0 +1,7 @@
+:local(.exportName) :local(.otherExport) {
+  color: green;
+}
+
+:local(.exportName):local(.otherExport) {
+  color: red;
+}
