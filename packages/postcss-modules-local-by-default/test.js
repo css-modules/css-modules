@@ -35,9 +35,19 @@ var tests = [
     expected: '.foo .bar {}'
   },
   {
+    should: 'allow narrow local selectors',
+    input: ':local(.foo .bar) {}',
+    expected: ':local(.foo) :local(.bar) {}'
+  },
+  {
     should: 'allow broad global selectors',
     input: ':global .foo .bar {}',
     expected: '.foo .bar {}'
+  },
+  {
+    should: 'allow broad local selectors',
+    input: ':local .foo .bar {}',
+    expected: ':local(.foo) :local(.bar) {}'
   },
   {
     should: 'allow multiple narrow global selectors',
@@ -48,6 +58,11 @@ var tests = [
     should: 'allow multiple broad global selectors',
     input: ':global .foo, :global .bar {}',
     expected: '.foo, .bar {}'
+  },
+  {
+    should: 'allow multiple broad local selectors',
+    input: ':local .foo, :local .bar {}',
+    expected: ':local(.foo), :local(.bar) {}'
   },
   {
     should: 'allow narrow global selectors nested inside local styles',
@@ -63,6 +78,11 @@ var tests = [
     should: 'allow parentheses inside narrow global selectors',
     input: '.foo :global(.foo:not(.bar)) {}',
     expected: ':local(.foo) .foo:not(.bar) {}'
+  },
+  {
+    should: 'allow parentheses inside narrow local selectors',
+    input: '.foo :local(.foo:not(.bar)) {}',
+    expected: ':local(.foo) :local(.foo):not(:local(.bar)) {}'
   },
   {
     should: 'allow narrow global selectors appended to local styles',
@@ -95,7 +115,113 @@ var tests = [
     expected: ':local(.foo):after {}'
   },
   {
-    should: 'ignore :export statemtents',
+    should: 'broad global should be limited to selector',
+    input: ':global .foo, .bar :global, .foobar :global {}',
+    expected: '.foo, :local(.bar), :local(.foobar) {}'
+  },
+  {
+    should: 'broad global should be limited to nested selector',
+    input: '.foo:not(:global .bar).foobar {}',
+    expected: ':local(.foo):not(.bar):local(.foobar) {}'
+  },
+  {
+    should: 'broad global and local should allow switching',
+    input: '.foo :global .bar :local .foobar :local .barfoo {}',
+    expected: ':local(.foo) .bar :local(.foobar) :local(.barfoo) {}'
+  },
+  {
+    should: 'localize a single animation-name',
+    input: '.foo { animation-name: bar; }',
+    expected: ':local(.foo) { animation-name: :local(bar); }'
+  },
+  {
+    should: 'localize multiple animation-names',
+    input: '.foo { animation-name: bar, foobar; }',
+    expected: ':local(.foo) { animation-name: :local(bar), :local(foobar); }'
+  },
+  {
+    should: 'localize animation',
+    input: '.foo { animation: bar 5s, foobar; }',
+    expected: ':local(.foo) { animation: :local(bar) 5s, :local(foobar); }'
+  },
+  {
+    should: 'localize animation with vendor prefix',
+    input: '.foo { -webkit-animation: bar; animation: bar; }',
+    expected: ':local(.foo) { -webkit-animation: :local(bar); animation: :local(bar); }'
+  },
+  {
+    should: 'not localize other rules',
+    input: '.foo { content: "animation: bar;" }',
+    expected: ':local(.foo) { content: "animation: bar;" }'
+  },
+  {
+    should: 'not localize global rules',
+    input: ':global .foo { animation: foo; animation-name: bar; }',
+    expected: '.foo { animation: foo; animation-name: bar; }'
+  },
+  {
+    should: 'handle a complex animation rule',
+    input: '.foo { animation: foo, bar 5s linear 2s infinite alternate, barfoo 1s; }',
+    expected: ':local(.foo) { animation: :local(foo), :local(bar) 5s linear 2s infinite alternate, :local(barfoo) 1s; }'
+  },
+  {
+    should: 'default to global when mode provided',
+    input: '.foo {}',
+    options: { mode: "global" },
+    expected: '.foo {}'
+  },
+  {
+    should: 'default to local when mode provided',
+    input: '.foo {}',
+    options: { mode: "local" },
+    expected: ':local(.foo) {}'
+  },
+  {
+    should: 'use correct spacing',
+    input: [
+      '.a :local .b {}',
+      '.a:local.b {}',
+      '.a:local(.b) {}',
+      '.a:local( .b ) {}',
+      '.a :local(.b) {}',
+      '.a :local( .b ) {}',
+      ':local(.a).b {}',
+      ':local( .a ).b {}',
+      ':local(.a) .b {}',
+      ':local( .a ) .b {}'
+    ].join("\n"),
+    options: { mode: "global" },
+    expected: [
+      '.a :local(.b) {}',
+      '.a:local(.b) {}',
+      '.a:local(.b) {}',
+      '.a:local(.b) {}',
+      '.a :local(.b) {}',
+      '.a :local(.b) {}',
+      ':local(.a).b {}',
+      ':local(.a).b {}',
+      ':local(.a) .b {}',
+      ':local(.a) .b {}'
+    ].join("\n")
+  },
+  {
+    should: 'localize keyframes',
+    input: '@keyframes foo {}',
+    expected: '@keyframes :local(foo) {}'
+  },
+  {
+    should: 'localize keyframes in global default mode',
+    input: '@keyframes foo {}',
+    options: { mode: "global" },
+    expected: '@keyframes foo {}'
+  },
+  {
+    should: 'localize explicit keyframes',
+    input: '@keyframes :local(foo) {} @-webkit-keyframes :global(bar) {}',
+    expected: '@keyframes :local(foo) {} @-webkit-keyframes bar {}'
+  },
+  {
+    should: 'ignore :export statements',
     input: ':export { foo: __foo; }',
     expected: ':export { foo: __foo; }'
   },
@@ -103,6 +229,48 @@ var tests = [
     should: 'ignore :import statemtents',
     input: ':import("~/lol.css") { foo: __foo; }',
     expected: ':import("~/lol.css") { foo: __foo; }'
+  },
+
+  {
+    should: 'throw on invalid mode',
+    input: '',
+    options: { mode: "???" },
+    error: /'global' or 'local'/
+  },
+  {
+    should: 'throw on inconsistent selector result',
+    input: ':global .foo, .bar {}',
+    error: /Inconsistent/
+  },
+  {
+    should: 'throw on nested :locals',
+    input: ':local(:local(.foo)) {}',
+    error: /is not allowed inside/
+  },
+  {
+    should: 'throw on nested :globals',
+    input: ':global(:global(.foo)) {}',
+    error: /is not allowed inside/
+  },
+  {
+    should: 'throw on nested mixed',
+    input: ':local(:global(.foo)) {}',
+    error: /is not allowed inside/
+  },
+  {
+    should: 'throw on nested broad :local',
+    input: ':global(:local .foo) {}',
+    error: /is not allowed inside/
+  },
+  {
+    should: 'throw on incorrect spacing with broad :global',
+    input: '.foo :global.bar {}',
+    error: /Missing whitespace after :global/
+  },
+  {
+    should: 'throw on incorrect spacing with broad :local',
+    input: '.foo:local .bar {}',
+    error: /Missing whitespace before :local/
   }
 ];
 
@@ -113,9 +281,15 @@ function process (css, options) {
 test(name, function (t) {
     t.plan(tests.length);
 
-    tests.forEach(function (test) {
-        var options = test.options || {};
-        t.equal(process(test.input, options), test.expected, 'should ' + test.should);
+    tests.forEach(function (testCase) {
+        var options = testCase.options || {};
+        if(testCase.error) {
+          t.throws(function() {
+            process(testCase.input, options);
+          }, testCase.error, 'should ' + testCase.should);
+        } else {
+          t.equal(process(testCase.input, options), testCase.expected, 'should ' + testCase.should);
+        }
     });
 });
 
