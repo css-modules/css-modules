@@ -30,14 +30,22 @@ function localizeNode(node, context) {
   switch(node.type) {
     case "selectors":
       var resultingGlobal;
+      context.locals = true;
       newNodes = node.nodes.map(function(n) {
-        var nContext = { global: context.global, lastWasSpacing: true };
+        var nContext = {
+          global: context.global,
+          lastWasSpacing: true,
+          locals: false
+        };
         n = localizeNode(n, nContext);
         if(typeof resultingGlobal === "undefined") {
           resultingGlobal = nContext.global;
         } else if(resultingGlobal !== nContext.global) {
           throw new Error("Inconsistent rule global/local result in rule '" +
             Tokenizer.stringify(node) + "' (multiple selectors must result in the same mode for the rule)");
+        }
+        if(!nContext.locals) {
+          context.locals = false;
         }
         return n;
       });
@@ -82,23 +90,39 @@ function localizeNode(node, context) {
         if(context.inside) {
           throw new Error("A :" + node.name + "(...) is not allowed inside of a :" + context.inside + "(...)");
         }
-        subContext = { global: (node.name === "global"), inside: node.name };
+        subContext = {
+          global: (node.name === "global"),
+          inside: node.name,
+          locals: false
+        };
         node = node.nodes.map(function(n) {
           return localizeNode(n, subContext);
         });
         // don't leak spacing
         node[0].before = undefined;
         node[node.length - 1].after = undefined;
+        if(subContext.locals) {
+          context.locals = true;
+        }
       } else {
-        subContext = { global: context.global, inside: context.inside, lastWasSpacing: true };
+        subContext = {
+          global: context.global,
+          inside: context.inside,
+          lastWasSpacing: true,
+          locals: false
+        };
         newNodes = node.nodes.map(function(n) {
           return localizeNode(n, subContext);
         });
         node = Object.create(node);
         node.nodes = normalizeNodeArray(newNodes);
+        if(subContext.locals) {
+          context.locals = true;
+        }
       }
       break;
 
+    case "id":
     case "class":
       if(!context.global) {
         node = {
@@ -106,6 +130,7 @@ function localizeNode(node, context) {
           name: "local",
           nodes: [node]
         };
+        context.locals = true;
       }
       break;
   }
@@ -125,33 +150,44 @@ function localizeDecl(decl) {
 
 module.exports = postcss.plugin('postcss-modules-local-by-default', function (options) {
   if(options && options.mode) {
-    if(options.mode !== "global" && options.mode !== "local") {
-      throw new Error("options.mode must be either 'global' or 'local' (default 'local')");
+    if(options.mode !== "global" && options.mode !== "local" && options.mode !== "pure") {
+      throw new Error("options.mode must be either 'global', 'local' or 'pure' (default 'local')");
     }
   }
+  var pureMode = options && options.mode === "pure";
+  var globalMode = options && options.mode === "global";
   return function(css) {
-    var initialGlobal = options && options.mode === "global";
     css.eachAtRule(function(atrule) {
       if(/keyframes$/.test(atrule.name)) {
         var globalMatch = /^\s*:global\s*\((.+)\)\s*$/.exec(atrule.params);
         var localMatch = /^\s*:local\s*\((.+)\)\s*$/.exec(atrule.params);
         if(globalMatch) {
+          if(pureMode) {
+            throw new Error("@keyframes :global(...) is not allowed in pure mode");
+          }
           atrule.params = globalMatch[1];
         } else if(localMatch) {
           atrule.params = localMatch[0];
-        } else if(!initialGlobal) {
+        } else if(!globalMode) {
           atrule.params = ":local(" + atrule.params + ")";
         }
       }
     });
     css.eachRule(function(rule) {
       var selector = Tokenizer.parse(rule.selector);
-      var context = { global: initialGlobal };
-      selector = localizeNode(selector, context);
+      var context = {
+        global: globalMode,
+        locals: false
+      };
+      var newSelector = localizeNode(selector, context);
+      if(pureMode && !context.locals) {
+        throw new Error("Selector '" + Tokenizer.stringify(selector) + "' is not pure " +
+          "(pure selectors must contain at least one local class or id)");
+      }
       if(!context.global) {
         rule.nodes.forEach(localizeDecl);
       }
-      rule.selector = Tokenizer.stringify(selector);
+      rule.selector = Tokenizer.stringify(newSelector);
     });
   };
 });

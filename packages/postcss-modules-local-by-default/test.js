@@ -10,6 +10,11 @@ var tests = [
     expected: ':local(.foobar) {}'
   },
   {
+    should: 'scope ids',
+    input: '#foobar {}',
+    expected: ':local(#foobar) {}'
+  },
+  {
     should: 'scope multiple selectors',
     input: '.foo, .baz {}',
     expected: ':local(.foo), :local(.baz) {}'
@@ -235,7 +240,7 @@ var tests = [
     should: 'throw on invalid mode',
     input: '',
     options: { mode: "???" },
-    error: /'global' or 'local'/
+    error: /'global', 'local' or 'pure'/
   },
   {
     should: 'throw on inconsistent selector result',
@@ -271,6 +276,48 @@ var tests = [
     should: 'throw on incorrect spacing with broad :local',
     input: '.foo:local .bar {}',
     error: /Missing whitespace before :local/
+  },
+  {
+    should: 'throw on not pure selector (global class)',
+    input: ':global(.foo) {}',
+    options: { mode: "pure" },
+    error: /':global\(\.foo\)' is not pure/
+  },
+  {
+    should: 'compile in pure mode',
+    input: ':global(.foo).bar, [type="radio"] ~ .label, :not(.foo), #bar {}',
+    options: { mode: "pure" },
+    expected: '.foo:local(.bar), [type="radio"] ~ :local(.label), :not(:local(.foo)), :local(#bar) {}'
+  },
+  {
+    should: 'throw on not pure selector (with multiple 1)',
+    input: '.foo, :global(.bar) {}',
+    options: { mode: "pure" },
+    error: /'.foo, :global\(\.bar\)' is not pure/
+  },
+  {
+    should: 'throw on not pure selector (with multiple 2)',
+    input: ':global(.bar), .foo {}',
+    options: { mode: "pure" },
+    error: /':global\(\.bar\), .foo' is not pure/
+  },
+  {
+    should: 'throw on not pure selector (element)',
+    input: 'input {}',
+    options: { mode: "pure" },
+    error: /'input' is not pure/
+  },
+  {
+    should: 'throw on not pure selector (attribute)',
+    input: '[type="radio"] {}',
+    options: { mode: "pure" },
+    error: /'\[type="radio"\]' is not pure/
+  },
+  {
+    should: 'throw on not pure keyframes',
+    input: '@keyframes :global(foo) {}',
+    options: { mode: "pure" },
+    error: /@keyframes :global\(\.\.\.\) is not allowed in pure mode/
   }
 ];
 
