@@ -30,12 +30,15 @@ function localizeNode(node, context) {
   switch(node.type) {
     case "selectors":
       var resultingGlobal;
-      context.locals = true;
+      context.hasPureGlobals = false;
+      context.hasPureImplicitGlobals = false;
       newNodes = node.nodes.map(function(n) {
         var nContext = {
           global: context.global,
           lastWasSpacing: true,
-          locals: false
+          hasLocals: false,
+          hasImplicitGlobals: false,
+          explicit: false
         };
         n = localizeNode(n, nContext);
         if(typeof resultingGlobal === "undefined") {
@@ -44,8 +47,11 @@ function localizeNode(node, context) {
           throw new Error("Inconsistent rule global/local result in rule '" +
             Tokenizer.stringify(node) + "' (multiple selectors must result in the same mode for the rule)");
         }
-        if(!nContext.locals) {
-          context.locals = false;
+        if(!nContext.hasLocals) {
+          context.hasPureGlobals = true;
+          if(nContext.hasImplicitGlobals) {
+            context.hasPureImplicitGlobals = true;
+          }
         }
         return n;
       });
@@ -80,6 +86,7 @@ function localizeNode(node, context) {
         context.ignoreNextSpacing = context.lastWasSpacing ? node.name : false;
         context.enforceNoSpacing = context.lastWasSpacing ? false : node.name;
         context.global = (node.name === "global");
+        context.explicit = true;
         return null;
       }
       break;
@@ -93,7 +100,9 @@ function localizeNode(node, context) {
         subContext = {
           global: (node.name === "global"),
           inside: node.name,
-          locals: false
+          hasLocals: false,
+          hasImplicitGlobals: false,
+          explicit: true
         };
         node = node.nodes.map(function(n) {
           return localizeNode(n, subContext);
@@ -101,24 +110,33 @@ function localizeNode(node, context) {
         // don't leak spacing
         node[0].before = undefined;
         node[node.length - 1].after = undefined;
-        if(subContext.locals) {
-          context.locals = true;
-        }
       } else {
         subContext = {
           global: context.global,
           inside: context.inside,
           lastWasSpacing: true,
-          locals: false
+          hasLocals: false,
+          hasImplicitGlobals: false,
+          explicit: context.explicit
         };
         newNodes = node.nodes.map(function(n) {
           return localizeNode(n, subContext);
         });
         node = Object.create(node);
         node.nodes = normalizeNodeArray(newNodes);
-        if(subContext.locals) {
-          context.locals = true;
-        }
+      }
+      if(subContext.hasLocals) {
+        context.hasLocals = true;
+      }
+      if(subContext.hasImplicitGlobals) {
+        context.hasImplicitGlobals = true;
+      }
+      break;
+
+    case "attribute":
+    case "element":
+      if(!context.global && !context.explicit) {
+        context.hasImplicitGlobals = true;
       }
       break;
 
@@ -130,7 +148,7 @@ function localizeNode(node, context) {
           name: "local",
           nodes: [node]
         };
-        context.locals = true;
+        context.hasLocals = true;
       }
       break;
   }
@@ -177,12 +195,17 @@ module.exports = postcss.plugin('postcss-modules-local-by-default', function (op
       var selector = Tokenizer.parse(rule.selector);
       var context = {
         global: globalMode,
-        locals: false
+        hasPureGlobals: false,
+        hasPureImplicitGlobals: false
       };
       var newSelector = localizeNode(selector, context);
-      if(pureMode && !context.locals) {
+      if(pureMode && context.hasPureGlobals) {
         throw new Error("Selector '" + Tokenizer.stringify(selector) + "' is not pure " +
           "(pure selectors must contain at least one local class or id)");
+      }
+      if(!globalMode && context.hasPureImplicitGlobals) {
+        throw new Error("Selector '" + Tokenizer.stringify(selector) + "' must be explicit flagged :global " +
+          "(elsewise it would leak globally)");
       }
       if(!context.global) {
         rule.nodes.forEach(localizeDecl);

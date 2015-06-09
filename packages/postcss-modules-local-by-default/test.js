@@ -235,6 +235,22 @@ var tests = [
     input: ':import("~/lol.css") { foo: __foo; }',
     expected: ':import("~/lol.css") { foo: __foo; }'
   },
+  {
+    should: 'compile in pure mode',
+    input: ':global(.foo).bar, [type="radio"] ~ .label, :not(.foo), #bar {}',
+    options: { mode: "pure" },
+    expected: '.foo:local(.bar), [type="radio"] ~ :local(.label), :not(:local(.foo)), :local(#bar) {}'
+  },
+  {
+    should: 'compile explict global element',
+    input: ':global(input) {}',
+    expected: 'input {}'
+  },
+  {
+    should: 'compile explict global attribute',
+    input: ':global([type="radio"]), :not(:global [type="radio"]) {}',
+    expected: '[type="radio"], :not([type="radio"]) {}'
+  },
 
   {
     should: 'throw on invalid mode',
@@ -284,12 +300,6 @@ var tests = [
     error: /':global\(\.foo\)' is not pure/
   },
   {
-    should: 'compile in pure mode',
-    input: ':global(.foo).bar, [type="radio"] ~ .label, :not(.foo), #bar {}',
-    options: { mode: "pure" },
-    expected: '.foo:local(.bar), [type="radio"] ~ :local(.label), :not(:local(.foo)), :local(#bar) {}'
-  },
-  {
     should: 'throw on not pure selector (with multiple 1)',
     input: '.foo, :global(.bar) {}',
     options: { mode: "pure" },
@@ -318,6 +328,31 @@ var tests = [
     input: '@keyframes :global(foo) {}',
     options: { mode: "pure" },
     error: /@keyframes :global\(\.\.\.\) is not allowed in pure mode/
+  },
+  {
+    should: 'throw on implicit global element',
+    input: 'input {}',
+    error: /'input' must be explicit flagged :global/
+  },
+  {
+    should: 'throw on implicit global element (with multiple 1)',
+    input: 'input, .foo {}',
+    error: /'input, \.foo' must be explicit flagged :global/
+  },
+  {
+    should: 'throw on implicit global element (with multiple 2)',
+    input: '.foo, input {}',
+    error: /'\.foo, input' must be explicit flagged :global/
+  },
+  {
+    should: 'throw on implicit global attribute',
+    input: '[type="radio"] {}',
+    error: /'\[type="radio"\]' must be explicit flagged :global/
+  },
+  {
+    should: 'throw on implicit global attribute in nested',
+    input: ':not([type="radio"]) {}',
+    error: /':not\(\[type="radio"\]\)' must be explicit flagged :global/
   }
 ];
 
