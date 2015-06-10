@@ -160,10 +160,49 @@ function localizeNode(node, context) {
   return node;
 }
 
-function localizeDecl(decl) {
-  if(typeof decl.prop === "string" && /animation(-name)?/.test(decl.prop)) {
-    decl.value = decl.value.replace(/(^|,)(\s*)(\w+)/g, "$1$2:local($3)"); // TODO
+function localizeDeclNode(node, context) {
+  var newNode;
+  switch(node.type) {
+    case "item":
+      if(context.localizeNextItem) {
+        newNode = Object.create(node);
+        newNode.name = ":local(" + newNode.name + ")";
+        context.localizeNextItem = false;
+        return newNode;
+      }
+      break;
+    case "url":
+      if(context.options.rewriteUrl) {
+        newNode = Object.create(node);
+        newNode.url = context.options.rewriteUrl(context.global, node.url);
+        return newNode;
+      }
+      break;
   }
+  return node;
+}
+
+function localizeDeclValue(valueNode, context) {
+  var newValueNode = Object.create(valueNode);
+  newValueNode.nodes = valueNode.nodes.map(function(node) {
+    return localizeDeclNode(node, context);
+  });
+  return newValueNode;
+}
+
+function localizeDecl(decl, context) {
+  var valuesNode = Tokenizer.parseValues(decl.value);
+  var localizeName = /animation(-name)?/.test(decl.prop);
+  var newValuesNode = Object.create(valuesNode);
+  newValuesNode.nodes = valuesNode.nodes.map(function(valueNode) {
+    var subContext = {
+      options: context.options,
+      global: context.global,
+      localizeNextItem: localizeName && !context.global
+    };
+    return localizeDeclValue(valueNode, subContext);
+  });
+  decl.value = Tokenizer.stringifyValues(newValuesNode);
 }
 
 module.exports = postcss.plugin('postcss-modules-local-by-default', function (options) {
@@ -181,7 +220,7 @@ module.exports = postcss.plugin('postcss-modules-local-by-default', function (op
         var localMatch = /^\s*:local\s*\((.+)\)\s*$/.exec(atrule.params);
         if(globalMatch) {
           if(pureMode) {
-            throw new Error("@keyframes :global(...) is not allowed in pure mode");
+            throw atrule.error("@keyframes :global(...) is not allowed in pure mode");
           }
           atrule.params = globalMatch[1];
         } else if(localMatch) {
@@ -194,22 +233,28 @@ module.exports = postcss.plugin('postcss-modules-local-by-default', function (op
     css.eachRule(function(rule) {
       var selector = Tokenizer.parse(rule.selector);
       var context = {
+        options: options,
         global: globalMode,
         hasPureGlobals: false,
         hasPureImplicitGlobals: false
       };
-      var newSelector = localizeNode(selector, context);
+      var newSelector;
+      try {
+        newSelector = localizeNode(selector, context);
+      } catch(e) {
+        throw rule.error(e.message);
+      }
       if(pureMode && context.hasPureGlobals) {
-        throw new Error("Selector '" + Tokenizer.stringify(selector) + "' is not pure " +
+        throw rule.error("Selector '" + Tokenizer.stringify(selector) + "' is not pure " +
           "(pure selectors must contain at least one local class or id)");
       }
       if(!globalMode && context.hasPureImplicitGlobals) {
-        throw new Error("Selector '" + Tokenizer.stringify(selector) + "' must be explicit flagged :global " +
+        throw rule.error("Selector '" + Tokenizer.stringify(selector) + "' must be explicit flagged :global " +
           "(elsewise it would leak globally)");
       }
-      if(!context.global) {
-        rule.nodes.forEach(localizeDecl);
-      }
+      rule.nodes.forEach(function(decl) {
+        localizeDecl(decl, context);
+      });
       rule.selector = Tokenizer.stringify(newSelector);
     });
   };
