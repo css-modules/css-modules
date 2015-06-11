@@ -1,5 +1,7 @@
 # CSS Modules: Scope Locals & Extend
 
+[![Build Status](https://travis-ci.org/css-modules/postcss-modules-scope.svg?branch=master)](https://travis-ci.org/css-modules/postcss-modules-scope)
+
 Transforms:
 
 ```css
