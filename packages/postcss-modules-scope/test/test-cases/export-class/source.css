@@ -5,3 +5,14 @@
 :local(.exportName):hover {
   color: red;
 }
+
+@media (max-width: 520px) {
+  /* selector doubled to increase specificity */
+  :local(.exportName):local(.exportName) {
+    color: darkgreen;
+  }
+
+  :local(.newExport) {
+    color: blue;
+  }
+}

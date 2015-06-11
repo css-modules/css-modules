@@ -1,5 +1,6 @@
 :export {
   exportName: _input__exportName;
+  newExport: _input__newExport;
 }
 
 ._input__exportName {
@@ -8,4 +9,15 @@
 
 ._input__exportName:hover {
   color: red;
+}
+
+@media (max-width: 520px) {
+  /* selector doubled to increase specificity */
+  ._input__exportName._input__exportName {
+    color: darkgreen;
+  }
+
+  ._input__newExport {
+    color: blue;
+  }
 }
