@@ -4,7 +4,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][unreleased]
 ### Changed
-- Nothing yet.
+- Using global selectors outside of a global context no longer triggers warnings. Instead, this functionality will be provided by a CSS Modules linter.
+
+### Fixed
+- Keyframe rules.
 
 ## [0.0.8] - 2015-06-11
 ### Added
