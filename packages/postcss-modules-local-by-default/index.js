@@ -31,13 +31,11 @@ function localizeNode(node, context) {
     case "selectors":
       var resultingGlobal;
       context.hasPureGlobals = false;
-      context.hasPureImplicitGlobals = false;
       newNodes = node.nodes.map(function(n) {
         var nContext = {
           global: context.global,
           lastWasSpacing: true,
           hasLocals: false,
-          hasImplicitGlobals: false,
           explicit: false
         };
         n = localizeNode(n, nContext);
@@ -49,9 +47,6 @@ function localizeNode(node, context) {
         }
         if(!nContext.hasLocals) {
           context.hasPureGlobals = true;
-          if(nContext.hasImplicitGlobals) {
-            context.hasPureImplicitGlobals = true;
-          }
         }
         return n;
       });
@@ -101,7 +96,6 @@ function localizeNode(node, context) {
           global: (node.name === "global"),
           inside: node.name,
           hasLocals: false,
-          hasImplicitGlobals: false,
           explicit: true
         };
         node = node.nodes.map(function(n) {
@@ -116,7 +110,6 @@ function localizeNode(node, context) {
           inside: context.inside,
           lastWasSpacing: true,
           hasLocals: false,
-          hasImplicitGlobals: false,
           explicit: context.explicit
         };
         newNodes = node.nodes.map(function(n) {
@@ -127,16 +120,6 @@ function localizeNode(node, context) {
       }
       if(subContext.hasLocals) {
         context.hasLocals = true;
-      }
-      if(subContext.hasImplicitGlobals) {
-        context.hasImplicitGlobals = true;
-      }
-      break;
-
-    case "attribute":
-    case "element":
-      if(!context.global && !context.explicit) {
-        context.hasImplicitGlobals = true;
       }
       break;
 
@@ -231,12 +214,15 @@ module.exports = postcss.plugin('postcss-modules-local-by-default', function (op
       }
     });
     css.eachRule(function(rule) {
+      if(rule.parent.type === "atrule" && /keyframes$/.test(rule.parent.name)) {
+        // ignore keyframe rules
+        return;
+      }
       var selector = Tokenizer.parse(rule.selector);
       var context = {
         options: options,
         global: globalMode,
-        hasPureGlobals: false,
-        hasPureImplicitGlobals: false
+        hasPureGlobals: false
       };
       var newSelector;
       try {
@@ -247,10 +233,6 @@ module.exports = postcss.plugin('postcss-modules-local-by-default', function (op
       if(pureMode && context.hasPureGlobals) {
         throw rule.error("Selector '" + Tokenizer.stringify(selector) + "' is not pure " +
           "(pure selectors must contain at least one local class or id)");
-      }
-      if(!globalMode && context.hasPureImplicitGlobals) {
-        throw rule.error("Selector '" + Tokenizer.stringify(selector) + "' must be explicit flagged :global " +
-          "(elsewise it would leak globally)");
       }
       rule.nodes.forEach(function(decl) {
         localizeDecl(decl, context);

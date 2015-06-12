@@ -211,8 +211,8 @@ var tests = [
   },
   {
     should: 'localize keyframes',
-    input: '@keyframes foo {}',
-    expected: '@keyframes :local(foo) {}'
+    input: '@keyframes foo { from { color: red; } to { color: blue; } }',
+    expected: '@keyframes :local(foo) { from { color: red; } to { color: blue; } }'
   },
   {
     should: 'localize keyframes in global default mode',
@@ -222,8 +222,8 @@ var tests = [
   },
   {
     should: 'localize explicit keyframes',
-    input: '@keyframes :local(foo) {} @-webkit-keyframes :global(bar) {}',
-    expected: '@keyframes :local(foo) {} @-webkit-keyframes bar {}'
+    input: '@keyframes :local(foo) { 0% { color: red; } 33.3% { color: yellow; } 100% { color: blue; } } @-webkit-keyframes :global(bar) { from { color: red; } to { color: blue; } }',
+    expected: '@keyframes :local(foo) { 0% { color: red; } 33.3% { color: yellow; } 100% { color: blue; } } @-webkit-keyframes bar { from { color: red; } to { color: blue; } }'
   },
   {
     should: 'ignore :export statements',
@@ -330,31 +330,20 @@ var tests = [
     error: /@keyframes :global\(\.\.\.\) is not allowed in pure mode/
   },
   {
-    should: 'throw on implicit global element',
+    should: 'pass through global element',
     input: 'input {}',
-    error: /'input' must be explicit flagged :global/
+    expected: 'input {}'
   },
   {
-    should: 'throw on implicit global element (with multiple 1)',
-    input: 'input, .foo {}',
-    error: /'input, \.foo' must be explicit flagged :global/
+    should: 'localise class and pass through element',
+    input: '.foo input {}',
+    expected: ':local(.foo) input {}'
   },
   {
-    should: 'throw on implicit global element (with multiple 2)',
-    input: '.foo, input {}',
-    error: /'\.foo, input' must be explicit flagged :global/
-  },
-  {
-    should: 'throw on implicit global attribute',
+    should: 'pass through attribute selector',
     input: '[type="radio"] {}',
-    error: /'\[type="radio"\]' must be explicit flagged :global/
+    expected: '[type="radio"] {}'
   },
-  {
-    should: 'throw on implicit global attribute in nested',
-    input: ':not([type="radio"]) {}',
-    error: /':not\(\[type="radio"\]\)' must be explicit flagged :global/
-  },
-
   {
     should: 'not modify urls without option',
     input: '.a { background: url(./image.png); }\n' +
@@ -379,6 +368,7 @@ var tests = [
       '.b { background: url((global\\)image.png\\\"global\\\"); }\n' +
       ':local(.c) { background: url(\"(local)./image.png\\\"local\\\"\"); }'
   }
+
 ];
 
 function process (css, options) {
