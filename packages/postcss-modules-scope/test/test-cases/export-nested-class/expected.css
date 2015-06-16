@@ -1,13 +1,13 @@
-:export {
-  exportName: _input__exportName;
-  otherExportName: _input__otherExportName;
-  otherExportName2: _input__otherExportName2;
-}
-
 ._input__exportName:not(._input__otherExportName.global) {
   color: green;
 }
 
 ._input__exportName:has(._input__otherExportName, ._input__otherExportName2) {
   color: red;
+}
+
+:export {
+  exportName: _input__exportName;
+  otherExportName: _input__otherExportName;
+  otherExportName2: _input__otherExportName2;
 }

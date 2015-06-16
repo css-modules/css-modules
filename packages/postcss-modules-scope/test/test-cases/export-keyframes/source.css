@@ -2,6 +2,9 @@
   from {
     opacity: 0;
   }
+  100% {
+    opacity: 1;
+  }
 }
 
 @keyframes fade {

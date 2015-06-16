@@ -1,8 +1,3 @@
-:export {
-  exportName: _input__exportName;
-  newExport: _input__newExport;
-}
-
 ._input__exportName {
   color: green;
 }
@@ -20,4 +15,9 @@
   ._input__newExport {
     color: blue;
   }
+}
+
+:export {
+  exportName: _input__exportName;
+  newExport: _input__newExport;
 }

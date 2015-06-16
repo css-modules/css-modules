@@ -1,12 +1,12 @@
-:export {
-  exportName: _input__exportName;
-  otherExport: _input__otherExport;
-}
-
 ._input__exportName ._input__otherExport {
   color: green;
 }
 
 ._input__exportName._input__otherExport {
   color: red;
+}
+
+:export {
+  exportName: _input__exportName;
+  otherExport: _input__otherExport;
 }

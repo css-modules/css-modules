@@ -1,11 +1,9 @@
-:export {
-  fadeIn: _input__fadeIn;
-  fade-in: _input__fade-in;
-}
-
 @keyframes _input__fade-in {
   from {
     opacity: 0;
+  }
+  100% {
+    opacity: 1;
   }
 }
 
@@ -17,4 +15,9 @@
 
 ._input__fadeIn {
   animation-name: _input__fade-in;
+}
+
+:export {
+  fadeIn: _input__fadeIn;
+  fade-in: _input__fade-in;
 }

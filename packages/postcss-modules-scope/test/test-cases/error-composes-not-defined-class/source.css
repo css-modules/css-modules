@@ -1,0 +1,3 @@
+:local(.className) {
+  composes: otherClassName;
+}

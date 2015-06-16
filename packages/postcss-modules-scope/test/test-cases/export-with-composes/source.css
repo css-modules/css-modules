@@ -1,1 +1,1 @@
-:local(.exportName) { composes: otherClass; color: green; }
+:local(.otherClass) { background: red; } :local(.exportName) { composes: otherClass; color: green; }

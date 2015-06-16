@@ -1,9 +1,3 @@
-:export {
-  fadeIn: _input__fadeIn;
-  fade-in: _input__fade-in;
-  fade-out: _input__fade-out;
-}
-
 @keyframes _input__fade-in {
   from {
     opacity: 0;
@@ -20,4 +14,10 @@
   animation: _input__fade-in 5s,
     _input__fade-out 1s :local(wrong);
   content: _input__fade-in, wrong, "difficult, :local(wrong)" :local(wrong);
+}
+
+:export {
+  fadeIn: _input__fadeIn;
+  fade-in: _input__fade-in;
+  fade-out: _input__fade-out;
 }

@@ -1,6 +1,8 @@
 import postcss from 'postcss';
 import Tokenizer from 'css-selector-tokenizer';
 
+let hasOwnProperty = Object.prototype.hasOwnProperty;
+
 function getSingleLocalNamesForComposes(selectors) {
   return selectors.nodes.map((node) => {
     if(node.type !== 'selector' || node.nodes.length !== 1) {
@@ -75,6 +77,16 @@ const processor = postcss.plugin('postcss-modules-scope', function(options) {
       return node;
     }
 
+    // Find any :import and remember imported names
+    let importedNames = {};
+    css.eachRule(rule => {
+      if(/^:import\(.+\)$/.test(rule.selector)) {
+        rule.eachDecl(decl => {
+          importedNames[decl.prop] = true;
+        });
+      }
+    });
+
     // Find any :local classes
     css.eachRule(rule => {
       let selector = Tokenizer.parse(rule.selector);
@@ -84,9 +96,19 @@ const processor = postcss.plugin('postcss-modules-scope', function(options) {
         let localNames = getSingleLocalNamesForComposes(selector);
         let classes = decl.value.split(/\s+/);
         classes.forEach((className) => {
-          localNames.forEach((exportedName) => {
-            exports[exportedName].push(className);
-          });
+          if(hasOwnProperty.call(importedNames, className)) {
+            localNames.forEach((exportedName) => {
+              exports[exportedName].push(className);
+            });
+          } else if(hasOwnProperty.call(exports, className)) {
+            localNames.forEach((exportedName) => {
+              exports[className].forEach((item) => {
+                exports[exportedName].push(item);
+              });
+            });
+          } else {
+            throw decl.error("referenced class name \"" + className + "\" in composes not found");
+          }
         });
         decl.removeSelf();
       });
@@ -121,7 +143,7 @@ const processor = postcss.plugin('postcss-modules-scope', function(options) {
     // If we found any :locals, insert an :export rule
     let exportedNames = Object.keys(exports);
     if (exportedNames.length > 0) {
-      css.prepend(postcss.rule({
+      css.append(postcss.rule({
         selector: `:export`,
         nodes: exportedNames.map(exportedName => postcss.decl({
           prop: exportedName,

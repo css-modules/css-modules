@@ -1,0 +1,9 @@
+:import("./file.css") {
+  imported_otherClass: otherClass;
+}
+._lib_extender__exportName {
+  color: green;
+}
+:export {
+  exportName: _lib_extender__exportName imported_otherClass;
+}

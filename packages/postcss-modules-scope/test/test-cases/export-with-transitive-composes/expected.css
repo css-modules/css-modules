@@ -1,0 +1,14 @@
+._lib_extender__aThirdClass {
+  font-size: 2em;
+}
+._lib_extender__otherClass {
+  background: red;
+}
+._lib_extender__exportName {
+  color: green;
+}
+:export {
+  aThirdClass: _lib_extender__aThirdClass;
+  otherClass: _lib_extender__otherClass _lib_extender__aThirdClass;
+  exportName: _lib_extender__exportName _lib_extender__otherClass _lib_extender__aThirdClass;
+}

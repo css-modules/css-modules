@@ -1,0 +1,11 @@
+:local(.aThirdClass) {
+  font-size: 2em;
+}
+:local(.otherClass) {
+  composes: aThirdClass;
+  background: red;
+}
+:local(.exportName) {
+  composes: otherClass;
+  color: green;
+}

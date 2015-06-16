@@ -1,0 +1,11 @@
+._input__simple {
+  color: red;
+}
+
+._input__simple h1 {
+  color: blue;
+}
+
+:export {
+  simple: _input__simple;
+}
