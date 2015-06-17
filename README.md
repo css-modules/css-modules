@@ -28,17 +28,17 @@ For local class names camelCase naming is recommended, but not enforced.
 
 ## Exceptions
 
-`:global` switches to global scope for the current selector resp. identifier. `:global(.xxx)` resp. `@keyframes :global(xxx)` resp. `animation: :global(xxx);` declares a the stuff in brackets in the global scope.
+`:global` switches to global scope for the current selector resp. identifier. `:global(.xxx)` resp. `@keyframes :global(xxx)` declares a the stuff in brackets in the global scope.
 
 Similar `:local` and `:local(...)` for local scope.
 
-If the selector is switched into global mode, global mode is also activated for the rules.
+If the selector is switched into global mode, global mode is also activated for the rules. (this allows to make `animation: abc;` local)
 
 Example: `.localA :global .global-b .global-c :local(.localD.localE) .global-d`
 
 ## Composition
 
-It's possible to extend a selector.
+It's possible to compose selectors.
 
 ``` css
 .className {
@@ -58,7 +58,7 @@ It's possible to compose multiple classes with `composes: classNameA classNameB;
 
 ## Dependencies
 
-It's possible to composes class names from other **CSS Modules**.
+It's possible to compose class names from other **CSS Modules**.
 
 ``` css
 .otherClassName {
