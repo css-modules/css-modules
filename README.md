@@ -36,7 +36,7 @@ If the selector is switched into global mode, global mode is also activated for 
 
 Example: `.localA :global .global-b .global-c :local(.localD.localE) .global-d`
 
-## Extends
+## Composition
 
 It's possible to extend a selector.
 
@@ -47,22 +47,22 @@ It's possible to extend a selector.
 }
 
 .otherClassName {
-  extends: className;
+  composes: className;
   color: yellow;
 }
 ```
 
-There can be multiple `extends` rules, but `extends` rules must be before other rules. Extending works only for local-scoped selectors and only if the selector is a single class name. When a class name extends from another class name, the **CSS Module** exports both class names for the local class. This can add up to multiple class names.
+There can be multiple `composes` rules, but `composes` rules must be before other rules. Extending works only for local-scoped selectors and only if the selector is a single class name. When a class name composes another class name, the **CSS Module** exports both class names for the local class. This can add up to multiple class names.
 
-It's possible to extend from multiple classes with `extends: classNameA classNameB;`.
+It's possible to compose multiple classes with `composes: classNameA classNameB;`.
 
 ## Dependencies
 
-It's possible to extend from class names from other **CSS Modules**.
+It's possible to composes class names from other **CSS Modules**.
 
 ``` css
 .otherClassName {
-  extends: className from "./style.css";
+  composes: className from "./style.css";
 }
 ```
 
