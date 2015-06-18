@@ -105,6 +105,7 @@ i. e. with less.js
 * 06/2015: Spec for ICSS as common implementation format for multiple module systems by @geelen
 * 06/2015: Implementation for jspm by @geelen and @guybedford
 * 06/2015: Implementation for browserify by @joshwnj, @joshgillies and @markdalgleish
+* 06/2015: The [CSS Modules loader core](https://github.com/css-modules/css-modules-loader-core) is used in webpack's css-loader by @sokra
 
 
 ## Implementations
