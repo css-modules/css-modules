@@ -148,7 +148,8 @@ const processor = postcss.plugin('postcss-modules-scope', function(options) {
         nodes: exportedNames.map(exportedName => postcss.decl({
           prop: exportedName,
           value: exports[exportedName].join(" "),
-          before: "\n  "
+          before: "\n  ",
+          _autoprefixerDisabled: true
         }))
       }));
     }
