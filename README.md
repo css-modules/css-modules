@@ -68,7 +68,7 @@ It's possible to compose class names from other **CSS Modules**.
 
 Note that when composing multiple classes from different files the order of appliance is *undefined*. Make sure to not define different values for the same property in multiple class names from different files when they are composed in a single class.
 
-Note that composing should not form a circular dependency. Elsewise the it's *undefined* whether properties of a rule overrides properties of a composed rule. The module system may emit an error.
+Note that composing should not form a circular dependency. Elsewise it's *undefined* whether properties of a rule override properties of a composed rule. The module system may emit an error.
 
 Best if classes do a single thing and dependencies are hierarchic.
 
