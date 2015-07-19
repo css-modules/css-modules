@@ -3,8 +3,8 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][unreleased]
-### Changed
-- Nothing yet.
+### Fixed
+- Localisation of animation properties.
 
 ## [0.0.10] - 2015-06-17
 ### Added
