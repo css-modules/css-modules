@@ -175,7 +175,7 @@ function localizeDeclValue(valueNode, context) {
 
 function localizeDecl(decl, context) {
   var valuesNode = Tokenizer.parseValues(decl.value);
-  var localizeName = /animation(-name)?/.test(decl.prop);
+  var localizeName = /animation(-name)?$/.test(decl.prop);
   var newValuesNode = Object.create(valuesNode);
   newValuesNode.nodes = valuesNode.nodes.map(function(valueNode) {
     var subContext = {

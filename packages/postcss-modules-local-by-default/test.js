@@ -140,6 +140,11 @@ var tests = [
     expected: ':local(.foo) { animation-name: :local(bar); }'
   },
   {
+    should: 'not localize a single animation-delay',
+    input: '.foo { animation-delay: 1s; }',
+    expected: ':local(.foo) { animation-delay: 1s; }'
+  },
+  {
     should: 'localize multiple animation-names',
     input: '.foo { animation-name: bar, foobar; }',
     expected: ':local(.foo) { animation-name: :local(bar), :local(foobar); }'
