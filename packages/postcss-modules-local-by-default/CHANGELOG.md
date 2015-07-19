@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][unreleased]
+### Changed
+- Nothing yet.
+
+## [0.0.11] - 2015-07-19
 ### Fixed
 - Localisation of animation properties.
 
@@ -66,3 +70,4 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 [0.0.8]:      https://github.com/postcss-modules-local-by-default/compare/v0.0.7...v0.0.8
 [0.0.9]:      https://github.com/postcss-modules-local-by-default/compare/v0.0.8...v0.0.9
 [0.0.10]:      https://github.com/postcss-modules-local-by-default/compare/v0.0.9...v0.0.10
+[0.0.11]:      https://github.com/postcss-modules-local-by-default/compare/v0.0.10...v0.0.11
