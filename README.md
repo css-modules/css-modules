@@ -19,7 +19,7 @@ When importing the **CSS Module** from a JS Module, it exports an object with al
 import styles from "./style.css";
 // import { className } from "./style.css";
 
-return '<div class="' + styles.className + '">';
+export default '<div class="' + styles.className + '">';
 ```
 
 ## Naming
