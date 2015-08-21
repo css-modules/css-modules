@@ -189,6 +189,9 @@ function localizeDecl(decl, context) {
 }
 
 module.exports = postcss.plugin('postcss-modules-local-by-default', function (options) {
+  if (typeof options !== 'object') {
+    options = {}; // If options is undefined or not an object the plugin fails
+  }
   if(options && options.mode) {
     if(options.mode !== "global" && options.mode !== "local" && options.mode !== "pure") {
       throw new Error("options.mode must be either 'global', 'local' or 'pure' (default 'local')");
