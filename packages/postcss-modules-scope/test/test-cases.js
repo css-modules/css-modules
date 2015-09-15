@@ -9,7 +9,7 @@ var postcss = require("postcss");
 var processor = require("../");
 
 function generateInvalidCSS(css) {
-  css.eachDecl(function(decl) {
+  css.walkDecls(function(decl) {
     decl.value = decl.value.replace(/_colon_/g, ":"); // because using a : in the tests would make it invalid CSS.
   });
 }
