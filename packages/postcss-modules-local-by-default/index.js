@@ -200,7 +200,7 @@ module.exports = postcss.plugin('postcss-modules-local-by-default', function (op
   var pureMode = options && options.mode === "pure";
   var globalMode = options && options.mode === "global";
   return function(css) {
-    css.eachAtRule(function(atrule) {
+    css.walkAtRules(function(atrule) {
       if(/keyframes$/.test(atrule.name)) {
         var globalMatch = /^\s*:global\s*\((.+)\)\s*$/.exec(atrule.params);
         var localMatch = /^\s*:local\s*\((.+)\)\s*$/.exec(atrule.params);
@@ -225,7 +225,7 @@ module.exports = postcss.plugin('postcss-modules-local-by-default', function (op
         });
       }
     });
-    css.eachRule(function(rule) {
+    css.walkRules(function(rule) {
       if(rule.parent.type === "atrule" && /keyframes$/.test(rule.parent.name)) {
         // ignore keyframe rules
         return;
