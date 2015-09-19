@@ -12,6 +12,6 @@ const replace = (declarations, object, propName) => {
 }
 
 export default (css, translations) => {
-  css.eachDecl(decl => replace(translations, decl, 'value'))
-  css.eachAtRule('media', atRule => replace(translations, atRule, 'params'))
+  css.walkDecls(decl => replace(translations, decl, 'value'))
+  css.walkAtRules('media', atRule => replace(translations, atRule, 'params'))
 }

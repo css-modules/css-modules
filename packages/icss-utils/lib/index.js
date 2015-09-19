@@ -17,10 +17,10 @@ var replace = function replace(declarations, object, propName) {
 };
 
 exports['default'] = function (css, translations) {
-  css.eachDecl(function (decl) {
+  css.walkDecls(function (decl) {
     return replace(translations, decl, 'value');
   });
-  css.eachAtRule('media', function (atRule) {
+  css.walkAtRules('media', function (atRule) {
     return replace(translations, atRule, 'params');
   });
 };
