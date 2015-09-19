@@ -1,6 +1,6 @@
 {
   "name": "postcss-modules-local-by-default",
-  "version": "0.0.12",
+  "version": "1.0.0-beta1",
   "description": "A CSS Modules transform to make local scope the default",
   "keywords": [
     "css-modules",
@@ -19,10 +19,10 @@
     "postcss": "^5.0.4"
   },
   "devDependencies": {
-    "chokidar-cli": "^0.2.1",
+    "chokidar-cli": "^1.0.1",
     "codecov.io": "^0.1.2",
     "coveralls": "^2.11.2",
-    "eslint": "^0.22.1",
+    "eslint": "^1.5.0",
     "istanbul": "^0.3.14",
     "tape": "^4.0.0"
   },
