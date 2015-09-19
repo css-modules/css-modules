@@ -1,6 +1,6 @@
 {
   "name": "icss-replace-symbols",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Replacing symbols during the linking phase of ICSS",
   "main": "lib/index.js",
   "scripts": {
