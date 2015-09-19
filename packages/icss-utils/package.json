@@ -4,7 +4,12 @@
   "description": "Replacing symbols during the linking phase of ICSS",
   "main": "lib/index.js",
   "scripts": {
-    "test": "mocha --compilers js:babel/register"
+    "lint": "standard src test",
+    "build": "babel --out-dir lib src",
+    "autotest": "chokidar src test -c 'npm test'",
+    "test": "mocha --compilers js:babel/register",
+    "posttest": "npm run lint && npm run build",
+    "prepublish": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -24,7 +29,9 @@
   "homepage": "https://github.com/css-modules/icss-replace-symbols#readme",
   "devDependencies": {
     "babel": "^5.8.23",
+    "chokidar": "^1.0.6",
     "mocha": "^2.3.2",
-    "postcss": "^5.0.5"
+    "postcss": "^5.0.5",
+    "standard": "^5.3.1"
   }
 }
