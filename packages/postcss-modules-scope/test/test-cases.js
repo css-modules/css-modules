@@ -6,7 +6,7 @@ var assert = require("assert");
 var fs = require("fs");
 var path = require("path");
 var postcss = require("postcss");
-var processor = require("../");
+var processor = require("../src");
 
 function generateInvalidCSS(css) {
   css.walkDecls(function(decl) {

@@ -46,11 +46,11 @@ const processor = postcss.plugin('postcss-modules-scope', function(options) {
     function localizeNode(node) {
       let newNode = Object.create(node);
       switch(node.type) {
-        case "selector":
+        case 'selector':
           newNode.nodes = node.nodes.map(localizeNode);
           return newNode;
-        case "class":
-        case "id":
+        case 'class':
+        case 'id':
           let scopedName = exportScopedName(node.name);
           newNode.name = scopedName;
           return newNode;
@@ -61,7 +61,7 @@ const processor = postcss.plugin('postcss-modules-scope', function(options) {
     function traverseNode(node) {
       switch(node.type) {
         case 'nested-pseudo-class':
-          if(node.name === "local") {
+          if(node.name === 'local') {
             if(node.nodes.length !== 1) {
               throw new Error('Unexpected comma (",") in :local block');
             }
@@ -92,7 +92,7 @@ const processor = postcss.plugin('postcss-modules-scope', function(options) {
       let selector = Tokenizer.parse(rule.selector);
       let newSelector = traverseNode(selector);
       rule.selector = Tokenizer.stringify(newSelector);
-      rule.walkDecls("composes", decl => {
+      rule.walkDecls('composes', decl => {
         let localNames = getSingleLocalNamesForComposes(selector);
         let classes = decl.value.split(/\s+/);
         classes.forEach((className) => {
@@ -107,7 +107,7 @@ const processor = postcss.plugin('postcss-modules-scope', function(options) {
               });
             });
           } else {
-            throw decl.error("referenced class name \"" + className + "\" in composes not found");
+            throw decl.error('referenced class name "' + className + '" in composes not found');
           }
         });
         decl.remove();
@@ -147,8 +147,8 @@ const processor = postcss.plugin('postcss-modules-scope', function(options) {
         selector: `:export`,
         nodes: exportedNames.map(exportedName => postcss.decl({
           prop: exportedName,
-          value: exports[exportedName].join(" "),
-          raws: { before: "\n  " },
+          value: exports[exportedName].join(' '),
+          raws: { before: '\n  ' },
           _autoprefixerDisabled: true
         }))
       }));
