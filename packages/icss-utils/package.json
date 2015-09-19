@@ -9,6 +9,7 @@
     "autotest": "chokidar src test -c 'npm test'",
     "test": "mocha --compilers js:babel/register",
     "posttest": "npm run lint && npm run build",
+    "travis": "npm run test",
     "prepublish": "npm run build"
   },
   "repository": {
