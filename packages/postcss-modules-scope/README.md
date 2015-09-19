@@ -25,7 +25,7 @@ so it doesn't pollute CSS global scope and can be simply used in JS like so:
 
 ```js
 import styles from './buttons.css'
-elem.innerHTML = `<button class="${buttons.continueButton}">Continue</button>`
+elem.innerHTML = `<button class="${styles.continueButton}">Continue</button>`
 ```
 
 ## Extensions
