@@ -1,0 +1,30 @@
+{
+  "name": "icss-replace-symbols",
+  "version": "1.0.0",
+  "description": "Replacing symbols during the linking phase of ICSS",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "mocha --compilers js:babel/register"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/css-modules/icss-replace-symbols.git"
+  },
+  "keywords": [
+    "css",
+    "modules",
+    "icss",
+    "postcss"
+  ],
+  "author": "Glen Maddern",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/css-modules/icss-replace-symbols/issues"
+  },
+  "homepage": "https://github.com/css-modules/icss-replace-symbols#readme",
+  "devDependencies": {
+    "babel": "^5.8.23",
+    "mocha": "^2.3.2",
+    "postcss": "^5.0.5"
+  }
+}
