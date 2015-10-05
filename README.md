@@ -101,6 +101,8 @@ i. e. with less.js
 * [Theming](examples/theming.md)
 
 
+## How to use it with any other global css (bootstrap for example)
+
 ## History
 
 * 04/2015: `placeholders` feature in css-loader (webpack) allows local scoped selectors (later renamed to `local scope`) by @sokra
