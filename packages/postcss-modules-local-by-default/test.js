@@ -393,7 +393,7 @@ test(name, function (t) {
     t.plan(tests.length);
 
     tests.forEach(function (testCase) {
-        var options = testCase.options || {};
+        var options = testCase.options;
         if(testCase.error) {
           t.throws(function() {
             process(testCase.input, options);

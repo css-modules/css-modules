@@ -155,7 +155,7 @@ function localizeDeclNode(node, context) {
       }
       break;
     case "url":
-      if(context.options.rewriteUrl) {
+      if(context.options && context.options.rewriteUrl) {
         newNode = Object.create(node);
         newNode.url = context.options.rewriteUrl(context.global, node.url);
         return newNode;
