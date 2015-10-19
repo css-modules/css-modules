@@ -22,3 +22,10 @@ A symbol is a string of alphanumeric, `-` or `_` characters. A replacement can b
 
 - In the value of a declaration, i.e. `color: my_symbol;` or `box-shadow: 0 0 blur spread shadow-color`
 - In a media expression i.e. `@media small {}` or `@media screen and not-large {}`
+
+## License
+
+ISC
+
+---
+Glen Maddern, 2015.
