@@ -27,7 +27,7 @@
     "tape": "^4.0.0"
   },
   "scripts": {
-    "lint": "eslint index.js",
+    "lint": "eslint index.js test.js",
     "pretest": "npm run lint",
     "test": "tape test.js",
     "autotest": "chokidar index.js test.js -c 'npm test'",

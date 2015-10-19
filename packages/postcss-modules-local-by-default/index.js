@@ -12,23 +12,23 @@ function normalizeNodeArray(nodes) {
       array.push(x);
     }
   });
-  if(array.length > 0 && array[array.length - 1].type === "spacing") {
+  if(array.length > 0 && array[array.length - 1].type === 'spacing') {
     array.pop();
   }
   return array;
 }
 
 function localizeNode(node, context) {
-  if(context.ignoreNextSpacing && node.type !== "spacing") {
-    throw new Error("Missing whitespace after :" + context.ignoreNextSpacing);
+  if(context.ignoreNextSpacing && node.type !== 'spacing') {
+    throw new Error('Missing whitespace after :' + context.ignoreNextSpacing);
   }
-  if(context.enforceNoSpacing && node.type === "spacing") {
-    throw new Error("Missing whitespace before :" + context.enforceNoSpacing);
+  if(context.enforceNoSpacing && node.type === 'spacing') {
+    throw new Error('Missing whitespace before :' + context.enforceNoSpacing);
   }
 
   var newNodes;
   switch(node.type) {
-    case "selectors":
+    case 'selectors':
       var resultingGlobal;
       context.hasPureGlobals = false;
       newNodes = node.nodes.map(function(n) {
@@ -39,11 +39,11 @@ function localizeNode(node, context) {
           explicit: false
         };
         n = localizeNode(n, nContext);
-        if(typeof resultingGlobal === "undefined") {
+        if(typeof resultingGlobal === 'undefined') {
           resultingGlobal = nContext.global;
         } else if(resultingGlobal !== nContext.global) {
-          throw new Error("Inconsistent rule global/local result in rule '" +
-            Tokenizer.stringify(node) + "' (multiple selectors must result in the same mode for the rule)");
+          throw new Error('Inconsistent rule global/local result in rule "' +
+            Tokenizer.stringify(node) + '" (multiple selectors must result in the same mode for the rule)');
         }
         if(!nContext.hasLocals) {
           context.hasPureGlobals = true;
@@ -55,7 +55,7 @@ function localizeNode(node, context) {
       node.nodes = normalizeNodeArray(newNodes);
       break;
 
-    case "selector":
+    case 'selector':
       newNodes = node.nodes.map(function(n) {
         return localizeNode(n, context);
       });
@@ -63,7 +63,7 @@ function localizeNode(node, context) {
       node.nodes = normalizeNodeArray(newNodes);
       break;
 
-    case "spacing":
+    case 'spacing':
       if(context.ignoreNextSpacing) {
         context.ignoreNextSpacing = false;
         context.lastWasSpacing = false;
@@ -73,27 +73,27 @@ function localizeNode(node, context) {
       context.lastWasSpacing = true;
       return node;
 
-    case "pseudo-class":
-      if(node.name === "local" || node.name === "global") {
+    case 'pseudo-class':
+      if(node.name === 'local' || node.name === 'global') {
         if(context.inside) {
-          throw new Error("A :" + node.name + " is not allowed inside of a :" + context.inside + "(...)");
+          throw new Error('A :' + node.name + ' is not allowed inside of a :' + context.inside + '(...)');
         }
         context.ignoreNextSpacing = context.lastWasSpacing ? node.name : false;
         context.enforceNoSpacing = context.lastWasSpacing ? false : node.name;
-        context.global = (node.name === "global");
+        context.global = (node.name === 'global');
         context.explicit = true;
         return null;
       }
       break;
 
-    case "nested-pseudo-class":
+    case 'nested-pseudo-class':
       var subContext;
-      if(node.name === "local" || node.name === "global") {
+      if(node.name === 'local' || node.name === 'global') {
         if(context.inside) {
-          throw new Error("A :" + node.name + "(...) is not allowed inside of a :" + context.inside + "(...)");
+          throw new Error('A :' + node.name + '(...) is not allowed inside of a :' + context.inside + '(...)');
         }
         subContext = {
-          global: (node.name === "global"),
+          global: (node.name === 'global'),
           inside: node.name,
           hasLocals: false,
           explicit: true
@@ -123,12 +123,12 @@ function localizeNode(node, context) {
       }
       break;
 
-    case "id":
-    case "class":
+    case 'id':
+    case 'class':
       if(!context.global) {
         node = {
-          type: "nested-pseudo-class",
-          name: "local",
+          type: 'nested-pseudo-class',
+          name: 'local',
           nodes: [node]
         };
         context.hasLocals = true;
@@ -146,15 +146,15 @@ function localizeNode(node, context) {
 function localizeDeclNode(node, context) {
   var newNode;
   switch(node.type) {
-    case "item":
+    case 'item':
       if(context.localizeNextItem) {
         newNode = Object.create(node);
-        newNode.name = ":local(" + newNode.name + ")";
+        newNode.name = ':local(' + newNode.name + ')';
         context.localizeNextItem = false;
         return newNode;
       }
       break;
-    case "url":
+    case 'url':
       if(context.options && context.options.rewriteUrl) {
         newNode = Object.create(node);
         newNode.url = context.options.rewriteUrl(context.global, node.url);
@@ -193,12 +193,12 @@ module.exports = postcss.plugin('postcss-modules-local-by-default', function (op
     options = {}; // If options is undefined or not an object the plugin fails
   }
   if(options && options.mode) {
-    if(options.mode !== "global" && options.mode !== "local" && options.mode !== "pure") {
-      throw new Error("options.mode must be either 'global', 'local' or 'pure' (default 'local')");
+    if(options.mode !== 'global' && options.mode !== 'local' && options.mode !== 'pure') {
+      throw new Error('options.mode must be either "global", "local" or "pure" (default "local")');
     }
   }
-  var pureMode = options && options.mode === "pure";
-  var globalMode = options && options.mode === "global";
+  var pureMode = options && options.mode === 'pure';
+  var globalMode = options && options.mode === 'global';
   return function(css) {
     css.walkAtRules(function(atrule) {
       if(/keyframes$/.test(atrule.name)) {
@@ -206,17 +206,17 @@ module.exports = postcss.plugin('postcss-modules-local-by-default', function (op
         var localMatch = /^\s*:local\s*\((.+)\)\s*$/.exec(atrule.params);
         if(globalMatch) {
           if(pureMode) {
-            throw atrule.error("@keyframes :global(...) is not allowed in pure mode");
+            throw atrule.error('@keyframes :global(...) is not allowed in pure mode');
           }
           atrule.params = globalMatch[1];
         } else if(localMatch) {
           atrule.params = localMatch[0];
         } else if(!globalMode) {
-          atrule.params = ":local(" + atrule.params + ")";
+          atrule.params = ':local(' + atrule.params + ')';
         }
       } else if(atrule.nodes) {
         atrule.nodes.forEach(function(decl) {
-          if(decl.type === "decl") {
+          if(decl.type === 'decl') {
             localizeDecl(decl, {
               options: options,
               global: globalMode
@@ -226,7 +226,7 @@ module.exports = postcss.plugin('postcss-modules-local-by-default', function (op
       }
     });
     css.walkRules(function(rule) {
-      if(rule.parent.type === "atrule" && /keyframes$/.test(rule.parent.name)) {
+      if(rule.parent.type === 'atrule' && /keyframes$/.test(rule.parent.name)) {
         // ignore keyframe rules
         return;
       }
@@ -243,8 +243,8 @@ module.exports = postcss.plugin('postcss-modules-local-by-default', function (op
         throw rule.error(e.message);
       }
       if(pureMode && context.hasPureGlobals) {
-        throw rule.error("Selector '" + Tokenizer.stringify(selector) + "' is not pure " +
-          "(pure selectors must contain at least one local class or id)");
+        throw rule.error('Selector "' + Tokenizer.stringify(selector) + '" is not pure ' +
+          '(pure selectors must contain at least one local class or id)');
       }
       rule.nodes.forEach(function(decl) {
         localizeDecl(decl, context);

@@ -177,13 +177,13 @@ var tests = [
   {
     should: 'default to global when mode provided',
     input: '.foo {}',
-    options: { mode: "global" },
+    options: { mode: 'global' },
     expected: '.foo {}'
   },
   {
     should: 'default to local when mode provided',
     input: '.foo {}',
-    options: { mode: "local" },
+    options: { mode: 'local' },
     expected: ':local(.foo) {}'
   },
   {
@@ -199,8 +199,8 @@ var tests = [
       ':local( .a ).b {}',
       ':local(.a) .b {}',
       ':local( .a ) .b {}'
-    ].join("\n"),
-    options: { mode: "global" },
+    ].join('\n'),
+    options: { mode: 'global' },
     expected: [
       '.a :local(.b) {}',
       '.a:local(.b) {}',
@@ -212,7 +212,7 @@ var tests = [
       ':local(.a).b {}',
       ':local(.a) .b {}',
       ':local(.a) .b {}'
-    ].join("\n")
+    ].join('\n')
   },
   {
     should: 'localize keyframes',
@@ -222,7 +222,7 @@ var tests = [
   {
     should: 'localize keyframes in global default mode',
     input: '@keyframes foo {}',
-    options: { mode: "global" },
+    options: { mode: 'global' },
     expected: '@keyframes foo {}'
   },
   {
@@ -243,7 +243,7 @@ var tests = [
   {
     should: 'compile in pure mode',
     input: ':global(.foo).bar, [type="radio"] ~ .label, :not(.foo), #bar {}',
-    options: { mode: "pure" },
+    options: { mode: 'pure' },
     expected: '.foo:local(.bar), [type="radio"] ~ :local(.label), :not(:local(.foo)), :local(#bar) {}'
   },
   {
@@ -260,8 +260,8 @@ var tests = [
   {
     should: 'throw on invalid mode',
     input: '',
-    options: { mode: "???" },
-    error: /'global', 'local' or 'pure'/
+    options: { mode: '???' },
+    error: /"global", "local" or "pure"/
   },
   {
     should: 'throw on inconsistent selector result',
@@ -301,37 +301,37 @@ var tests = [
   {
     should: 'throw on not pure selector (global class)',
     input: ':global(.foo) {}',
-    options: { mode: "pure" },
-    error: /':global\(\.foo\)' is not pure/
+    options: { mode: 'pure' },
+    error: /":global\(\.foo\)" is not pure/
   },
   {
     should: 'throw on not pure selector (with multiple 1)',
     input: '.foo, :global(.bar) {}',
-    options: { mode: "pure" },
-    error: /'.foo, :global\(\.bar\)' is not pure/
+    options: { mode: 'pure' },
+    error: /".foo, :global\(\.bar\)" is not pure/
   },
   {
     should: 'throw on not pure selector (with multiple 2)',
     input: ':global(.bar), .foo {}',
-    options: { mode: "pure" },
-    error: /':global\(\.bar\), .foo' is not pure/
+    options: { mode: 'pure' },
+    error: /":global\(\.bar\), .foo" is not pure/
   },
   {
     should: 'throw on not pure selector (element)',
     input: 'input {}',
-    options: { mode: "pure" },
-    error: /'input' is not pure/
+    options: { mode: 'pure' },
+    error: /"input" is not pure/
   },
   {
     should: 'throw on not pure selector (attribute)',
     input: '[type="radio"] {}',
-    options: { mode: "pure" },
-    error: /'\[type="radio"\]' is not pure/
+    options: { mode: 'pure' },
+    error: /"\[type="radio"\]" is not pure/
   },
   {
     should: 'throw on not pure keyframes',
     input: '@keyframes :global(foo) {}',
-    options: { mode: "pure" },
+    options: { mode: 'pure' },
     error: /@keyframes :global\(\.\.\.\) is not allowed in pure mode/
   },
   {
