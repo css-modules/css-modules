@@ -1,17 +1,18 @@
 const matchConstName = /[$#]?[\w-\.]+/g
 
-const replace = (declarations, object, propName) => {
+export function replaceAll(replacements, text) {
   let matches
-  while ((matches = matchConstName.exec(object[propName]))) {
-    let replacement = declarations[matches[0]]
+  while ((matches = matchConstName.exec(text))) {
+    let replacement = replacements[matches[0]]
     if (replacement) {
-      object[propName] = object[propName].slice(0, matches.index) + replacement + object[propName].slice(matchConstName.lastIndex)
+      text = text.slice(0, matches.index) + replacement + text.slice(matchConstName.lastIndex)
       matchConstName.lastIndex -= matches[0].length - replacement.length
     }
   }
+  return text
 }
 
 export default (css, translations) => {
-  css.walkDecls(decl => replace(translations, decl, 'value'))
-  css.walkAtRules('media', atRule => replace(translations, atRule, 'params'))
+  css.walkDecls(decl => decl.value = replaceAll(translations, decl.value))
+  css.walkAtRules('media', atRule => atRule.params = replaceAll(translations, atRule.params))
 }

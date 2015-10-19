@@ -3,26 +3,26 @@
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
+exports.replaceAll = replaceAll;
 var matchConstName = /[$#]?[\w-\.]+/g;
 
-var replace = function replace(declarations, object, propName) {
+function replaceAll(replacements, text) {
   var matches = undefined;
-  while (matches = matchConstName.exec(object[propName])) {
-    var replacement = declarations[matches[0]];
+  while (matches = matchConstName.exec(text)) {
+    var replacement = replacements[matches[0]];
     if (replacement) {
-      object[propName] = object[propName].slice(0, matches.index) + replacement + object[propName].slice(matchConstName.lastIndex);
+      text = text.slice(0, matches.index) + replacement + text.slice(matchConstName.lastIndex);
       matchConstName.lastIndex -= matches[0].length - replacement.length;
     }
   }
-};
+  return text;
+}
 
 exports['default'] = function (css, translations) {
   css.walkDecls(function (decl) {
-    return replace(translations, decl, 'value');
+    return decl.value = replaceAll(translations, decl.value);
   });
   css.walkAtRules('media', function (atRule) {
-    return replace(translations, atRule, 'params');
+    return atRule.params = replaceAll(translations, atRule.params);
   });
 };
-
-module.exports = exports['default'];
