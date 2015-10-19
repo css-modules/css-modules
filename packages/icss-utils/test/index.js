@@ -41,6 +41,24 @@ describe('replace-symbols', () => {
       '.foo { box-shadow: 1px 2px 3px 4px red }')
   })
 
+  it('should change complex symbols, if you feel like trolling yourself', () => {
+    test('.foo { box-shadow: 1px 0.5em 3px $sass-a #f00 }',
+      {'1px': '1rem', '0.5em': '10px', '3px': '$sass-b', '$sass-a': '4px', '#f00': 'green' },
+      '.foo { box-shadow: 1rem 10px $sass-b 4px green }')
+  })
+
+  it('should be able to rewrite variables', () => {
+    test('.foo { color: var(--red) }',
+      {'--red': '--blue' },
+      '.foo { color: var(--blue) }')
+  })
+
+  it('should not replace half a variable', () => {
+    test('.foo { color: colors.red; background: red.blue; }',
+      {red: 'green', blue: 'white' },
+      '.foo { color: colors.red; background: red.blue; }')
+  })
+
   it('should not replace a replacement', () => {
     test('.foo { background: blue; color: red }',
       {red: 'blue', blue: 'green'},

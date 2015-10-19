@@ -1,4 +1,4 @@
-const matchConstName = /[\w-]+/g
+const matchConstName = /[$#]?[\w-\.]+/g
 
 const replace = (declarations, object, propName) => {
   let matches

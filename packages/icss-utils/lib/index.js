@@ -3,7 +3,7 @@
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
-var matchConstName = /[\w-]+/g;
+var matchConstName = /[$#]?[\w-\.]+/g;
 
 var replace = function replace(declarations, object, propName) {
   var matches = undefined;
