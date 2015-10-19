@@ -204,16 +204,25 @@ module.exports = postcss.plugin('postcss-modules-local-by-default', function (op
       if(/keyframes$/.test(atrule.name)) {
         var globalMatch = /^\s*:global\s*\((.+)\)\s*$/.exec(atrule.params);
         var localMatch = /^\s*:local\s*\((.+)\)\s*$/.exec(atrule.params);
+        var globalKeyframes = globalMode;
         if(globalMatch) {
           if(pureMode) {
             throw atrule.error('@keyframes :global(...) is not allowed in pure mode');
           }
           atrule.params = globalMatch[1];
+          globalKeyframes = true;
         } else if(localMatch) {
           atrule.params = localMatch[0];
+          globalKeyframes = false;
         } else if(!globalMode) {
           atrule.params = ':local(' + atrule.params + ')';
         }
+        atrule.walkDecls(function(decl) {
+          localizeDecl(decl, {
+            options: options,
+            global: globalKeyframes
+          });
+        });
       } else if(atrule.nodes) {
         atrule.nodes.forEach(function(decl) {
           if(decl.type === 'decl') {

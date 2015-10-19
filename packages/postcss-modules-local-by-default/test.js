@@ -364,7 +364,10 @@ var tests = [
       ':global .b { background: url(image.png); }\n' +
       '.c { background: url("./image.png"); }\n' +
       '@font-face { src: url("./font.woff"); }\n' +
-      '@-webkit-font-face { src: url("./font.woff"); }',
+      '@-webkit-font-face { src: url("./font.woff"); }\n' +
+      '@media screen { .a { src: url("./image.png"); } }\n' +
+      '@keyframes :global(ani1) { 0% { src: url("image.png"); } }\n' +
+      '@keyframes ani2 { 0% { src: url("./image.png"); } }',
     options: {
       rewriteUrl: function(global, url) {
         var mode = global ? 'global' : 'local';
@@ -375,7 +378,10 @@ var tests = [
       '.b { background: url((global\\)image.png\\\"global\\\"); }\n' +
       ':local(.c) { background: url(\"(local)./image.png\\\"local\\\"\"); }\n' +
       '@font-face { src: url(\"(local)./font.woff\\\"local\\\"\"); }\n' +
-      '@-webkit-font-face { src: url(\"(local)./font.woff\\\"local\\\"\"); }'
+      '@-webkit-font-face { src: url(\"(local)./font.woff\\\"local\\\"\"); }\n' +
+      '@media screen { :local(.a) { src: url("(local)./image.png\\"local\\""); } }\n' +
+      '@keyframes ani1 { 0% { src: url("(global)image.png\\"global\\""); } }\n' +
+      '@keyframes :local(ani2) { 0% { src: url("(local)./image.png\\"local\\""); } }'
   },
   {
     should: 'not crash on atrule without nodes',
