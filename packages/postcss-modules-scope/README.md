@@ -42,7 +42,7 @@ Since we're exporting class names, there's no reason to export only one. This ca
   box-shadow: 0 0 4px -2px;
 }
 :local(.continueButton) {
-  composes: globalButtonStyle;
+  compose-with: globalButtonStyle;
   color: green;
 }
 ```
@@ -59,7 +59,7 @@ becomes:
   box-shadow: 0 0 4px -2px;
 }
 :local(.continueButton) {
-  extends: globalButtonStyle;
+  compose-with: globalButtonStyle;
   color: green;
 }
 ```
@@ -83,8 +83,7 @@ npm test
 
 ## Development
 
-- `npm watch` will watch `src` for changes and rebuild
-- `npm autotest` will watch `src` and `test` for changes and retest
+- `npm autotest` will watch `src` and `test` for changes and run the tests
 
 ## License
 

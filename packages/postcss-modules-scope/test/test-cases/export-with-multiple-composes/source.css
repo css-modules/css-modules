@@ -1,4 +1,4 @@
 :local(.otherClass) { background: red; }
 :local(.andAgain) { font-size: 2em; }
 :local(.aThirdClass) { color: red; }
-:local(.exportName) { composes: otherClass andAgain; composes: aThirdClass; color: green; }
+:local(.exportName) { compose-with: otherClass andAgain; compose-with: aThirdClass; color: green; }

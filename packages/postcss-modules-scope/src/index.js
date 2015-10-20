@@ -6,22 +6,22 @@ let hasOwnProperty = Object.prototype.hasOwnProperty;
 function getSingleLocalNamesForComposes(selectors) {
   return selectors.nodes.map((node) => {
     if(node.type !== 'selector' || node.nodes.length !== 1) {
-      throw new Error('composes is only allowed when selector is single :local class name not in "' +
+      throw new Error('composition is only allowed when selector is single :local class name not in "' +
         Tokenizer.stringify(selectors) + '"');
     }
     node = node.nodes[0];
     if(node.type !== 'nested-pseudo-class' || node.name !== 'local' || node.nodes.length !== 1) {
-      throw new Error('composes is only allowed when selector is single :local class name not in "' +
+      throw new Error('composition is only allowed when selector is single :local class name not in "' +
         Tokenizer.stringify(selectors) + '", "' + Tokenizer.stringify(node) + '" is weird');
     }
     node = node.nodes[0];
     if(node.type !== 'selector' || node.nodes.length !== 1) {
-      throw new Error('composes is only allowed when selector is single :local class name not in "' +
+      throw new Error('composition is only allowed when selector is single :local class name not in "' +
         Tokenizer.stringify(selectors) + '", "' + Tokenizer.stringify(node) + '" is weird');
     }
     node = node.nodes[0];
     if(node.type !== 'class') { // 'id' is not possible, because you can't compose ids
-      throw new Error('composes is only allowed when selector is single :local class name not in "' +
+      throw new Error('composition is only allowed when selector is single :local class name not in "' +
         Tokenizer.stringify(selectors) + '", "' + Tokenizer.stringify(node) + '" is weird');
     }
     return node.name;
@@ -92,7 +92,7 @@ const processor = postcss.plugin('postcss-modules-scope', function(options) {
       let selector = Tokenizer.parse(rule.selector);
       let newSelector = traverseNode(selector);
       rule.selector = Tokenizer.stringify(newSelector);
-      rule.walkDecls('composes', decl => {
+      rule.walkDecls(/composes|compose-with/, decl => {
         let localNames = getSingleLocalNamesForComposes(selector);
         let classes = decl.value.split(/\s+/);
         classes.forEach((className) => {
@@ -107,11 +107,12 @@ const processor = postcss.plugin('postcss-modules-scope', function(options) {
               });
             });
           } else {
-            throw decl.error('referenced class name "' + className + '" in composes not found');
+            throw decl.error(`referenced class name "${className}" in ${decl.prop} not found`);
           }
         });
         decl.remove();
       });
+      
       rule.walkDecls(decl => {
         var tokens = decl.value.split(/(,|'[^']*'|"[^"]*")/);
         tokens = tokens.map((token, idx) => {
