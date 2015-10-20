@@ -28,7 +28,7 @@ import styles from './buttons.css'
 elem.innerHTML = `<button class="${styles.continueButton}">Continue</button>`
 ```
 
-## Extensions
+## Composition
 
 Since we're exporting class names, there's no reason to export only one. This can give us some really useful reuse of styles:
 
@@ -64,15 +64,16 @@ becomes:
 }
 ```
 
+**Note:** you can also use `composes` as a shorthand for `compose-with`
+
 ## Local-by-default & reuse across files
 
-You're looking for [CSS Modules](https://github.com/webpack/css-modules). It spans this plugin as well as a few others, and it's amazing.
+You're looking for [CSS Modules](https://github.com/css-modules/css-modules). It uses this plugin as well as a few others, and it's amazing.
 
 ## Building
 
 ```
 npm install
-npm build
 npm test
 ```
 
@@ -83,7 +84,7 @@ npm test
 
 ## Development
 
-- `npm autotest` will watch `src` and `test` for changes and run the tests
+- `npm autotest` will watch `src` and `test` for changes and run the tests, and transpile the ES6 to ES5 on success
 
 ## License
 
