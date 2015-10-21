@@ -96,11 +96,16 @@ const processor = postcss.plugin('postcss-modules-scope', function(options) {
         let localNames = getSingleLocalNamesForComposes(selector);
         let classes = decl.value.split(/\s+/);
         classes.forEach((className) => {
-          if(hasOwnProperty.call(importedNames, className)) {
+          let global = /^global\(([^\)]+)\)$/.exec(className);
+          if (global) {
+            localNames.forEach((exportedName) => {
+              exports[exportedName].push(global[1]);
+            })
+          } else if (hasOwnProperty.call(importedNames, className)) {
             localNames.forEach((exportedName) => {
               exports[exportedName].push(className);
             });
-          } else if(hasOwnProperty.call(exports, className)) {
+          } else if (hasOwnProperty.call(exports, className)) {
             localNames.forEach((exportedName) => {
               exports[className].forEach((item) => {
                 exports[exportedName].push(item);
@@ -112,7 +117,7 @@ const processor = postcss.plugin('postcss-modules-scope', function(options) {
         });
         decl.remove();
       });
-      
+
       rule.walkDecls(decl => {
         var tokens = decl.value.split(/(,|'[^']*'|"[^"]*")/);
         tokens = tokens.map((token, idx) => {

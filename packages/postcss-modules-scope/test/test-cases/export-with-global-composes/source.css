@@ -1,0 +1,4 @@
+.otherClass { background: red; }
+.andAgain { font-size: 2em; }
+.aThirdClass { color: red; }
+:local(.exportName) { compose-with: global(otherClass) global(andAgain); compose-with: global(aThirdClass); color: green; }
