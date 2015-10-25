@@ -10,7 +10,7 @@
 ```js
 import styles from "./component.css"
 
-angular.module('myApp').controller('MyController, ($scope) => {
+angular.module('myApp').controller('MyController', ($scope) => {
   $scope.styles = styles
 })
 ```
