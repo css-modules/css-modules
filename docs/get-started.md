@@ -32,6 +32,8 @@ If you're using React, CSS Modules is a great fit. The [react-css-modules](https
 
 As we find examples in the wild, we'll add them here (or edit this and add a PR).
 
+* [cssmodul.es](https://github.com/StevenIseki/cssmodul.es) - search for css modules on npm
+
 ### Webpack Boilerplates
 
 - [ultimate hot reloading example](https://github.com/glenjamin/ultimate-hot-reloading-example) by Glen Mailer
