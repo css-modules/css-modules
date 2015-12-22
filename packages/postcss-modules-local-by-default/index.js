@@ -154,6 +154,15 @@ function localizeDeclNode(node, context) {
         return newNode;
       }
       break;
+
+    case 'nested-item':
+      var newNodes = node.nodes.map(function(n) {
+        return localizeDeclValue(n, context);
+      });
+      node = Object.create(node);
+      node.nodes = newNodes;
+      break;
+
     case 'url':
       if(context.options && context.options.rewriteUrl) {
         newNode = Object.create(node);
