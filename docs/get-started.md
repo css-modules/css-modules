@@ -26,4 +26,8 @@ The [css-modules-require-hook](https://github.com/css-modules/css-modules-requir
 
 ### React
 
-If you're using React, CSS Modules is a great fit. The [react-css-modules](https://github.com/gajus/react-css-modules) adds a `CSSModules` higher-order component or `@CSSModules` annotation for better integrating CSS Modules & React.
+If you're using React, CSS Modules is a great fit. [react-css-modules](https://github.com/gajus/react-css-modules) adds a `CSSModules` higher-order component or `@CSSModules` annotation for better integrating CSS Modules & React.
+
+### Deku
+
+If you're using Deku, CSS Modules is an awesome fit. [deku-css-modules](https://github.com/StevenIseki/deku-css-modules) allows for easy integration of CSS Modules & Deku.
