@@ -98,6 +98,7 @@ i. e. with less.js
 ## Examples
 
 * [css-modules/webpack-demo](https://github.com/css-modules/webpack-demo)
+* [outpunk/postcss-modules-example](https://github.com/outpunk/postcss-modules-example)
 * [Theming](examples/theming.md)
 
 
@@ -124,3 +125,7 @@ Webpack's [css-loader](https://github.com/webpack/css-loader) in module mode rep
 Extending adds the source class name(s) to the exports.
 
 Extending from other modules first imports the other module and then adds the class name(s) to the exports.
+
+### Server-side and static websites
+
+[PostCSS-Modules](https://github.com/outpunk/postcss-modules) allows to use CSS Modules for static builds and the server side with Ruby, PHP or any other language or framework.
