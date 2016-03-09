@@ -1,6 +1,6 @@
 <img src="https://raw.githubusercontent.com/css-modules/logos/master/css-modules-logo.png" width="150" height="150" />
 
-# Using CSS Modules with Angular
+# CSS Modules with Angular
 
 ```css
 .bacon { /* ... */ }
