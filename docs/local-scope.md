@@ -10,7 +10,7 @@ The first and most fundamental feature of CSS Modules is that class selectors, b
 .pullquote {}
 ```
 
-the classes `backdrop`, `field` & `pullquote` are *local to that file*. That means they don't pollute the global namespace, so you're free to use any name you like. You compile them by importing or requiring them in your JS file. These examples will be using React syntax, but of course it's not tied to React in any particular way.
+the classes `backdrop`, `field` & `pullquote` are *local to that file*. That means they don't pollute the global namespace, so you're free to use any name you like. You compile them by importing or requiring them in your JS file.
 
 ```js
 import styles from "./style.css"
@@ -26,3 +26,4 @@ const Component = props => {
   )
 }
 ```
+

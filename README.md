@@ -2,13 +2,53 @@
 
 # CSS Modules
 
+CSS Modules is a toolchain for working with CSS files that are truly local and that can reference each other — completely removing a large class of bugs. If you're interested in the history and rationale for the project you might like to start with the blog post [CSS Modules — Welcome to the Future](http://glenmaddern.com/articles/css-modules).
+
+As an example, let's look at styling these two buttons:
+
+![](https://dl.dropboxusercontent.com/spa/a9i2yebxv7pg2ex/h2_duu02.png)
+
+```css
+/* submit-button.css */
+
+
+@value typography: "../shared/typography.css";
+@value borders: "../shared/borders.css";
+
+@value button-padding: 0.4rem;
+
+/*
+.base {
+  min-width: 9em;
+  padding: button-padding 1rem calc(button-padding * 1.125);
+  
+  composes: thin medium underlined-on-hover from typography;
+  composes: thin rounded from borders;
+}
+
+  border: 1px solid;
+  border-radius: 0.25rem;
+  color: hsl(210, 61%, 31%);
+  background: hsla(210, 61%, 51%, 0.1);
+  
+```
+
+## Documentation
+
+CSS Modules consists of three features 
+
+## Documentation
+
+- [Getting Started](https://github.com/css-modules/css-modules/blob/master/docs/getting-started.md) for information about how to configure your environment to use CSS Modules
+
+
 A **CSS Module** is a CSS file in which all class names and animation names are scoped locally by default. All URLs (`url(...)`) and `@imports` are in module request format (`./xxx` and `../xxx` means relative, `xxx` and `xxx/yyy` means in modules folder, i. e. in `node_modules`).
 
 CSS Modules compile to a low-level interchange format called ICSS or [Interoperable CSS](https://github.com/css-modules/icss), but are written like normal CSS files:
 
 ``` css
 /* style.css */
-.className {
+.backdrop {
   color: green;
 }
 ```
@@ -16,8 +56,9 @@ CSS Modules compile to a low-level interchange format called ICSS or [Interopera
 When importing the **CSS Module** from a JS Module, it exports an object with all mappings from local names to global names.
 
 ``` js
+// style.css gets compiled and injected into the DOM, depen
 import styles from "./style.css";
-// import { className } from "./style.css";
+// styles: { backdrop: ca6cgu78asb }
 
 element.innerHTML = '<div class="' + styles.className + '">';
 ```
