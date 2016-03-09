@@ -139,6 +139,7 @@ i. e. with less.js
 ## Examples
 
 * [css-modules/webpack-demo](https://github.com/css-modules/webpack-demo)
+* [outpunk/postcss-modules-example](https://github.com/outpunk/postcss-modules-example)
 * [Theming](examples/theming.md)
 
 
@@ -149,7 +150,7 @@ i. e. with less.js
 * 05/2015: `extends` feature in css-loader allow to compose local or imported class names by @sokra
 * 05/2015: First CSS Modules spec document and github organization with @sokra, @markdalgleish and @geelen
 * 06/2015: `extends` renamed to `composes`
-* 06/2015: PostCSS transformations to tranform CSS Modules into a intermediate format (ICSS)
+* 06/2015: PostCSS transformations to transform CSS Modules into an intermediate format (ICSS)
 * 06/2015: Spec for ICSS as common implementation format for multiple module systems by @geelen
 * 06/2015: Implementation for jspm by @geelen and @guybedford
 * 06/2015: Implementation for browserify by @joshwnj, @joshgillies and @markdalgleish
@@ -160,8 +161,12 @@ i. e. with less.js
 
 ### webpack
 
-Webpack's [css-loader](https://github.com/webpack/css-loader) in module mode replaces every local-scoped identifier with a global unique name (hashed from module name and local identifier by default) and exports the used identifer.
+Webpack's [css-loader](https://github.com/webpack/css-loader) in module mode replaces every local-scoped identifier with a global unique name (hashed from module name and local identifier by default) and exports the used identifier.
 
 Extending adds the source class name(s) to the exports.
 
-Extending from other modules first imports the other module and than adds the class name(s) to the exports.
+Extending from other modules first imports the other module and then adds the class name(s) to the exports.
+
+### Server-side and static websites
+
+[PostCSS-Modules](https://github.com/outpunk/postcss-modules) allows to use CSS Modules for static builds and the server side with Ruby, PHP or any other language or framework.

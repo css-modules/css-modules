@@ -1,6 +1,6 @@
 <img src="https://raw.githubusercontent.com/css-modules/logos/master/css-modules-logo.png" width="150" height="150" />
 
-# Using CSS Modules with Angular
+# CSS Modules with Angular
 
 ```css
 .bacon { /* ... */ }
@@ -18,8 +18,9 @@ angular.module('myApp').controller('MyController', ($scope) => {
 ```html
 <div ng-app="myApp">
   <div ng-controller="MyController">
-    <header ng-class="{{::styles.bacon}}">
-      <h1 ng-class="{{::styles.pancakes}}">
+    <header class="{{::styles.bacon + ' ' + styles.pancakes}}">
+      <h1 class="{{styles.pancakes}}">pancakes (2-way binding)</h1>
+      <h1 ng-class="styles.bacon">bacon</h1>
         <!-- ... --->
     </header>
   </div>

@@ -1,5 +1,5 @@
 ### Pseudo class selectors
-Because css modules works by adding classes to your elements you can easilly add pseudo class selectors. 
+Because css modules works by adding classes to your elements you can easily add pseudo class selectors. 
 
 ```css
 /* component/text.css */

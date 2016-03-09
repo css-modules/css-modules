@@ -26,16 +26,8 @@ The [css-modules-require-hook](https://github.com/css-modules/css-modules-requir
 
 ### React
 
-If you're using React, CSS Modules is a great fit. The [react-css-modules](https://github.com/gajus/react-css-modules) adds a `CSSModules` higher-order component or `@CSSModules` annotation for better integrating CSS Modules & React.
+If you're using React, CSS Modules is a great fit. [react-css-modules](https://github.com/gajus/react-css-modules) adds a `CSSModules` higher-order component or `@CSSModules` annotation for better integrating CSS Modules & React.
 
-## Example projects
+### Deku
 
-As we find examples in the wild, we'll add them here (or edit this and add a PR).
-
-### Webpack Boilerplates
-
-- [ultimate hot reloading example](https://github.com/glenjamin/ultimate-hot-reloading-example) by Glen Mailer
-- [neob](https://github.com/juliocesar/neob) by Julio Ody 
-- [ng-modular](https://github.com/nkbt/ng-modular) by Nik Butenko
-- [angular-cssmodules-example-app](https://github.com/jonathaningram/angular-cssmodules-example-app) by Jonathan Ingram
-
+If you're using Deku, CSS Modules is an awesome fit. [deku-css-modules](https://github.com/StevenIseki/deku-css-modules) allows for easy integration of CSS Modules & Deku.
