@@ -149,15 +149,16 @@ const processor = postcss.plugin('postcss-modules-scope', function(options) {
     // If we found any :locals, insert an :export rule
     let exportedNames = Object.keys(exports);
     if (exportedNames.length > 0) {
-      css.append(postcss.rule({
-        selector: `:export`,
-        nodes: exportedNames.map(exportedName => postcss.decl({
+      let exportRule = postcss.rule({selector: `:export`});
+      exportedNames.forEach(exportedName => 
+        exportRule.append({
           prop: exportedName,
           value: exports[exportedName].join(' '),
           raws: { before: '\n  ' },
           _autoprefixerDisabled: true
-        }))
-      }));
+        })
+      );
+      css.append(exportRule);
     }
   };
 });
