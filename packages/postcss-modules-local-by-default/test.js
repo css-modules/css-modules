@@ -175,6 +175,36 @@ var tests = [
     expected: ':local(.foo) { animation: :local(foo), :local(bar) 5s linear 2s infinite alternate, :local(barfoo) 1s; }'
   },
   {
+    should: 'handle animations where the first value is not the animation name',
+    input: '.foo { animation: 1s foo; }',
+    expected: ':local(.foo) { animation: 1s :local(foo); }'
+  },
+  {
+    should: 'handle animations where the first value is not the animation name whilst also using keywords',
+    input: '.foo { animation: 1s normal ease-out infinite foo; }',
+    expected: ':local(.foo) { animation: 1s normal ease-out infinite :local(foo); }'
+  },
+  {
+    should: 'handle animations with custom timing functions',
+    input: '.foo { animation: 1s normal cubic-bezier(0.25, 0.5, 0.5. 0.75) foo; }',
+    expected: ':local(.foo) { animation: 1s normal cubic-bezier(0.25, 0.5, 0.5. 0.75) :local(foo); }'
+  },
+  {
+    should: 'handle animations whose names are keywords',
+    input: '.foo { animation: 1s infinite infinite; }',
+    expected: ':local(.foo) { animation: 1s infinite :local(infinite); }'
+  },
+  {
+    should: 'handle not localize an animation shorthand value of "inherit"',
+    input: '.foo { animation: inherit; }',
+    expected: ':local(.foo) { animation: inherit; }'
+  },
+  {
+    should: 'handle "constructor" as animation name',
+    input: '.foo { animation: constructor constructor; }',
+    expected: ':local(.foo) { animation: :local(constructor) :local(constructor); }'
+  },
+  {
     should: 'default to global when mode provided',
     input: '.foo {}',
     options: { mode: 'global' },

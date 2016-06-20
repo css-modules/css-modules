@@ -182,19 +182,107 @@ function localizeDeclValue(valueNode, context) {
   return newValueNode;
 }
 
-function localizeDecl(decl, context) {
-  var valuesNode = Tokenizer.parseValues(decl.value);
-  var localizeName = /animation(-name)?$/.test(decl.prop);
+function localizeAnimationShorthandDeclValueNodes(nodes, context) {
+  var validIdent = validIdent = /^-?[_a-z][_a-z0-9-]*$/i;
+
+  /*
+  The spec defines some keywords that you can use to describe properties such as the timing
+  function. These are still valid animation names, so as long as there is a property that accepts
+  a keyword, it is given priority. Only when all the properties that can take a keyword are
+  exhausted can the animation name be set to the keyword. I.e.
+
+  animation: infinite infinite;
+
+  The animation will repeat an infinite number of times from the first argument, and will have an
+  animation name of infinite from the second.
+  */
+  var animationKeywords = {
+    '$alternate': 1,
+    '$alternate-reverse': 1,
+    '$backwards': 1,
+    '$both': 1,
+    '$ease': 1,
+    '$ease-in': 1,
+    '$ease-in-out': 1,
+    '$ease-out': 1,
+    '$forwards': 1,
+    '$infinite': 1,
+    '$linear': 1,
+    '$none': Infinity, // No matter how many times you write none, it will never be an animation name
+    '$normal': 1,
+    '$paused': 1,
+    '$reverse': 1,
+    '$running': 1,
+    '$step-end': 1,
+    '$step-start': 1,
+    '$initial': Infinity,
+    '$inherit': Infinity,
+    '$unset': Infinity,
+  };
+
+  var didParseAnimationName = false;
+  var parsedAnimationKeywords = {};
+  return nodes.map(function(valueNode) {
+    var value = valueNode.type === 'item'
+      ? valueNode.name.toLowerCase()
+      : null;
+
+    var shouldParseAnimationName = false;
+
+    if (!didParseAnimationName && value && validIdent.test(value)) {
+      if ('$' + value in animationKeywords) {
+        parsedAnimationKeywords['$' + value] = ('$' + value in parsedAnimationKeywords)
+          ? (parsedAnimationKeywords['$' + value] + 1)
+          : 0;
+
+        shouldParseAnimationName = (parsedAnimationKeywords['$' + value] >= animationKeywords['$' + value]);
+      } else {
+        shouldParseAnimationName = true;
+      }
+    }
+
+    var subContext = {
+      options: context.options,
+      global: context.global,
+      localizeNextItem: shouldParseAnimationName && !context.global
+    };
+    return localizeDeclNode(valueNode, subContext);
+  });
+}
+
+function localizeAnimationShorthandDeclValues(valuesNode, decl, context) {
+  var newValuesNode = Object.create(valuesNode);
+  newValuesNode.nodes = valuesNode.nodes.map(function(valueNode, index) {
+    var newValueNode = Object.create(valueNode);
+    newValueNode.nodes = localizeAnimationShorthandDeclValueNodes(valueNode.nodes, context);
+    return newValueNode;
+  });
+  decl.value = Tokenizer.stringifyValues(newValuesNode);
+}
+
+function localizeDeclValues(localize, valuesNode, decl, context) {
   var newValuesNode = Object.create(valuesNode);
   newValuesNode.nodes = valuesNode.nodes.map(function(valueNode) {
     var subContext = {
       options: context.options,
       global: context.global,
-      localizeNextItem: localizeName && !context.global
+      localizeNextItem: localize && !context.global
     };
     return localizeDeclValue(valueNode, subContext);
   });
   decl.value = Tokenizer.stringifyValues(newValuesNode);
+}
+
+function localizeDecl(decl, context) {
+  var valuesNode = Tokenizer.parseValues(decl.value);
+
+  var isAnimation = /animation?$/.test(decl.prop);
+  if (isAnimation) return localizeAnimationShorthandDeclValues(valuesNode, decl, context);
+
+  var isAnimationName = /animation(-name)?$/.test(decl.prop);
+  if (isAnimationName) return localizeDeclValues(true, valuesNode, decl, context);
+
+  return localizeDeclValues(false, valuesNode, decl, context);
 }
 
 module.exports = postcss.plugin('postcss-modules-local-by-default', function (options) {
