@@ -264,9 +264,12 @@ module.exports = postcss.plugin('postcss-modules-local-by-default', function (op
         throw rule.error('Selector "' + Tokenizer.stringify(selector) + '" is not pure ' +
           '(pure selectors must contain at least one local class or id)');
       }
-      rule.nodes.forEach(function(decl) {
-        localizeDecl(decl, context);
-      });
+      // Less-syntax mixins parse as rules with no nodes
+      if (rule.nodes) {
+        rule.nodes.forEach(function(decl) {
+          localizeDecl(decl, context);
+        });
+      }
       rule.selector = Tokenizer.stringify(newSelector);
     });
   };

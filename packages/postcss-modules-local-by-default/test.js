@@ -389,6 +389,18 @@ var tests = [
     should: 'not crash on atrule without nodes',
     input: '@charset "utf-8";',
     expected: '@charset "utf-8";'
+  },
+  {
+    should: 'not crash on a rule without nodes',
+    input: (function() {
+      var inner = postcss.rule({ selector: '.b', ruleWithoutBody: true });
+      var outer = postcss.rule({ selector: '.a' }).push(inner);
+      var root = postcss.root().push(outer);
+      inner.nodes = undefined;
+      return root;
+    })(),
+    // postcss-less's stringify would honor `ruleWithoutBody` and omit the trailing `{}`
+    expected: ':local(.a) {\n    :local(.b) {}\n}'
   }
 
 ];
