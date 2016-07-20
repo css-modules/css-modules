@@ -1,6 +1,6 @@
 {
   "name": "postcss-modules-local-by-default",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A CSS Modules transform to make local scope the default",
   "keywords": [
     "css-modules",
