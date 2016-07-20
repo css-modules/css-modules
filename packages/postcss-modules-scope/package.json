@@ -34,7 +34,7 @@
   },
   "homepage": "https://github.com/geelen/postcss-modules-scope",
   "dependencies": {
-    "css-selector-tokenizer": "^0.5.0",
+    "css-selector-tokenizer": "^0.6.0",
     "postcss": "^5.0.4"
   },
   "devDependencies": {

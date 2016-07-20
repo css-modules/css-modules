@@ -154,8 +154,7 @@ const processor = postcss.plugin('postcss-modules-scope', function(options) {
         exportRule.append({
           prop: exportedName,
           value: exports[exportedName].join(' '),
-          raws: { before: '\n  ' },
-          _autoprefixerDisabled: true
+          raws: { before: '\n  ' }
         })
       );
       css.append(exportRule);
