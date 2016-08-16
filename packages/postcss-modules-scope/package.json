@@ -41,7 +41,7 @@
     "babel": "^5.4.7",
     "babel-eslint": "^6.1.2",
     "babel-istanbul": "^0.4.0",
-    "babelify": "^6.1.2",
+    "babelify": "^7.1.0",
     "chokidar-cli": "^1.0.1",
     "codecov.io": "^0.1.2",
     "coveralls": "^2.11.2",
