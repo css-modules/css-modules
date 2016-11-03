@@ -100,7 +100,8 @@ i. e. with less.js
 * [css-modules/webpack-demo](https://github.com/css-modules/webpack-demo)
 * [outpunk/postcss-modules-example](https://github.com/outpunk/postcss-modules-example)
 * [Theming](docs/theming.md)
-
+* [css-modules/browserify-demo](https://github.com/css-modules/browserify-demo)
+* [x-team/starting-css-modules](https://github.com/x-team/starting-css-modules)
 
 ## History
 
