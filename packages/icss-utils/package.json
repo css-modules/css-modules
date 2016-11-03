@@ -31,7 +31,7 @@
   "devDependencies": {
     "babel": "^5.8.23",
     "chokidar": "^1.0.6",
-    "mocha": "^2.3.2",
+    "mocha": "^3.1.2",
     "postcss": "^5.0.5",
     "standard": "^8.4.0"
   }
