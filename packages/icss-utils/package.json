@@ -33,6 +33,6 @@
     "chokidar": "^1.0.6",
     "mocha": "^2.3.2",
     "postcss": "^5.0.5",
-    "standard": "^5.3.1"
+    "standard": "^8.4.0"
   }
 }
