@@ -1,3 +1,5 @@
+[![Build Status](https://img.shields.io/travis/css-modules/icss-replace-symbols/master.svg?style=flat-square)]()
+
 # ICSS — Replace Symbols
 
 Governs the way tokens are searched & replaced during the linking stage of ICSS loading.
