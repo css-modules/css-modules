@@ -29,6 +29,43 @@ angular.module('myApp').controller('MyController', ($scope) => {
 
 ---
 
+## CSS Modules with angular 1.5 component
+
+[Demo](http://nlarche.github.io/css-modules-angular-1/)
+
+```css
+.content { /* ... */ }
+.bacon { /* ... */ }
+.pancakes { /* ... */ }
+```
+
+```js
+import angular from 'angular'
+import styles from './index.css'
+
+var template = `
+        <div class="{{::$ctrl.styles.content}}">                   
+            <div class="{{$ctrl.styles.pancakes}}">pancakes</div>
+            <div ng-class="$ctrl.styles.bacon">bacon</div>
+        </div>`;
+
+angular
+    .module('app', [])
+    .component('myComponent', {
+        template: template,
+        controller: Controller
+    });
+
+
+function Controller() {
+    var vm = this;
+    
+    vm.$onInit = function() {
+        vm.styles = styles;
+    }
+}
+```
+
 **This needs expansion/revision by someone who really knows angular. Maybe that's you!**
 
 - [ ] Controller vs Directive examples/rationale
