@@ -28,7 +28,7 @@ For local class names camelCase naming is recommended, but not enforced.
 
 ## Exceptions
 
-`:global` switches to global scope for the current selector resp. identifier. `:global(.xxx)` resp. `@keyframes :global(xxx)` declares the stuff in brackets in the global scope.
+`:global` switches to global scope for the current selector resp. identifier. `:global(.xxx)` resp. `@keyframes :global(xxx)` declares the stuff in parenthesis in the global scope.
 
 Similar `:local` and `:local(...)` for local scope.
 
