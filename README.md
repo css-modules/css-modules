@@ -26,6 +26,8 @@ element.innerHTML = '<div class="' + styles.className + '">';
 
 For local class names camelCase naming is recommended, but not enforced.
 
+> This is recommended because the common alternative, kebab-casing may cause unexpected behavior when trying to access style.class-name as a dot notation. You may encounter errors then resolve to using a bracket notation (style['class-name']) but a camelCase prevents this from occuring.
+
 ## Exceptions
 
 `:global` switches to global scope for the current selector resp. identifier. `:global(.xxx)` resp. `@keyframes :global(xxx)` declares the stuff in parenthesis in the global scope.
