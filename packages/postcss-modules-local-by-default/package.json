@@ -23,7 +23,7 @@
     "codecov.io": "^0.1.2",
     "coveralls": "^2.11.2",
     "eslint": "^1.5.0",
-    "istanbul": "^0.3.14",
+    "istanbul": "^0.4.5",
     "tape": "^4.0.0"
   },
   "scripts": {
