@@ -36,5 +36,8 @@
     "travis": "npm run cover -- --report lcovonly",
     "prepublish": "npm prune && npm test",
     "publish-patch": "npm prune && npm test && npm version patch && git push && git push --tags && npm publish"
-  }
+  },
+  "files": [
+    "index.js"
+  ]
 }
