@@ -1,6 +1,6 @@
 {
   "name": "postcss-modules-scope",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "A CSS Modules transform to extract export statements from local-scope classes",
   "main": "lib/index.js",
   "scripts": {
