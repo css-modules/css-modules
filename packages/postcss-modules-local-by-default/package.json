@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "css-selector-tokenizer": "^0.7.0",
-    "postcss": "^5.0.4"
+    "postcss": "^6.0.1"
   },
   "devDependencies": {
     "chokidar-cli": "^1.0.1",
