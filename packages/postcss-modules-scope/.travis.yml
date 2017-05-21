@@ -1,8 +1,8 @@
-sudo: false
 language: node_js
 node_js:
-  - "0.12"
-  - "4.0"
+  - "4"
+  - "6"
+  - "node"
 script: npm run travis
 
 before_install:
