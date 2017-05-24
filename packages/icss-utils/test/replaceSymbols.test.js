@@ -1,9 +1,12 @@
 const postcss = require('postcss')
 const { replaceSymbols } = require('../src')
 
-const run = (input, translations, expected) => {
-  let processor = postcss([css => replaceSymbols(css, translations)])
-  expect(processor.process(input).css).toEqual(expected)
+const run = (input, replacements, expected) => {
+  return postcss([css => replaceSymbols(css, replacements)])
+    .process(input)
+    .then(result => {
+      expect(result.css).toEqual(expected)
+    })
 }
 
 describe('replace-symbols', () => {

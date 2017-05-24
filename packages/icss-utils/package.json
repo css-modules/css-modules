@@ -1,7 +1,7 @@
 {
-  "name": "icss-replace-symbols",
+  "name": "icss-utils",
   "version": "1.1.0",
-  "description": "Replacing symbols during the linking phase of ICSS",
+  "description": "ICSS utils for postcss ast",
   "main": "lib/index.js",
   "files": [
     "lib"
