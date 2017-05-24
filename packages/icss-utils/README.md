@@ -7,7 +7,7 @@
 Governs the way tokens are searched & replaced during the linking stage of ICSS loading.
 
 This is broken into its own module in case the behaviour needs to be replicated in other PostCSS plugins
-(i.e. [CSS Modules Constants](https://github.com/css-modules/postcss-modules-constants))
+(i.e. [CSS Modules Values](https://github.com/css-modules/postcss-modules-values))
 
 ```js
 import { replaceSymbols, replaceValueSymbols } from "icss-utils"
