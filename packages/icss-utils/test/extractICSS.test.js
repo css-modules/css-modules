@@ -73,3 +73,16 @@ test('remove :import after extracting', () => {
 test('remove :export after extracting', () => {
   expect(runCSS(':export {} @media {}')).toEqual('@media {}')
 })
+
+test('extract properties with underscore', () => {
+  expect(runExtract(':import(colors) {_a: b} :export { _c: d}')).toEqual({
+    icssImports: {
+      colors: {
+        _a: 'b'
+      }
+    },
+    icssExports: {
+      _c: 'd'
+    }
+  })
+})
