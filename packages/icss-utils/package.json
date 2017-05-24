@@ -32,7 +32,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/css-modules/icss-replace-symbols.git"
+    "url": "git+https://github.com/css-modules/icss-utils.git"
   },
   "keywords": [
     "css",
@@ -43,9 +43,9 @@
   "author": "Glen Maddern",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/css-modules/icss-replace-symbols/issues"
+    "url": "https://github.com/css-modules/icss-utils/issues"
   },
-  "homepage": "https://github.com/css-modules/icss-replace-symbols#readme",
+  "homepage": "https://github.com/css-modules/icss-utils#readme",
   "dependencies": {
     "postcss": "^6.0.1"
   },
