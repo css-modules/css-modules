@@ -10,13 +10,21 @@
     "build": "babel --out-dir lib src",
     "test": "jest --coverage",
     "precommit": "lint-staged",
-    "prepublish": "yarn run test && yarn run build"
+    "prepublish": "yarn test && yarn run build"
   },
   "lint-staged": {
     "*.js": [
-      "prettier --single-quote --no-semi --write",
+      "eslint",
+      "prettier --write",
       "git add"
     ]
+  },
+  "eslintConfig": {
+    "parserOptions": {
+      "ecmaVersion": 6,
+      "sourceType": "module"
+    },
+    "extends": "eslint:recommended"
   },
   "babel": {
     "presets": [
@@ -53,6 +61,7 @@
     "babel-cli": "^6.24.1",
     "babel-jest": "^20.0.3",
     "babel-preset-env": "^1.5.1",
+    "eslint": "^3.19.0",
     "husky": "^0.13.3",
     "jest": "^20.0.3",
     "lint-staged": "^3.4.2",

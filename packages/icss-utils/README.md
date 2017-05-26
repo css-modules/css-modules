@@ -25,9 +25,9 @@ A symbol is a string of alphanumeric, `-` or `_` characters. A replacement can b
 - In the value of a declaration, i.e. `color: my_symbol;` or `box-shadow: 0 0 blur spread shadow-color`
 - In a media expression i.e. `@media small {}` or `@media screen and not-large {}`
 
-## extractICSS(css)
+## extractICSS(css, removeRules = true)
 
-Extracts and remove from PostCSS tree `:import` and `:export` statements.
+Extracts and remove (if removeRules is equal true) from PostCSS tree `:import` and `:export` statements.
 
 ```js
 import postcss from 'postcss';
