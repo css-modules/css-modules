@@ -1,4 +1,4 @@
-###Import multiple css modules into a component
+### Import multiple css modules into a component
 
 You can import multiple css modules into a component or function using `Object.assign`
 For example if you import a button css modules to your Demo component, add this to the components default styles.
