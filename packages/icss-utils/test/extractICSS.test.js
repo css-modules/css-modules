@@ -21,7 +21,7 @@ test("extract :import statements with identifier", () => {
 test("extract :import statements with single quoted path", () => {
   expect(runExtract(`:import('./colors.css') {}`)).toEqual({
     icssImports: {
-      "'./colors.css'": {}
+      "./colors.css": {}
     },
     icssExports: {}
   });
@@ -30,18 +30,18 @@ test("extract :import statements with single quoted path", () => {
 test("extract :import statements with double quoted path", () => {
   expect(runExtract(':import("./colors.css") {}')).toEqual({
     icssImports: {
-      '"./colors.css"': {}
+      "./colors.css": {}
     },
     icssExports: {}
   });
 });
 
-test("extract :import with values", () => {
+test("not extract :import with values", () => {
   expect(
-    runExtract(":import(colors) { i__blue: blue; i__red: red; }")
+    runExtract(":import(./colors.css) { i__blue: blue; i__red: red; }")
   ).toEqual({
     icssImports: {
-      colors: {
+      "./colors.css": {
         i__blue: "blue",
         i__red: "red"
       }
@@ -51,7 +51,7 @@ test("extract :import with values", () => {
 });
 
 test("not extract invalid :import", () => {
-  expect(runExtract(":import(./color.css) {}")).toEqual({
+  expect(runExtract(":import(\\'./colors.css) {}")).toEqual({
     icssImports: {},
     icssExports: {}
   });

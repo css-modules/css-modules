@@ -1,4 +1,4 @@
-const importPattern = /^:import\(("[^"]*"|'[^']*'|[\w-\.]+)\)$/;
+const importPattern = /^:import\(("[^"]*"|'[^']*'|[^"']+)\)$/;
 
 const getDeclsObject = rule => {
   const object = {};
@@ -16,7 +16,7 @@ const extractICSS = (css, removeRules = true) => {
       if (node.selector.slice(0, 7) === ":import") {
         const matches = importPattern.exec(node.selector);
         if (matches) {
-          const path = matches[1];
+          const path = matches[1].replace(/'|"/g, "");
           const aliases = Object.assign(
             icssImports[path] || {},
             getDeclsObject(node)
