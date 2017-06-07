@@ -102,6 +102,7 @@ i. e. with less.js
 * [Theming](docs/theming.md)
 * [css-modules/browserify-demo](https://github.com/css-modules/browserify-demo)
 * [x-team/starting-css-modules](https://github.com/x-team/starting-css-modules)
+* [Gulp + Rollup + PostCSS + CSS Modules](https://github.com/Shyam-Chen/Vanilla-Starter-Kit)
 
 ## History
 
