@@ -1,4 +1,4 @@
-const matchValueName = /[$]?[\w-]+[\w.]*/g;
+const matchValueName = /[$]?[\w-]+/g;
 
 const replaceValueSymbols = (value, replacements) => {
   let matches;

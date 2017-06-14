@@ -12,16 +12,14 @@ test("return empty CSS unchanged", () => {
   expect(replace("", {})).toEqual("");
 });
 
-test("not change class names", () => {
-  expect(replace(".foo { color: red }", { foo: "bar" })).toEqual(
-    ".foo { color: red }"
-  );
-});
-
 test("not change property names", () => {
   expect(replace(".foo { color: red }", { color: "background" })).toEqual(
     ".foo { color: red }"
   );
+});
+
+test("not change non-media at-rules", () => {
+  expect(replace("@import url;", { url: "otherUrl" })).toEqual("@import url;");
 });
 
 test("change declaration values", () => {
@@ -36,4 +34,15 @@ test("should change media queries", () => {
       small: "(max-width: 599px)"
     })
   ).toEqual("@media (max-width: 599px) { .foo { color: red } }");
+});
+
+test("should replace class names and id in selectors", () => {
+  expect(
+    replace(".className1.className2 #id1#id2 { color: red }", {
+      className1: "__className",
+      id1: "__id",
+      "className1.className2": "__badClass",
+      "id1#id2": "__badId"
+    })
+  ).toEqual(".__className.className2 #__id#id2 { color: red }");
 });
