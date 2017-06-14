@@ -1,52 +1,47 @@
-import postcss from 'postcss'
-import { createICSSRules } from '../src'
+/* eslint-env jest */
+import postcss from "postcss";
+import { createICSSRules } from "../src";
 
 const run = (imports, exports) => {
-  return postcss.root().append(createICSSRules(imports, exports)).toString()
-}
+  return postcss.root().append(createICSSRules(imports, exports)).toString();
+};
 
-test('create :import statement', () => {
+test("create :import statement", () => {
   expect(
     run(
       {
-        colors: {
-          a: 'b',
-          c: 'd'
-        },
-        '"path/file"': {
-          e: 'f'
+        "path/file": {
+          e: "f"
         }
       },
       {}
     )
-  ).toEqual(
-    ':import(colors) {\n  a: b;\n  c: d\n}\n:import("path/file") {\n  e: f\n}'
-  )
-})
+  ).toEqual(":import('path/file') {\n  e: f\n}");
+});
 
-test('create :export statement', () => {
+test("create :export statement", () => {
   expect(
     run(
       {},
       {
-        a: 'b',
-        c: 'd'
+        a: "b",
+        c: "d"
       }
     )
-  ).toEqual(':export {\n  a: b;\n  c: d\n}')
-})
+  ).toEqual(":export {\n  a: b;\n  c: d\n}");
+});
 
-test('create :import and :export', () => {
+test("create :import and :export", () => {
   expect(
     run(
       {
         colors: {
-          a: 'b'
+          a: "b"
         }
       },
       {
-        c: 'd'
+        c: "d"
       }
     )
-  ).toEqual(':import(colors) {\n  a: b\n}\n:export {\n  c: d\n}')
-})
+  ).toEqual(":import('colors') {\n  a: b\n}\n:export {\n  c: d\n}");
+});
