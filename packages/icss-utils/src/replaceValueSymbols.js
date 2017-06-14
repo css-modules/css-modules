@@ -1,18 +1,18 @@
-const matchValueName = /[$#]?[\w-\.]+/g
+const matchValueName = /[$]?[\w-]+[\w.]*/g;
 
 const replaceValueSymbols = (value, replacements) => {
-  let matches
+  let matches;
   while ((matches = matchValueName.exec(value))) {
-    const replacement = replacements[matches[0]]
+    const replacement = replacements[matches[0]];
     if (replacement) {
       value =
         value.slice(0, matches.index) +
         replacement +
-        value.slice(matchValueName.lastIndex)
-      matchValueName.lastIndex -= matches[0].length - replacement.length
+        value.slice(matchValueName.lastIndex);
+      matchValueName.lastIndex -= matches[0].length - replacement.length;
     }
   }
-  return value
-}
+  return value;
+};
 
-export default replaceValueSymbols
+export default replaceValueSymbols;

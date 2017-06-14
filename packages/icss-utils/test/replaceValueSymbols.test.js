@@ -27,14 +27,13 @@ test("change multiple symbols within values", () => {
 
 test("change complex symbols, if you feel like trolling yourself", () => {
   expect(
-    replace("1px 0.5em 3px $sass-a #f00", {
+    replace("1px 0.5em 3px $sass-a", {
       "1px": "1rem",
       "0.5em": "10px",
       "3px": "$sass-b",
-      "$sass-a": "4px",
-      "#f00": "green"
+      "$sass-a": "4px"
     })
-  ).toEqual("1rem 10px $sass-b 4px green");
+  ).toEqual("1rem 10px $sass-b 4px");
 });
 
 test("rewrite custom properties", () => {
@@ -55,4 +54,19 @@ test("not replace a replacement", () => {
   expect(replace("blue red", { red: "blue", blue: "green" })).toEqual(
     "green blue"
   );
+});
+
+test("replace selectors identifiers started with . or #", () => {
+  expect(
+    replace(".className #id", { className: "otherClassName", id: "otherId" })
+  ).toEqual(".otherClassName #otherId");
+});
+
+test("not replace with values started with . or #", () => {
+  expect(
+    replace(".className #id", {
+      ".className": "otherClassName",
+      "#id": "otherId"
+    })
+  ).toEqual(".className #id");
 });
