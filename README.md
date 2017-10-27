@@ -60,6 +60,8 @@ It's possible to compose multiple classes with `composes: classNameA classNameB;
 
 ## Dependencies
 
+### Composing from other files
+
 It's possible to compose class names from other **CSS Modules**.
 
 ``` css
@@ -74,6 +76,15 @@ Note that composing should not form a circular dependency. Elsewise it's *undefi
 
 Best if classes do a single thing and dependencies are hierarchic.
 
+### Composing from global class names
+
+It's possible to compose from **global** class names.
+
+```css
+.otherClassName {
+  composes: globalClassName from global;
+}
+```
 
 ## Usage with preprocessors
 
