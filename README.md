@@ -86,7 +86,6 @@ It's possible to compose from **global** class names.
 }
 ```
 
-
 ## Usage with preprocessors
 
 Preprocessors can make it easy to define a block global or local.
