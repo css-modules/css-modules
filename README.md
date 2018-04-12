@@ -58,6 +58,40 @@ There can be multiple `composes` rules, but `composes` rules must be before othe
 
 It's possible to compose multiple classes with `composes: classNameA classNameB;`.
 
+### Pseudo classes
+
+Classes which have pseudo selectors attached will be brought along when used in
+a `composes` statement.
+
+In the scenario below, `otherClassName` will also be given the `:hover` pseudo
+class defined on `className`.
+
+``` css
+.className {
+  color: green;
+}
+.className:hover {
+  color: red;
+}
+
+.otherClassName {
+  composes: className;
+  background: black;
+}
+```
+
+So the definition of `otherClassName` above is the same as defining:
+
+``` css
+.otherClassName {
+  color: green;
+  background: black;
+}
+.otherClassName:hover {
+  color: red;
+}
+```
+
 ## Dependencies
 
 ### Composing from other files
