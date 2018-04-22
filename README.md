@@ -119,7 +119,7 @@ i. e. with less.js
 ## History
 
 * 04/2015: `placeholders` feature in css-loader (webpack) allows local scoped selectors (later renamed to `local scope`) by @sokra
-* 05/2015: `postcss-local-scope` enables `local scope` by default (see [blog post](https://medium.com/seek-ui-engineering/the-end-of-global-css-90d2a4a06284)) by @markdalgleish
+* 05/2015: `postcss-local-scope` enables `local scope` by default (see [blog post](https://medium.com/seek-blog/the-end-of-global-css-90d2a4a06284)) by @markdalgleish
 * 05/2015: `extends` feature in css-loader allow to compose local or imported class names by @sokra
 * 05/2015: First CSS Modules spec document and github organization with @sokra, @markdalgleish and @geelen
 * 06/2015: `extends` renamed to `composes`
