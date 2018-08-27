@@ -16,17 +16,20 @@ Instead of importing a style in the component, the component can take a style as
 .inner { color: yellow; }
 ```
 
-``` js
-/* component/index.js */
+``` jsx
+/* component/index.jsx */
 export default class Component {
   constructor(theme) {
     this.theme = theme;
   }
+  
   render() {
-    var theme = this.theme;
-    return '<div class="' + theme.outer + '">' +
-      '<div class="' + theme.inner + '">' +
-      '</div></div>';
+    const theme = this.theme;
+    return (
+      <div className={theme.outer}>
+        <div className={theme.inner}></div>
+      </div>
+    );
   }
 }
 ```
