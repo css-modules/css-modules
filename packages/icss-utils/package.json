@@ -57,7 +57,7 @@
   },
   "homepage": "https://github.com/css-modules/icss-utils#readme",
   "dependencies": {
-    "postcss": "^6.0.2"
+    "postcss": "^7.0.5"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
