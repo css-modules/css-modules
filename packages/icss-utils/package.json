@@ -1,8 +1,11 @@
 {
   "name": "icss-utils",
-  "version": "3.0.1",
+  "version": "4.0.0",
   "description": "ICSS utils for postcss ast",
   "main": "lib/index.js",
+  "engines": {
+    "node": ">= 6"
+  },
   "files": [
     "lib"
   ],
@@ -34,7 +37,7 @@
         "env",
         {
           "targets": {
-            "node": 4
+            "node": 6
           }
         }
       ]
