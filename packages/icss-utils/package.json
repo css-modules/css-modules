@@ -1,18 +1,16 @@
 {
   "name": "icss-utils",
-  "version": "4.0.0",
+  "version": "3.0.1",
   "description": "ICSS utils for postcss ast",
-  "main": "src/index.js",
-  "engines": {
-    "node": ">= 6"
-  },
+  "main": "lib/index.js",
   "files": [
-    "src"
+    "lib"
   ],
   "scripts": {
+    "build": "babel --out-dir lib src",
     "test": "jest --coverage",
     "precommit": "lint-staged",
-    "prepublish": "yarn test"
+    "prepublish": "yarn test && yarn run build"
   },
   "lint-staged": {
     "*.js": [
@@ -29,6 +27,18 @@
       "es6": true
     },
     "extends": "eslint:recommended"
+  },
+  "babel": {
+    "presets": [
+      [
+        "env",
+        {
+          "targets": {
+            "node": 4
+          }
+        }
+      ]
+    ]
   },
   "repository": {
     "type": "git",
@@ -50,6 +60,9 @@
     "postcss": "^7.0.5"
   },
   "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-jest": "^20.0.3",
+    "babel-preset-env": "^1.5.2",
     "eslint": "^4.0.0",
     "husky": "^0.13.4",
     "jest": "^20.0.4",
