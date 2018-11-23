@@ -1,19 +1,20 @@
 {
   "name": "postcss-modules-scope",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "description": "A CSS Modules transform to extract export statements from local-scope classes",
-  "main": "lib/index.js",
+  "main": "src/index.js",
+  "engines": {
+    "node": ">= 6"
+  },
   "scripts": {
-    "lint": "eslint src",
-    "build": "babel --out-dir lib src",
-    "watch": "chokidar src -c 'npm run build'",
-    "test": "mocha --compilers js:babel/register",
-    "posttest": "npm run lint && npm run build",
-    "autotest": "chokidar src test -c 'npm test'",
-    "precover": "npm run lint && npm run build",
-    "cover": "babel-istanbul cover node_modules/.bin/_mocha",
-    "travis": "npm run cover -- --report lcovonly",
-    "prepublish": "npm run build"
+    "lint": "eslint src test",
+    "pretest": "yarn lint",
+    "test": "mocha",
+    "autotest": "chokidar src test -c 'yarn test'",
+    "precover": "yarn lint",
+    "cover": "nyc mocha",
+    "travis": "yarn cover",
+    "prepublish": "yarn run test"
   },
   "repository": {
     "type": "git",
@@ -25,7 +26,7 @@
     "plugin"
   ],
   "files": [
-    "lib"
+    "src"
   ],
   "author": "Glen Maddern",
   "license": "ISC",
@@ -35,18 +36,15 @@
   "homepage": "https://github.com/css-modules/postcss-modules-scope",
   "dependencies": {
     "css-selector-tokenizer": "^0.7.0",
-    "postcss": "^6.0.1"
+    "postcss": "^7.0.6"
   },
   "devDependencies": {
-    "babel": "^5.4.7",
-    "babel-eslint": "^6.1.2",
-    "babel-istanbul": "^0.4.0",
-    "babelify": "^7.1.0",
     "chokidar-cli": "^1.0.1",
     "codecov.io": "^0.1.2",
-    "coveralls": "^2.11.2",
+    "coveralls": "^3.0.2",
     "css-selector-parser": "^1.0.4",
-    "eslint": "^1.5.0",
-    "mocha": "^3.0.1"
+    "eslint": "^5.9.0",
+    "nyc": "^13.1.0",
+    "mocha": "^5.2.0"
   }
 }
