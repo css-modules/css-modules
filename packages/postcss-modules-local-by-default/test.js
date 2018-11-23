@@ -1,9 +1,11 @@
-var test = require('tape');
-var postcss = require('postcss');
-var plugin = require('./');
-var name = require('./package.json').name;
+'use strict';
 
-var tests = [
+const test = require('tape');
+const postcss = require('postcss');
+const plugin = require('./');
+const name = require('./package.json').name;
+
+const tests = [
   {
     should: 'scope selectors',
     input: '.foobar {}',
@@ -157,7 +159,8 @@ var tests = [
   {
     should: 'localize animation with vendor prefix',
     input: '.foo { -webkit-animation: bar; animation: bar; }',
-    expected: ':local(.foo) { -webkit-animation: :local(bar); animation: :local(bar); }'
+    expected:
+      ':local(.foo) { -webkit-animation: :local(bar); animation: :local(bar); }'
   },
   {
     should: 'not localize other rules',
@@ -171,8 +174,10 @@ var tests = [
   },
   {
     should: 'handle a complex animation rule',
-    input: '.foo { animation: foo, bar 5s linear 2s infinite alternate, barfoo 1s; }',
-    expected: ':local(.foo) { animation: :local(foo), :local(bar) 5s linear 2s infinite alternate, :local(barfoo) 1s; }'
+    input:
+      '.foo { animation: foo, bar 5s linear 2s infinite alternate, barfoo 1s; }',
+    expected:
+      ':local(.foo) { animation: :local(foo), :local(bar) 5s linear 2s infinite alternate, :local(barfoo) 1s; }'
   },
   {
     should: 'handle animations where the first value is not the animation name',
@@ -180,14 +185,18 @@ var tests = [
     expected: ':local(.foo) { animation: 1s :local(foo); }'
   },
   {
-    should: 'handle animations where the first value is not the animation name whilst also using keywords',
+    should:
+      'handle animations where the first value is not the animation name whilst also using keywords',
     input: '.foo { animation: 1s normal ease-out infinite foo; }',
-    expected: ':local(.foo) { animation: 1s normal ease-out infinite :local(foo); }'
+    expected:
+      ':local(.foo) { animation: 1s normal ease-out infinite :local(foo); }'
   },
   {
     should: 'handle animations with custom timing functions',
-    input: '.foo { animation: 1s normal cubic-bezier(0.25, 0.5, 0.5. 0.75) foo; }',
-    expected: ':local(.foo) { animation: 1s normal cubic-bezier(0.25, 0.5, 0.5. 0.75) :local(foo); }'
+    input:
+      '.foo { animation: 1s normal cubic-bezier(0.25, 0.5, 0.5. 0.75) foo; }',
+    expected:
+      ':local(.foo) { animation: 1s normal cubic-bezier(0.25, 0.5, 0.5. 0.75) :local(foo); }'
   },
   {
     should: 'handle animations whose names are keywords',
@@ -202,7 +211,8 @@ var tests = [
   {
     should: 'handle "constructor" as animation name',
     input: '.foo { animation: constructor constructor; }',
-    expected: ':local(.foo) { animation: :local(constructor) :local(constructor); }'
+    expected:
+      ':local(.foo) { animation: :local(constructor) :local(constructor); }'
   },
   {
     should: 'default to global when mode provided',
@@ -247,7 +257,8 @@ var tests = [
   {
     should: 'localize keyframes',
     input: '@keyframes foo { from { color: red; } to { color: blue; } }',
-    expected: '@keyframes :local(foo) { from { color: red; } to { color: blue; } }'
+    expected:
+      '@keyframes :local(foo) { from { color: red; } to { color: blue; } }'
   },
   {
     should: 'localize keyframes in global default mode',
@@ -257,8 +268,10 @@ var tests = [
   },
   {
     should: 'localize explicit keyframes',
-    input: '@keyframes :local(foo) { 0% { color: red; } 33.3% { color: yellow; } 100% { color: blue; } } @-webkit-keyframes :global(bar) { from { color: red; } to { color: blue; } }',
-    expected: '@keyframes :local(foo) { 0% { color: red; } 33.3% { color: yellow; } 100% { color: blue; } } @-webkit-keyframes bar { from { color: red; } to { color: blue; } }'
+    input:
+      '@keyframes :local(foo) { 0% { color: red; } 33.3% { color: yellow; } 100% { color: blue; } } @-webkit-keyframes :global(bar) { from { color: red; } to { color: blue; } }',
+    expected:
+      '@keyframes :local(foo) { 0% { color: red; } 33.3% { color: yellow; } 100% { color: blue; } } @-webkit-keyframes bar { from { color: red; } to { color: blue; } }'
   },
   {
     should: 'ignore :export statements',
@@ -274,7 +287,8 @@ var tests = [
     should: 'compile in pure mode',
     input: ':global(.foo).bar, [type="radio"] ~ .label, :not(.foo), #bar {}',
     options: { mode: 'pure' },
-    expected: '.foo:local(.bar), [type="radio"] ~ :local(.label), :not(:local(.foo)), :local(#bar) {}'
+    expected:
+      '.foo:local(.bar), [type="radio"] ~ :local(.label), :not(:local(.foo)), :local(#bar) {}'
   },
   {
     should: 'compile explict global element',
@@ -381,16 +395,19 @@ var tests = [
   },
   {
     should: 'not modify urls without option',
-    input: '.a { background: url(./image.png); }\n' +
+    input:
+      '.a { background: url(./image.png); }\n' +
       ':global .b { background: url(image.png); }\n' +
       '.c { background: url("./image.png"); }',
-    expected: ':local(.a) { background: url(./image.png); }\n' +
+    expected:
+      ':local(.a) { background: url(./image.png); }\n' +
       '.b { background: url(image.png); }\n' +
       ':local(.c) { background: url("./image.png"); }'
   },
   {
     should: 'rewrite url in local block',
-    input: '.a { background: url(./image.png); }\n' +
+    input:
+      '.a { background: url(./image.png); }\n' +
       ':global .b { background: url(image.png); }\n' +
       '.c { background: url("./image.png"); }\n' +
       '.d { background: -webkit-image-set(url("./image.png") 1x, url("./image2x.png") 2x); }\n' +
@@ -401,16 +418,17 @@ var tests = [
       '@keyframes ani2 { 0% { src: url("./image.png"); } }',
     options: {
       rewriteUrl: function(global, url) {
-        var mode = global ? 'global' : 'local';
+        const mode = global ? 'global' : 'local';
         return '(' + mode + ')' + url + '"' + mode + '"';
       }
     },
-    expected: ':local(.a) { background: url((local\\)./image.png\\\"local\\\"); }\n' +
-      '.b { background: url((global\\)image.png\\\"global\\\"); }\n' +
-      ':local(.c) { background: url(\"(local)./image.png\\\"local\\\"\"); }\n' +
-      ':local(.d) { background: -webkit-image-set(url(\"(local)./image.png\\\"local\\\"\") 1x, url(\"(local)./image2x.png\\\"local\\\"\") 2x); }\n' +
-      '@font-face { src: url(\"(local)./font.woff\\\"local\\\"\"); }\n' +
-      '@-webkit-font-face { src: url(\"(local)./font.woff\\\"local\\\"\"); }\n' +
+    expected:
+      ':local(.a) { background: url((local\\)./image.png\\"local\\"); }\n' +
+      '.b { background: url((global\\)image.png\\"global\\"); }\n' +
+      ':local(.c) { background: url("(local)./image.png\\"local\\""); }\n' +
+      ':local(.d) { background: -webkit-image-set(url("(local)./image.png\\"local\\"") 1x, url("(local)./image2x.png\\"local\\"") 2x); }\n' +
+      '@font-face { src: url("(local)./font.woff\\"local\\""); }\n' +
+      '@-webkit-font-face { src: url("(local)./font.woff\\"local\\""); }\n' +
       '@media screen { :local(.a) { src: url("(local)./image.png\\"local\\""); } }\n' +
       '@keyframes ani1 { 0% { src: url("(global)image.png\\"global\\""); } }\n' +
       '@keyframes :local(ani2) { 0% { src: url("(local)./image.png\\"local\\""); } }'
@@ -423,40 +441,46 @@ var tests = [
   {
     should: 'not crash on a rule without nodes',
     input: (function() {
-      var inner = postcss.rule({ selector: '.b', ruleWithoutBody: true });
-      var outer = postcss.rule({ selector: '.a' }).push(inner);
-      var root = postcss.root().push(outer);
+      const inner = postcss.rule({ selector: '.b', ruleWithoutBody: true });
+      const outer = postcss.rule({ selector: '.a' }).push(inner);
+      const root = postcss.root().push(outer);
       inner.nodes = undefined;
       return root;
     })(),
     // postcss-less's stringify would honor `ruleWithoutBody` and omit the trailing `{}`
     expected: ':local(.a) {\n    :local(.b) {}\n}'
   }
-
 ];
 
-function process (css, options) {
-    return postcss(plugin(options)).process(css).css;
+function process(css, options) {
+  return postcss(plugin(options)).process(css).css;
 }
 
-test(name, function (t) {
-    t.plan(tests.length);
+test(name, function(t) {
+  t.plan(tests.length);
 
-    tests.forEach(function (testCase) {
-        var options = testCase.options;
-        if(testCase.error) {
-          t.throws(function() {
-            process(testCase.input, options);
-          }, testCase.error, 'should ' + testCase.should);
-        } else {
-          t.equal(process(testCase.input, options), testCase.expected, 'should ' + testCase.should);
-        }
-    });
+  tests.forEach(function(testCase) {
+    const options = testCase.options;
+    if (testCase.error) {
+      t.throws(
+        function() {
+          process(testCase.input, options);
+        },
+        testCase.error,
+        'should ' + testCase.should
+      );
+    } else {
+      t.equal(
+        process(testCase.input, options),
+        testCase.expected,
+        'should ' + testCase.should
+      );
+    }
+  });
 });
 
-
-test('should use the postcss plugin api', function (t) {
-    t.plan(2);
-    t.ok(plugin().postcssVersion, 'should be able to access version');
-    t.equal(plugin().postcssPlugin, name, 'should be able to access name');
+test('should use the postcss plugin api', function(t) {
+  t.plan(2);
+  t.ok(plugin().postcssVersion, 'should be able to access version');
+  t.equal(plugin().postcssPlugin, name, 'should be able to access name');
 });
