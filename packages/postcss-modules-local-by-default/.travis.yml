@@ -1,8 +1,9 @@
 language: node_js
 node_js:
-  - "4"
   - "6"
-  - "node"
+  - "8"
+  - "10"
+  - "11"
 script: npm run travis
 
 after_success:

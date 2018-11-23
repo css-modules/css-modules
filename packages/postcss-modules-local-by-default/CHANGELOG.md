@@ -2,9 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased][unreleased]
+## [2.0.0] - 2018-11-23
 ### Changed
-- Nothing yet.
+- Drop support `nodejs@4`.
+- Update `postcss` version to `7`.
 
 ## [0.0.11] - 2015-07-19
 ### Fixed
