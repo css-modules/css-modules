@@ -1,0 +1,7 @@
+:local(.constructor) {
+  color: green;
+}
+
+:local(.toString) {
+  color: red;
+}

@@ -1,0 +1,12 @@
+._input__constructor {
+  color: green;
+}
+
+._input__toString {
+  color: red;
+}
+
+:export {
+  constructor: _input__constructor;
+  toString: _input__toString;
+}
