@@ -410,12 +410,14 @@ const tests = [
       '.a { background: url(./image.png); }\n' +
       ':global .b { background: url(image.png); }\n' +
       '.c { background: url("./image.png"); }\n' +
+      '.c { background: url(\'./image.png\'); }\n' +
       '.d { background: -webkit-image-set(url("./image.png") 1x, url("./image2x.png") 2x); }\n' +
       '@font-face { src: url("./font.woff"); }\n' +
       '@-webkit-font-face { src: url("./font.woff"); }\n' +
       '@media screen { .a { src: url("./image.png"); } }\n' +
       '@keyframes :global(ani1) { 0% { src: url("image.png"); } }\n' +
-      '@keyframes ani2 { 0% { src: url("./image.png"); } }',
+      '@keyframes ani2 { 0% { src: url("./image.png"); } }\n' +
+      'foo { background: end-with-url(something); }',
     options: {
       rewriteUrl: function(global, url) {
         const mode = global ? 'global' : 'local';
@@ -426,12 +428,14 @@ const tests = [
       ':local(.a) { background: url((local\\)./image.png\\"local\\"); }\n' +
       '.b { background: url((global\\)image.png\\"global\\"); }\n' +
       ':local(.c) { background: url("(local)./image.png\\"local\\""); }\n' +
+      ':local(.c) { background: url(\'(local)./image.png"local"\'); }\n' +
       ':local(.d) { background: -webkit-image-set(url("(local)./image.png\\"local\\"") 1x, url("(local)./image2x.png\\"local\\"") 2x); }\n' +
       '@font-face { src: url("(local)./font.woff\\"local\\""); }\n' +
       '@-webkit-font-face { src: url("(local)./font.woff\\"local\\""); }\n' +
       '@media screen { :local(.a) { src: url("(local)./image.png\\"local\\""); } }\n' +
       '@keyframes ani1 { 0% { src: url("(global)image.png\\"global\\""); } }\n' +
-      '@keyframes :local(ani2) { 0% { src: url("(local)./image.png\\"local\\""); } }'
+      '@keyframes :local(ani2) { 0% { src: url("(local)./image.png\\"local\\""); } }\n' +
+      'foo { background: end-with-url(something); }',
   },
   {
     should: 'not crash on atrule without nodes',
@@ -449,7 +453,32 @@ const tests = [
     })(),
     // postcss-less's stringify would honor `ruleWithoutBody` and omit the trailing `{}`
     expected: ':local(.a) {\n    :local(.b) {}\n}'
-  }
+  },
+  {
+    should: 'not break unicode characters',
+    input: '.a { content: "\\2193" }',
+    expected: ':local(.a) { content: "\\2193" }'
+  },
+  {
+    should: 'not break unicode characters',
+    input: '.a { content: "\\2193\\2193" }',
+    expected: ':local(.a) { content: "\\2193\\2193" }'
+  },
+  {
+    should: 'not break unicode characters',
+    input: '.a { content: "\\2193 \\2193" }',
+    expected: ':local(.a) { content: "\\2193 \\2193" }'
+  },
+  {
+    should: 'not break unicode characters',
+    input: '.a { content: "\\2193\\2193\\2193" }',
+    expected: ':local(.a) { content: "\\2193\\2193\\2193" }'
+  },
+  {
+    should: 'not break unicode characters',
+    input: '.a { content: "\\2193 \\2193 \\2193" }',
+    expected: ':local(.a) { content: "\\2193 \\2193 \\2193" }'
+  },
 ];
 
 function process(css, options) {

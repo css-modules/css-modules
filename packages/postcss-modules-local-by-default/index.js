@@ -2,6 +2,7 @@
 
 const postcss = require('postcss');
 const Tokenizer = require('css-selector-tokenizer');
+const valueParser = require('postcss-value-parser');
 
 function normalizeNodeArray(nodes) {
   const array = [];
@@ -162,45 +163,48 @@ function localizeNode(node, context) {
 }
 
 function localizeDeclNode(node, context) {
-  let newNode;
   switch (node.type) {
-    case 'item':
+    case 'word':
       if (context.localizeNextItem) {
-        newNode = Object.create(node);
-        newNode.name = ':local(' + newNode.name + ')';
+        node.value = ':local(' + node.value + ')';
         context.localizeNextItem = false;
-        return newNode;
       }
       break;
 
-    case 'nested-item':
-      const newNodes = node.nodes.map(function(n) {
-        return localizeDeclValue(n, context);
-      });
-      node = Object.create(node);
-      node.nodes = newNodes;
-      break;
+    case 'function':
+      if (context.options &&  context.options.rewriteUrl && node.value.toLowerCase() === 'url') {
+        node.nodes.map((nestedNode) => {
+          if (nestedNode.type !== 'string' && nestedNode.type !== 'word') {
+            return;
+          }
 
-    case 'url':
-      if (context.options && context.options.rewriteUrl) {
-        newNode = Object.create(node);
-        newNode.url = context.options.rewriteUrl(context.global, node.url);
-        return newNode;
+          let newUrl = context.options.rewriteUrl(context.global, nestedNode.value);
+
+          switch (nestedNode.type) {
+            case 'string':
+              if (nestedNode.quote === '\'') {
+                newUrl = newUrl.replace(/(\\)/g, '\\$1').replace(/'/g, '\\\'')
+              }
+
+              if (nestedNode.quote === '"') {
+                newUrl = newUrl.replace(/(\\)/g, '\\$1').replace(/"/g, '\\"')
+              }
+
+              break;
+            case 'word':
+              newUrl = newUrl.replace(/("|'|\)|\\)/g, '\\$1');
+              break;
+          }
+
+          nestedNode.value = newUrl;
+        });
       }
       break;
   }
   return node;
 }
 
-function localizeDeclValue(valueNode, context) {
-  const newValueNode = Object.create(valueNode);
-  newValueNode.nodes = valueNode.nodes.map(function(node) {
-    return localizeDeclNode(node, context);
-  });
-  return newValueNode;
-}
-
-function localizeAnimationShorthandDeclValueNodes(nodes, context) {
+function localizeAnimationShorthandDeclValues(decl, context) {
   const validIdent = /^-?[_a-z][_a-z0-9-]*$/i;
 
   /*
@@ -240,9 +244,9 @@ function localizeAnimationShorthandDeclValueNodes(nodes, context) {
 
   const didParseAnimationName = false;
   const parsedAnimationKeywords = {};
-  return nodes.map(function(valueNode) {
+  const valueNodes = valueParser(decl.value).walk((node) => {
     const value =
-      valueNode.type === 'item' ? valueNode.name.toLowerCase() : null;
+      node.type === 'word' ? node.value.toLowerCase() : null;
 
     let shouldParseAnimationName = false;
 
@@ -266,52 +270,43 @@ function localizeAnimationShorthandDeclValueNodes(nodes, context) {
       global: context.global,
       localizeNextItem: shouldParseAnimationName && !context.global
     };
-    return localizeDeclNode(valueNode, subContext);
+    return localizeDeclNode(node, subContext);
   });
+
+  decl.value = valueNodes.toString();
 }
 
-function localizeAnimationShorthandDeclValues(valuesNode, decl, context) {
-  const newValuesNode = Object.create(valuesNode);
-  newValuesNode.nodes = valuesNode.nodes.map(function(valueNode, index) {
-    const newValueNode = Object.create(valueNode);
-    newValueNode.nodes = localizeAnimationShorthandDeclValueNodes(
-      valueNode.nodes,
-      context
-    );
-    return newValueNode;
-  });
-  decl.value = Tokenizer.stringifyValues(newValuesNode);
-}
-
-function localizeDeclValues(localize, valuesNode, decl, context) {
-  const newValuesNode = Object.create(valuesNode);
-  newValuesNode.nodes = valuesNode.nodes.map(function(valueNode) {
+function localizeDeclValues(localize, decl, context) {
+  const valueNodes = valueParser(decl.value);
+  valueNodes.walk((node, index, nodes) => {
     const subContext = {
       options: context.options,
       global: context.global,
       localizeNextItem: localize && !context.global
     };
-    return localizeDeclValue(valueNode, subContext);
+    nodes[index] = localizeDeclNode(node, subContext);
   });
-  decl.value = Tokenizer.stringifyValues(newValuesNode);
+  decl.value = valueNodes.toString();
 }
 
 function localizeDecl(decl, context) {
-  const valuesNode = Tokenizer.parseValues(decl.value);
-
-  const isAnimation = /animation?$/i.test(decl.prop);
+  const isAnimation = /animation$/i.test(decl.prop);
 
   if (isAnimation) {
-    return localizeAnimationShorthandDeclValues(valuesNode, decl, context);
+    return localizeAnimationShorthandDeclValues(decl, context);
   }
 
   const isAnimationName = /animation(-name)?$/i.test(decl.prop);
 
   if (isAnimationName) {
-    return localizeDeclValues(true, valuesNode, decl, context);
+    return localizeDeclValues(true, decl, context);
   }
 
-  return localizeDeclValues(false, valuesNode, decl, context);
+  const hasUrl = /url\(/i.test(decl.value);
+
+  if (hasUrl) {
+    return localizeDeclValues(false, decl, context);
+  }
 }
 
 module.exports = postcss.plugin('postcss-modules-local-by-default', function(
