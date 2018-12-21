@@ -243,8 +243,12 @@ function localizeAnimationShorthandDeclValues(decl, context) {
   };
 
   const didParseAnimationName = false;
-  const parsedAnimationKeywords = {};
+  let parsedAnimationKeywords = {};
   const valueNodes = valueParser(decl.value).walk((node) => {
+    /* If div-token appeared (represents as comma ','), a possibility of an animation-keywords should be reflesh. */
+    if (node.type === 'div') {
+      parsedAnimationKeywords = {};
+    }
     const value =
       node.type === 'word' ? node.value.toLowerCase() : null;
 

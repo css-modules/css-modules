@@ -192,6 +192,13 @@ const tests = [
       ':local(.foo) { animation: 1s normal ease-out infinite :local(foo); }'
   },
   {
+    should:
+      'not treat animation curve as identifier of animation name even if it separated by comma',
+    input: '.foo { animation: slide-right 300ms forwards ease-out, fade-in 300ms forwards ease-out; }',
+    expected:
+      ':local(.foo) { animation: :local(slide-right) 300ms forwards ease-out, :local(fade-in) 300ms forwards ease-out; }'
+  },
+  {
     should: 'handle animations with custom timing functions',
     input:
       '.foo { animation: 1s normal cubic-bezier(0.25, 0.5, 0.5. 0.75) foo; }',
