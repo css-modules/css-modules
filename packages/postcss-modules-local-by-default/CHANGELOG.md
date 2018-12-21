@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.0.3] - 2018-12-21
+### Fixed
+- Don't modify inappropriate animation keywords
+
 ## [2.0.2] - 2018-12-05
 ### Fixed
 - Don't break unicode characters.
