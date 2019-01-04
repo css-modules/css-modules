@@ -199,6 +199,23 @@ const tests = [
       ':local(.foo) { animation: :local(slide-right) 300ms forwards ease-out, :local(fade-in) 300ms forwards ease-out; }'
   },
   {
+    should:
+      'not treat "start" and "end" keywords in steps() function as identifiers',
+    input: [
+      '.foo { animation: spin 1s steps(12, end) infinite; }',
+      '.foo { animation: spin 1s STEPS(12, start) infinite; }',
+      '.foo { animation: spin 1s steps(12, END) infinite; }',
+      '.foo { animation: spin 1s steps(12, START) infinite; }',
+    ].join('\n'),
+    expected:
+      [
+        ':local(.foo) { animation: :local(spin) 1s steps(12, end) infinite; }',
+        ':local(.foo) { animation: :local(spin) 1s STEPS(12, start) infinite; }',
+        ':local(.foo) { animation: :local(spin) 1s steps(12, END) infinite; }',
+        ':local(.foo) { animation: :local(spin) 1s steps(12, START) infinite; }'
+      ].join('\n'),
+  },
+  {
     should: 'handle animations with custom timing functions',
     input:
       '.foo { animation: 1s normal cubic-bezier(0.25, 0.5, 0.5. 0.75) foo; }',

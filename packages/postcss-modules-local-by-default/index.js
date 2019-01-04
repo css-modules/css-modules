@@ -204,6 +204,12 @@ function localizeDeclNode(node, context) {
   return node;
 }
 
+function isWordAFunctionArgument(wordNode, functionNode) {
+  return functionNode
+    ? functionNode.nodes.some(functionNodeChild => functionNodeChild.sourceIndex === wordNode.sourceIndex)
+    : false
+}
+
 function localizeAnimationShorthandDeclValues(decl, context) {
   const validIdent = /^-?[_a-z][_a-z0-9-]*$/i;
 
@@ -244,13 +250,19 @@ function localizeAnimationShorthandDeclValues(decl, context) {
 
   const didParseAnimationName = false;
   let parsedAnimationKeywords = {};
+  let stepsFunctionNode = null;
   const valueNodes = valueParser(decl.value).walk((node) => {
     /* If div-token appeared (represents as comma ','), a possibility of an animation-keywords should be reflesh. */
     if (node.type === 'div') {
       parsedAnimationKeywords = {};
     }
+    if (node.type === 'function' && node.value.toLowerCase() === 'steps') {
+      stepsFunctionNode = node;
+    }
     const value =
-      node.type === 'word' ? node.value.toLowerCase() : null;
+      node.type === 'word' && !isWordAFunctionArgument(node, stepsFunctionNode)
+        ? node.value.toLowerCase()
+        : null;
 
     let shouldParseAnimationName = false;
 
