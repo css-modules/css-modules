@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.0.5] - 2019-02-06
+### Fixed
+- Path to `index.js`
+
 ## [2.0.4] - 2019-01-04
 ### Fixed
 - Inappropriate modification of `steps` function arguments
