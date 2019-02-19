@@ -26,7 +26,7 @@ element.innerHTML = '<div class="' + styles.className + '">';
 
 For local class names camelCase naming is recommended, but not enforced.
 
-> This is recommended because the common alternative, kebab-casing may cause unexpected behavior when trying to access style.class-name as a dot notation. You can still work around kebab-case with bracket notation (eg. `style['class-name']`) but `style.className` is cleaner.
+> This is recommended because the common alternative, kebab-casing may cause unexpected behavior when trying to access styles.class-name as a dot notation. You can still work around kebab-case with bracket notation (eg. `styles['class-name']`) but `styles.className` is cleaner.
 
 ## Exceptions
 
