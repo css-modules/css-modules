@@ -1,55 +1,53 @@
 'use strict';
 
 const postcss = require('postcss');
-const Tokenizer = require('css-selector-tokenizer');
+const selectorParser = require('postcss-selector-parser');
 
 const hasOwnProperty = Object.prototype.hasOwnProperty;
 
-function getSingleLocalNamesForComposes(selectors) {
-  return selectors.nodes.map(node => {
+function getSingleLocalNamesForComposes(root) {
+  return root.nodes.map(node => {
     if (node.type !== 'selector' || node.nodes.length !== 1) {
       throw new Error(
-        'composition is only allowed when selector is single :local class name not in "' +
-          Tokenizer.stringify(selectors) +
-          '"'
+        `composition is only allowed when selector is single :local class name not in "${root}"`
       );
     }
     node = node.nodes[0];
     if (
-      node.type !== 'nested-pseudo-class' ||
-      node.name !== 'local' ||
+      node.type !== 'pseudo' ||
+      node.value !== ':local' ||
       node.nodes.length !== 1
     ) {
       throw new Error(
         'composition is only allowed when selector is single :local class name not in "' +
-          Tokenizer.stringify(selectors) +
+          root +
           '", "' +
-          Tokenizer.stringify(node) +
+          node +
           '" is weird'
       );
     }
-    node = node.nodes[0];
-    if (node.type !== 'selector' || node.nodes.length !== 1) {
+    node = node.first;
+    if (node.type !== 'selector' || node.length !== 1) {
       throw new Error(
         'composition is only allowed when selector is single :local class name not in "' +
-          Tokenizer.stringify(selectors) +
+          root +
           '", "' +
-          Tokenizer.stringify(node) +
+          node +
           '" is weird'
       );
     }
-    node = node.nodes[0];
+    node = node.first;
     if (node.type !== 'class') {
       // 'id' is not possible, because you can't compose ids
       throw new Error(
         'composition is only allowed when selector is single :local class name not in "' +
-          Tokenizer.stringify(selectors) +
+          root +
           '", "' +
-          Tokenizer.stringify(node) +
+          node +
           '" is weird'
       );
     }
-    return node.name;
+    return node.value;
   });
 }
 
@@ -74,40 +72,45 @@ const processor = postcss.plugin('postcss-modules-scope', function(options) {
     }
 
     function localizeNode(node) {
-      const newNode = Object.create(node);
       switch (node.type) {
         case 'selector':
-          newNode.nodes = node.nodes.map(localizeNode);
-          return newNode;
+          node.nodes = node.map(localizeNode);
+          return node;
         case 'class':
+          return selectorParser.className({
+            value: exportScopedName(node.value),
+          });
         case 'id': {
-          newNode.name = exportScopedName(node.name);
-          return newNode;
+          return selectorParser.id({
+            value: exportScopedName(node.value),
+          });
         }
       }
       throw new Error(
-        node.type +
-          ' ("' +
-          Tokenizer.stringify(node) +
-          '") is not allowed in a :local block'
+        `${node.type} ("${node}") is not allowed in a :local block`
       );
     }
 
     function traverseNode(node) {
       switch (node.type) {
-        case 'nested-pseudo-class':
-          if (node.name === 'local') {
+        case 'pseudo':
+          if (node.value === ':local') {
             if (node.nodes.length !== 1) {
               throw new Error('Unexpected comma (",") in :local block');
             }
-            return localizeNode(node.nodes[0]);
+            const selector = localizeNode(node.first, node.spaces);
+            // move the spaces that were around the psuedo selector to the first
+            // non-container node
+            selector.first.spaces = node.spaces;
+
+            node.replaceWith(selector);
+            return;
           }
         /* falls through */
-        case 'selectors':
+        case 'root':
         case 'selector': {
-          const newNode = Object.create(node);
-          newNode.nodes = node.nodes.map(traverseNode);
-          return newNode;
+          node.each(traverseNode);
+          break;
         }
       }
       return node;
@@ -125,14 +128,16 @@ const processor = postcss.plugin('postcss-modules-scope', function(options) {
 
     // Find any :local classes
     css.walkRules(rule => {
-      const selector = Tokenizer.parse(rule.selector);
-      const newSelector = traverseNode(selector);
-      rule.selector = Tokenizer.stringify(newSelector);
+      let parsedSelector = selectorParser().astSync(rule);
+
+      rule.selector = traverseNode(parsedSelector.clone()).toString();
+      // console.log(rule.selector);
       rule.walkDecls(/composes|compose-with/, decl => {
-        const localNames = getSingleLocalNamesForComposes(selector);
+        const localNames = getSingleLocalNamesForComposes(parsedSelector);
         const classes = decl.value.split(/\s+/);
         classes.forEach(className => {
           const global = /^global\(([^\)]+)\)$/.exec(className);
+
           if (global) {
             localNames.forEach(exportedName => {
               exports[exportedName].push(global[1]);
@@ -196,7 +201,7 @@ const processor = postcss.plugin('postcss-modules-scope', function(options) {
         exportRule.append({
           prop: exportedName,
           value: exports[exportedName].join(' '),
-          raws: { before: '\n  ' }
+          raws: { before: '\n  ' },
         })
       );
       css.append(exportRule);
@@ -209,7 +214,7 @@ processor.generateScopedName = function(exportedName, path) {
     .replace(/\.[^\.\/\\]+$/, '')
     .replace(/[\W_]+/g, '_')
     .replace(/^_|_$/g, '');
-  return `_${sanitisedPath}__${exportedName}`;
+  return `_${sanitisedPath}__${exportedName}`.trim();
 };
 
 module.exports = processor;

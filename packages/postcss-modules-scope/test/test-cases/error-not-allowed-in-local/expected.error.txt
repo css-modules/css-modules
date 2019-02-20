@@ -1,1 +1,1 @@
-element \("body"\) is not allowed in a :local block
+tag \("body"\) is not allowed in a :local block
