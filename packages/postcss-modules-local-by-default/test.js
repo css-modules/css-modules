@@ -512,6 +512,11 @@ const tests = [
     input: '.a { content: "\\2193 \\2193 \\2193" }',
     expected: ':local(.a) { content: "\\2193 \\2193 \\2193" }',
   },
+  {
+    should: 'not ignore custom property set',
+    input: ':root { --title-align: center; --sr-only: { position: absolute; } }',
+    expected: ':root { --title-align: center; --sr-only: { position: absolute; } }',
+  },
 ];
 
 function process(css, options) {

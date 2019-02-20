@@ -459,6 +459,15 @@ module.exports = postcss.plugin('postcss-modules-local-by-default', function(
         return;
       }
 
+      if (
+        rule.nodes &&
+        rule.selector.slice(0, 2) === '--' &&
+        rule.selector.slice(-1) === ':'
+      ) {
+        // ignore custom property set
+        return;
+      }
+
       const context = localizeNode(rule, options.mode);
 
       context.options = options;
