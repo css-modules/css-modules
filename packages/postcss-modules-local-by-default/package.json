@@ -24,7 +24,6 @@
     "trailingComma": "es5"
   },
   "dependencies": {
-    "css-selector-tokenizer": "^0.7.0",
     "postcss": "^7.0.6",
     "postcss-selector-parser": "^5.0.0",
     "postcss-value-parser": "^3.3.1"
