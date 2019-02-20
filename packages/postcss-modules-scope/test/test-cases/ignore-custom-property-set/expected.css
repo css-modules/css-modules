@@ -1,0 +1,6 @@
+:root {
+    --title-align: center;
+    --sr-only: {
+        position: absolute;
+    }
+}
