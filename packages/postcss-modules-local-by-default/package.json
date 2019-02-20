@@ -18,9 +18,15 @@
     "type": "git",
     "url": "https://github.com/css-modules/postcss-modules-local-by-default.git"
   },
+  "prettier": {
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "es5"
+  },
   "dependencies": {
     "css-selector-tokenizer": "^0.7.0",
     "postcss": "^7.0.6",
+    "postcss-selector-parser": "^5.0.0",
     "postcss-value-parser": "^3.3.1"
   },
   "devDependencies": {

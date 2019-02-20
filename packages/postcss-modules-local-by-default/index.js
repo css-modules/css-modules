@@ -1,11 +1,14 @@
 'use strict';
 
 const postcss = require('postcss');
-const Tokenizer = require('css-selector-tokenizer');
+const selectorParser = require('postcss-selector-parser');
 const valueParser = require('postcss-value-parser');
+
+const isSpacing = node => node.type === 'combinator' && node.value === ' ';
 
 function normalizeNodeArray(nodes) {
   const array = [];
+
   nodes.forEach(function(x) {
     if (Array.isArray(x)) {
       normalizeNodeArray(x).forEach(function(item) {
@@ -16,150 +19,206 @@ function normalizeNodeArray(nodes) {
     }
   });
 
-  if (array.length > 0 && array[array.length - 1].type === 'spacing') {
+  if (array.length > 0 && isSpacing(array[array.length - 1])) {
     array.pop();
   }
   return array;
 }
 
-function localizeNode(node, context) {
-  if (context.ignoreNextSpacing && node.type !== 'spacing') {
-    throw new Error('Missing whitespace after :' + context.ignoreNextSpacing);
-  }
-  if (context.enforceNoSpacing && node.type === 'spacing') {
-    throw new Error('Missing whitespace before :' + context.enforceNoSpacing);
-  }
+function localizeNode(rule, mode, options) {
+  const isScopePseudo = node =>
+    node.value === ':local' || node.value === ':global';
 
-  let newNodes;
-  switch (node.type) {
-    case 'selectors':
-      let resultingGlobal;
-      context.hasPureGlobals = false;
-      newNodes = node.nodes.map(function(n) {
-        const nContext = {
-          global: context.global,
-          lastWasSpacing: true,
-          hasLocals: false,
-          explicit: false
-        };
-        n = localizeNode(n, nContext);
-        if (typeof resultingGlobal === 'undefined') {
-          resultingGlobal = nContext.global;
-        } else if (resultingGlobal !== nContext.global) {
-          throw new Error(
-            'Inconsistent rule global/local result in rule "' +
-              Tokenizer.stringify(node) +
-              '" (multiple selectors must result in the same mode for the rule)'
-          );
-        }
-        if (!nContext.hasLocals) {
-          context.hasPureGlobals = true;
-        }
-        return n;
-      });
-      context.global = resultingGlobal;
-      node = Object.create(node);
-      node.nodes = normalizeNodeArray(newNodes);
-      break;
+  const transform = (node, context) => {
+    if (context.ignoreNextSpacing && !isSpacing(node)) {
+      throw new Error('Missing whitespace after ' + context.ignoreNextSpacing);
+    }
+    if (context.enforceNoSpacing && isSpacing(node)) {
+      throw new Error('Missing whitespace before ' + context.enforceNoSpacing);
+    }
 
-    case 'selector':
-      newNodes = node.nodes.map(function(n) {
-        return localizeNode(n, context);
-      });
-      node = Object.create(node);
-      node.nodes = normalizeNodeArray(newNodes);
-      break;
-
-    case 'spacing':
-      if (context.ignoreNextSpacing) {
-        context.ignoreNextSpacing = false;
-        context.lastWasSpacing = false;
-        context.enforceNoSpacing = false;
-        return null;
-      }
-      context.lastWasSpacing = true;
-      return node;
-
-    case 'pseudo-class':
-      if (node.name === 'local' || node.name === 'global') {
-        if (context.inside) {
-          throw new Error(
-            'A :' +
-              node.name +
-              ' is not allowed inside of a :' +
-              context.inside +
-              '(...)'
-          );
-        }
-        context.ignoreNextSpacing = context.lastWasSpacing ? node.name : false;
-        context.enforceNoSpacing = context.lastWasSpacing ? false : node.name;
-        context.global = node.name === 'global';
-        context.explicit = true;
-        return null;
-      }
-      break;
-
-    case 'nested-pseudo-class':
-      let subContext;
-      if (node.name === 'local' || node.name === 'global') {
-        if (context.inside) {
-          throw new Error(
-            'A :' +
-              node.name +
-              '(...) is not allowed inside of a :' +
-              context.inside +
-              '(...)'
-          );
-        }
-        subContext = {
-          global: node.name === 'global',
-          inside: node.name,
-          hasLocals: false,
-          explicit: true
-        };
-        node = node.nodes.map(function(n) {
-          return localizeNode(n, subContext);
-        });
-        // don't leak spacing
-        node[0].before = undefined;
-        node[node.length - 1].after = undefined;
-      } else {
-        subContext = {
-          global: context.global,
-          inside: context.inside,
-          lastWasSpacing: true,
-          hasLocals: false,
-          explicit: context.explicit
-        };
+    let newNodes;
+    switch (node.type) {
+      case 'root': {
+        let resultingGlobal;
+        context.hasPureGlobals = false;
         newNodes = node.nodes.map(function(n) {
-          return localizeNode(n, subContext);
+          const nContext = {
+            global: context.global,
+            lastWasSpacing: true,
+            hasLocals: false,
+            explicit: false,
+          };
+          n = transform(n, nContext);
+          if (typeof resultingGlobal === 'undefined') {
+            resultingGlobal = nContext.global;
+          } else if (resultingGlobal !== nContext.global) {
+            throw new Error(
+              'Inconsistent rule global/local result in rule "' +
+                node +
+                '" (multiple selectors must result in the same mode for the rule)'
+            );
+          }
+          if (!nContext.hasLocals) {
+            context.hasPureGlobals = true;
+          }
+          return n;
         });
-        node = Object.create(node);
+        context.global = resultingGlobal;
+
         node.nodes = normalizeNodeArray(newNodes);
+        break;
       }
-      if (subContext.hasLocals) {
-        context.hasLocals = true;
-      }
-      break;
+      case 'selector': {
+        newNodes = node.map(childNode => transform(childNode, context));
 
-    case 'id':
-    case 'class':
-      if (!context.global) {
-        node = {
-          type: 'nested-pseudo-class',
-          name: 'local',
-          nodes: [node]
-        };
-        context.hasLocals = true;
+        node = node.clone();
+        node.nodes = normalizeNodeArray(newNodes);
+        break;
       }
-      break;
-  }
+      case 'combinator': {
+        if (isSpacing(node)) {
+          if (context.ignoreNextSpacing) {
+            context.ignoreNextSpacing = false;
+            context.lastWasSpacing = false;
+            context.enforceNoSpacing = false;
+            return null;
+          }
+          context.lastWasSpacing = true;
+          return node;
+        }
+        break;
+      }
+      case 'pseudo': {
+        let childContext;
+        const isNested = !!node.length;
+        const isScoped = isScopePseudo(node);
 
-  // reset context
-  context.lastWasSpacing = false;
-  context.ignoreNextSpacing = false;
-  context.enforceNoSpacing = false;
-  return node;
+        // :local(.foo)
+        if (isNested) {
+          if (isScoped) {
+            if (context.inside) {
+              throw new Error(
+                `A ${node.value} is not allowed inside of a ${
+                  context.inside
+                }(...)`
+              );
+            }
+
+            childContext = {
+              global: node.value === ':global',
+              inside: node.value,
+              hasLocals: false,
+              explicit: true,
+            };
+
+            newNodes = node
+              .map(childNode => transform(childNode, childContext))
+              .reduce((acc, next) => acc.concat(next.nodes), []);
+
+            if (newNodes.length) {
+              const { before, after } = node.spaces;
+
+              const first = newNodes[0];
+              const last = newNodes[newNodes.length - 1];
+
+              first.spaces = { before, after: first.spaces.after };
+              last.spaces = { before: last.spaces.before, after };
+            }
+
+            node = newNodes;
+
+            break;
+          } else {
+            childContext = {
+              global: context.global,
+              inside: context.inside,
+              lastWasSpacing: true,
+              hasLocals: false,
+              explicit: context.explicit,
+            };
+            newNodes = node.map(childNode =>
+              transform(childNode, childContext)
+            );
+
+            node = node.clone();
+            node.nodes = normalizeNodeArray(newNodes);
+
+            if (childContext.hasLocals) {
+              context.hasLocals = true;
+            }
+          }
+          break;
+
+          //:local .foo .bar
+        } else if (isScoped) {
+          if (context.inside) {
+            throw new Error(
+              `A ${node.value} is not allowed inside of a ${
+                context.inside
+              }(...)`
+            );
+          }
+
+          const next = node.parent;
+          const addBackSpacing = !!node.spaces.before;
+
+          context.ignoreNextSpacing = context.lastWasSpacing
+            ? node.value
+            : false;
+
+          context.enforceNoSpacing = context.lastWasSpacing
+            ? false
+            : node.value;
+
+          context.global = node.value === ':global';
+          context.explicit = true;
+
+          // because this node has spacing that is lost when we remove it
+          // we make up for it by adding an extra combinator in since adding
+          // spacing on the parent selector doesn't work
+          return addBackSpacing
+            ? selectorParser.combinator({ value: ' ' })
+            : null;
+        }
+        break;
+      }
+      case 'id':
+      case 'class': {
+        if (!context.global) {
+          const innerNode = node.clone();
+          innerNode.spaces = { before: '', after: '' };
+
+          node = selectorParser.pseudo({
+            value: ':local',
+            nodes: [innerNode],
+            spaces: node.spaces,
+          });
+
+          context.hasLocals = true;
+        }
+
+        break;
+      }
+    }
+
+    context.lastWasSpacing = false;
+    context.ignoreNextSpacing = false;
+    context.enforceNoSpacing = false;
+    return node;
+  };
+
+  const rootContext = {
+    global: mode === 'global',
+    hasPureGlobals: false,
+  };
+
+  const selector = selectorParser(root => {
+    transform(root, rootContext);
+  }).processSync(rule, { updateSelector: false, lossless: true });
+
+  rootContext.selector = selector;
+  return rootContext;
 }
 
 function localizeDeclNode(node, context) {
@@ -172,22 +231,29 @@ function localizeDeclNode(node, context) {
       break;
 
     case 'function':
-      if (context.options &&  context.options.rewriteUrl && node.value.toLowerCase() === 'url') {
-        node.nodes.map((nestedNode) => {
+      if (
+        context.options &&
+        context.options.rewriteUrl &&
+        node.value.toLowerCase() === 'url'
+      ) {
+        node.nodes.map(nestedNode => {
           if (nestedNode.type !== 'string' && nestedNode.type !== 'word') {
             return;
           }
 
-          let newUrl = context.options.rewriteUrl(context.global, nestedNode.value);
+          let newUrl = context.options.rewriteUrl(
+            context.global,
+            nestedNode.value
+          );
 
           switch (nestedNode.type) {
             case 'string':
-              if (nestedNode.quote === '\'') {
-                newUrl = newUrl.replace(/(\\)/g, '\\$1').replace(/'/g, '\\\'')
+              if (nestedNode.quote === "'") {
+                newUrl = newUrl.replace(/(\\)/g, '\\$1').replace(/'/g, "\\'");
               }
 
               if (nestedNode.quote === '"') {
-                newUrl = newUrl.replace(/(\\)/g, '\\$1').replace(/"/g, '\\"')
+                newUrl = newUrl.replace(/(\\)/g, '\\$1').replace(/"/g, '\\"');
               }
 
               break;
@@ -206,8 +272,11 @@ function localizeDeclNode(node, context) {
 
 function isWordAFunctionArgument(wordNode, functionNode) {
   return functionNode
-    ? functionNode.nodes.some(functionNodeChild => functionNodeChild.sourceIndex === wordNode.sourceIndex)
-    : false
+    ? functionNode.nodes.some(
+        functionNodeChild =>
+          functionNodeChild.sourceIndex === wordNode.sourceIndex
+      )
+    : false;
 }
 
 function localizeAnimationShorthandDeclValues(decl, context) {
@@ -245,13 +314,13 @@ function localizeAnimationShorthandDeclValues(decl, context) {
     '$step-start': 1,
     $initial: Infinity,
     $inherit: Infinity,
-    $unset: Infinity
+    $unset: Infinity,
   };
 
   const didParseAnimationName = false;
   let parsedAnimationKeywords = {};
   let stepsFunctionNode = null;
-  const valueNodes = valueParser(decl.value).walk((node) => {
+  const valueNodes = valueParser(decl.value).walk(node => {
     /* If div-token appeared (represents as comma ','), a possibility of an animation-keywords should be reflesh. */
     if (node.type === 'div') {
       parsedAnimationKeywords = {};
@@ -284,7 +353,7 @@ function localizeAnimationShorthandDeclValues(decl, context) {
     const subContext = {
       options: context.options,
       global: context.global,
-      localizeNextItem: shouldParseAnimationName && !context.global
+      localizeNextItem: shouldParseAnimationName && !context.global,
     };
     return localizeDeclNode(node, subContext);
   });
@@ -298,7 +367,7 @@ function localizeDeclValues(localize, decl, context) {
     const subContext = {
       options: context.options,
       global: context.global,
-      localizeNextItem: localize && !context.global
+      localizeNextItem: localize && !context.global,
     };
     nodes[index] = localizeDeclNode(node, subContext);
   });
@@ -367,7 +436,7 @@ module.exports = postcss.plugin('postcss-modules-local-by-default', function(
         atrule.walkDecls(function(decl) {
           localizeDecl(decl, {
             options: options,
-            global: globalKeyframes
+            global: globalKeyframes,
           });
         });
       } else if (atrule.nodes) {
@@ -375,7 +444,7 @@ module.exports = postcss.plugin('postcss-modules-local-by-default', function(
           if (decl.type === 'decl') {
             localizeDecl(decl, {
               options: options,
-              global: globalMode
+              global: globalMode,
             });
           }
         });
@@ -389,33 +458,24 @@ module.exports = postcss.plugin('postcss-modules-local-by-default', function(
         // ignore keyframe rules
         return;
       }
-      const selector = Tokenizer.parse(rule.selector);
-      const context = {
-        options: options,
-        global: globalMode,
-        hasPureGlobals: false
-      };
-      let newSelector;
-      try {
-        newSelector = localizeNode(selector, context);
-      } catch (e) {
-        throw rule.error(e.message);
-      }
+
+      const context = localizeNode(rule, options.mode);
+
+      context.options = options;
+
       if (pureMode && context.hasPureGlobals) {
         throw rule.error(
           'Selector "' +
-            Tokenizer.stringify(selector) +
+            rule.selector +
             '" is not pure ' +
             '(pure selectors must contain at least one local class or id)'
         );
       }
+      rule.selector = context.selector;
       // Less-syntax mixins parse as rules with no nodes
       if (rule.nodes) {
-        rule.nodes.forEach(function(decl) {
-          localizeDecl(decl, context);
-        });
+        rule.nodes.forEach(decl => localizeDecl(decl, context));
       }
-      rule.selector = Tokenizer.stringify(newSelector);
     });
   };
 });

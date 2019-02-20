@@ -6,6 +6,6 @@
     "node": true
   },
   "rules": {
-    "quotes": [2, "single"]
+    "quotes": [2, "single", { "avoidEscape": true }]
   }
 }
