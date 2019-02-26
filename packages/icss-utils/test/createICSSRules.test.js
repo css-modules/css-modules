@@ -1,10 +1,23 @@
-/* eslint-env jest */
 import postcss from "postcss";
 import { createICSSRules } from "../src";
 
 const run = (imports, exports) => {
-  return postcss.root().append(createICSSRules(imports, exports)).toString();
+  return postcss
+    .root()
+    .append(createICSSRules(imports, exports))
+    .toString();
 };
+
+test("create empty :import statement", () => {
+  expect(
+    run(
+      {
+        "path/file": {}
+      },
+      {}
+    )
+  ).toEqual(":import('path/file') {}");
+});
 
 test("create :import statement", () => {
   expect(

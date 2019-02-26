@@ -1,4 +1,3 @@
-/* eslint-env jest */
 import { replaceValueSymbols as replace } from "../src";
 
 test("not change empty css", () => {

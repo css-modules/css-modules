@@ -1,4 +1,3 @@
-/* eslint-env jest */
 import postcss from "postcss";
 import { extractICSS } from "../src";
 

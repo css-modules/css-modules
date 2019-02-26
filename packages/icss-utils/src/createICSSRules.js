@@ -10,12 +10,19 @@ const createImports = imports => {
         raws: { before: "\n  " }
       })
     );
-    return postcss
-      .rule({
-        selector: `:import('${path}')`,
-        raws: { after: "\n" }
-      })
-      .append(declarations);
+
+    const hasDeclarations = declarations.length > 0;
+
+    const rule = postcss.rule({
+      selector: `:import('${path}')`,
+      raws: { after: hasDeclarations ? "\n" : "" }
+    });
+
+    if (hasDeclarations) {
+      rule.append(declarations);
+    }
+
+    return rule;
   });
 };
 
@@ -27,15 +34,18 @@ const createExports = exports => {
       raws: { before: "\n  " }
     })
   );
+
   if (declarations.length === 0) {
     return [];
   }
+
   const rule = postcss
     .rule({
       selector: `:export`,
       raws: { after: "\n" }
     })
     .append(declarations);
+
   return [rule];
 };
 

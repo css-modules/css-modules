@@ -6,7 +6,10 @@ const replaceSymbols = (css, replacements) => {
       node.value = replaceValueSymbols(node.value, replacements);
     } else if (node.type === "rule") {
       node.selector = replaceValueSymbols(node.selector, replacements);
-    } else if (node.type === "atrule" && node.name === "media") {
+    } else if (
+      node.type === "atrule" &&
+      ["media", "supports"].includes(node.name.toLowerCase())
+    ) {
       node.params = replaceValueSymbols(node.params, replacements);
     }
   });
