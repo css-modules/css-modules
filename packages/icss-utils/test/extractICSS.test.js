@@ -27,7 +27,7 @@ test("extract :import statements with single quoted path", () => {
   });
 });
 
-test("extract :import statements with double quoted path", () => {
+test("extract manually added :import", () => {
   expect(runExtract(':import("./colors.css") {}')).toEqual({
     icssImports: {
       "./colors.css": {}
@@ -40,6 +40,25 @@ test("not extract :import with values", () => {
   expect(
     runExtract(":import(./colors.css) { i__blue: blue; i__red: red; }")
   ).toEqual({
+    icssImports: {
+      "./colors.css": {
+        i__blue: "blue",
+        i__red: "red"
+      }
+    },
+    icssExports: {}
+  });
+});
+
+test("extract :import statements manually created in postcss", () => {
+  const root = postcss.parse("");
+  root.append(
+    postcss
+      .rule({ selector: ":import(./colors.css)" })
+      .append(postcss.decl({ prop: "i__blue", value: "blue" }))
+      .append(postcss.decl({ prop: "i__red", value: "red" }))
+  );
+  expect(extractICSS(root)).toEqual({
     icssImports: {
       "./colors.css": {
         i__blue: "blue",

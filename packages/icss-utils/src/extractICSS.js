@@ -3,7 +3,8 @@ const importPattern = /^:import\(("[^"]*"|'[^']*'|[^"']+)\)$/;
 const getDeclsObject = rule => {
   const object = {};
   rule.walkDecls(decl => {
-    object[decl.raws.before.trim() + decl.prop] = decl.value;
+    const before = decl.raws.before ? decl.raws.before.trim() : "";
+    object[before + decl.prop] = decl.value;
   });
   return object;
 };
