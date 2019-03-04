@@ -10,6 +10,18 @@
   color: rebeccapurple;
 }
 
+:local(.\31 a2b3c) {
+  color: gainsboro;
+}
+
+:local(.\32) {
+  color: aqua;
+}
+
+:local(.𝌆) {
+  color: fuchsia;
+}
+
 @media (max-width: 520px) {
   /* selector doubled to increase specificity */
   :local(.exportName):local(.exportName) {

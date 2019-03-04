@@ -10,6 +10,18 @@
   color: rebeccapurple;
 }
 
+._input__\31 a2b3c {
+  color: gainsboro;
+}
+
+._input__\32 {
+  color: aqua;
+}
+
+._input__𝌆 {
+  color: fuchsia;
+}
+
 @media (max-width: 520px) {
   /* selector doubled to increase specificity */
   ._input__exportName._input__exportName {
@@ -22,7 +34,10 @@
 }
 
 :export {
+  2: _input__2;
   exportName: _input__exportName;
-  ::::: _input__\:\:\:\:;
+  ::::: _input__::::;
+  1a2b3c: _input__1a2b3c;
+  𝌆: _input__𝌆;
   newExport: _input__newExport;
 }

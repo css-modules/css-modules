@@ -51,6 +51,28 @@ function getSingleLocalNamesForComposes(root) {
   });
 }
 
+const whitespace = '[\\x20\\t\\r\\n\\f]';
+const unescapeRegExp = new RegExp(
+  '\\\\([\\da-f]{1,6}' + whitespace + '?|(' + whitespace + ')|.)',
+  'ig'
+);
+
+function unescape(str) {
+  return str.replace(unescapeRegExp, (_, escaped, escapedWhitespace) => {
+    const high = '0x' + escaped - 0x10000;
+
+    // NaN means non-codepoint
+    // Workaround erroneous numeric interpretation of +"0x"
+    return high !== high || escapedWhitespace
+      ? escaped
+      : high < 0
+        ? // BMP codepoint
+          String.fromCharCode(high + 0x10000)
+        : // Supplemental Plane codepoint (surrogate pair)
+          String.fromCharCode((high >> 10) | 0xd800, (high & 0x3ff) | 0xdc00);
+  });
+}
+
 const processor = postcss.plugin('postcss-modules-scope', function(options) {
   return css => {
     const generateScopedName =
@@ -64,10 +86,15 @@ const processor = postcss.plugin('postcss-modules-scope', function(options) {
         css.source.input.from,
         css.source.input.css
       );
+
       exports[name] = exports[name] || [];
-      if (exports[name].indexOf(scopedName) < 0) {
-        exports[name].push(scopedName);
+
+      const unescapedScopedName = unescape(scopedName);
+
+      if (exports[name].indexOf(unescapedScopedName) < 0) {
+        exports[name].push(unescapedScopedName);
       }
+
       return scopedName;
     }
 
