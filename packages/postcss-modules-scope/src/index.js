@@ -58,9 +58,9 @@ const processor = postcss.plugin('postcss-modules-scope', function(options) {
 
     const exports = Object.create(null);
 
-    function exportScopedName(name) {
+    function exportScopedName(name, rawName) {
       const scopedName = generateScopedName(
-        name,
+        rawName ? rawName : name,
         css.source.input.from,
         css.source.input.css
       );
@@ -78,11 +78,17 @@ const processor = postcss.plugin('postcss-modules-scope', function(options) {
           return node;
         case 'class':
           return selectorParser.className({
-            value: exportScopedName(node.value),
+            value: exportScopedName(
+              node.value,
+              node.raws && node.raws.value ? node.raws.value : null
+            ),
           });
         case 'id': {
           return selectorParser.id({
-            value: exportScopedName(node.value),
+            value: exportScopedName(
+              node.value,
+              node.raws && node.raws.value ? node.raws.value : null
+            ),
           });
         }
       }

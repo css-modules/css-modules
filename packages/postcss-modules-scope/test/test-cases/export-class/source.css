@@ -6,6 +6,10 @@
   color: red;
 }
 
+:local(.\:\:\:\:) {
+  color: rebeccapurple;
+}
+
 @media (max-width: 520px) {
   /* selector doubled to increase specificity */
   :local(.exportName):local(.exportName) {

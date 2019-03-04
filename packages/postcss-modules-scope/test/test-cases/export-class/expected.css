@@ -6,6 +6,10 @@
   color: red;
 }
 
+._input__\:\:\:\: {
+  color: rebeccapurple;
+}
+
 @media (max-width: 520px) {
   /* selector doubled to increase specificity */
   ._input__exportName._input__exportName {
@@ -19,5 +23,6 @@
 
 :export {
   exportName: _input__exportName;
+  ::::: _input__\:\:\:\:;
   newExport: _input__newExport;
 }
