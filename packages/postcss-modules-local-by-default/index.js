@@ -41,7 +41,9 @@ function localizeNode(rule, mode, options) {
     switch (node.type) {
       case 'root': {
         let resultingGlobal;
+
         context.hasPureGlobals = false;
+
         newNodes = node.nodes.map(function(n) {
           const nContext = {
             global: context.global,
@@ -49,7 +51,9 @@ function localizeNode(rule, mode, options) {
             hasLocals: false,
             explicit: false,
           };
+
           n = transform(n, nContext);
+
           if (typeof resultingGlobal === 'undefined') {
             resultingGlobal = nContext.global;
           } else if (resultingGlobal !== nContext.global) {
@@ -59,11 +63,14 @@ function localizeNode(rule, mode, options) {
                 '" (multiple selectors must result in the same mode for the rule)'
             );
           }
+
           if (!nContext.hasLocals) {
             context.hasPureGlobals = true;
           }
+
           return n;
         });
+
         context.global = resultingGlobal;
 
         node.nodes = normalizeNodeArray(newNodes);
@@ -160,7 +167,6 @@ function localizeNode(rule, mode, options) {
             );
           }
 
-          const next = node.parent;
           const addBackSpacing = !!node.spaces.before;
 
           context.ignoreNextSpacing = context.lastWasSpacing
@@ -205,6 +211,7 @@ function localizeNode(rule, mode, options) {
     context.lastWasSpacing = false;
     context.ignoreNextSpacing = false;
     context.enforceNoSpacing = false;
+
     return node;
   };
 
@@ -213,11 +220,10 @@ function localizeNode(rule, mode, options) {
     hasPureGlobals: false,
   };
 
-  const selector = selectorParser(root => {
+  rootContext.selector = selectorParser(root => {
     transform(root, rootContext);
   }).processSync(rule, { updateSelector: false, lossless: true });
 
-  rootContext.selector = selector;
   return rootContext;
 }
 
@@ -400,6 +406,7 @@ module.exports = postcss.plugin('postcss-modules-local-by-default', function(
   if (typeof options !== 'object') {
     options = {}; // If options is undefined or not an object the plugin fails
   }
+
   if (options && options.mode) {
     if (
       options.mode !== 'global' &&
@@ -411,8 +418,10 @@ module.exports = postcss.plugin('postcss-modules-local-by-default', function(
       );
     }
   }
+
   const pureMode = options && options.mode === 'pure';
   const globalMode = options && options.mode === 'global';
+
   return function(css) {
     css.walkAtRules(function(atrule) {
       if (/keyframes$/i.test(atrule.name)) {
@@ -450,6 +459,7 @@ module.exports = postcss.plugin('postcss-modules-local-by-default', function(
         });
       }
     });
+
     css.walkRules(function(rule) {
       if (
         rule.parent.type === 'atrule' &&
@@ -480,7 +490,9 @@ module.exports = postcss.plugin('postcss-modules-local-by-default', function(
             '(pure selectors must contain at least one local class or id)'
         );
       }
+
       rule.selector = context.selector;
+
       // Less-syntax mixins parse as rules with no nodes
       if (rule.nodes) {
         rule.nodes.forEach(decl => localizeDecl(decl, context));

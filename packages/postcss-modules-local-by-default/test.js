@@ -12,9 +12,24 @@ const tests = [
     expected: ':local(.foobar) {}',
   },
   {
+    should: 'scope escaped selectors',
+    input: '.\\3A \\) {}',
+    expected: ':local(.\\3A \\)) {}',
+  },
+  {
     should: 'scope ids',
     input: '#foobar {}',
     expected: ':local(#foobar) {}',
+  },
+  {
+    should: 'scope escaped ids',
+    input: '#\\#test {}',
+    expected: ':local(#\\#test) {}',
+  },
+  {
+    should: 'scope escaped ids (2)',
+    input: '#u-m\\00002b {}',
+    expected: ':local(#u-m\\00002b) {}',
   },
   {
     should: 'scope multiple selectors',
