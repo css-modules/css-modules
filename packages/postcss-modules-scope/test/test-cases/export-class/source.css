@@ -22,6 +22,14 @@
   color: fuchsia;
 }
 
+:local(.u-m\00002b) {
+  color: maroon;
+}
+
+:local(#u-m\+) {
+  color: navy;
+}
+
 @media (max-width: 520px) {
   /* selector doubled to increase specificity */
   :local(.exportName):local(.exportName) {
