@@ -41,7 +41,7 @@
   },
   "dependencies": {
     "postcss": "^7.0.6",
-    "postcss-selector-parser": "^5.0.0"
+    "postcss-selector-parser": "^6.0.0"
   },
   "devDependencies": {
     "chokidar-cli": "^1.0.1",
