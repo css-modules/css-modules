@@ -1,0 +1,7 @@
+:local(.exportName) {
+  color: green;
+}
+
+:local(.exportName):hover {
+  color: red;
+}

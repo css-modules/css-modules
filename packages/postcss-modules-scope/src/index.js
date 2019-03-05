@@ -12,7 +12,9 @@ function getSingleLocalNamesForComposes(root) {
         `composition is only allowed when selector is single :local class name not in "${root}"`
       );
     }
+
     node = node.nodes[0];
+
     if (
       node.type !== 'pseudo' ||
       node.value !== ':local' ||
@@ -26,7 +28,9 @@ function getSingleLocalNamesForComposes(root) {
           '" is weird'
       );
     }
+
     node = node.first;
+
     if (node.type !== 'selector' || node.length !== 1) {
       throw new Error(
         'composition is only allowed when selector is single :local class name not in "' +
@@ -36,7 +40,9 @@ function getSingleLocalNamesForComposes(root) {
           '" is weird'
       );
     }
+
     node = node.first;
+
     if (node.type !== 'class') {
       // 'id' is not possible, because you can't compose ids
       throw new Error(
@@ -47,6 +53,7 @@ function getSingleLocalNamesForComposes(root) {
           '" is weird'
       );
     }
+
     return node.value;
   });
 }
@@ -77,6 +84,8 @@ const processor = postcss.plugin('postcss-modules-scope', function(options) {
   return css => {
     const generateScopedName =
       (options && options.generateScopedName) || processor.generateScopedName;
+    const generateExportEntry =
+      (options && options.generateExportEntry) || processor.generateExportEntry;
 
     const exports = Object.create(null);
 
@@ -86,13 +95,18 @@ const processor = postcss.plugin('postcss-modules-scope', function(options) {
         css.source.input.from,
         css.source.input.css
       );
+      const exportEntry = generateExportEntry(
+        rawName ? rawName : name,
+        scopedName,
+        css.source.input.from,
+        css.source.input.css
+      );
+      const { key, value } = exportEntry;
 
-      exports[name] = exports[name] || [];
+      exports[key] = exports[key] || [];
 
-      const unescapedScopedName = unescape(scopedName);
-
-      if (exports[name].indexOf(unescapedScopedName) < 0) {
-        exports[name].push(unescapedScopedName);
+      if (exports[key].indexOf(value) < 0) {
+        exports[key].push(value);
       }
 
       return scopedName;
@@ -119,6 +133,7 @@ const processor = postcss.plugin('postcss-modules-scope', function(options) {
           });
         }
       }
+
       throw new Error(
         `${node.type} ("${node}") is not allowed in a :local block`
       );
@@ -131,12 +146,14 @@ const processor = postcss.plugin('postcss-modules-scope', function(options) {
             if (node.nodes.length !== 1) {
               throw new Error('Unexpected comma (",") in :local block');
             }
+
             const selector = localizeNode(node.first, node.spaces);
             // move the spaces that were around the psuedo selector to the first
             // non-container node
             selector.first.spaces = node.spaces;
 
             node.replaceWith(selector);
+
             return;
           }
         /* falls through */
@@ -151,6 +168,7 @@ const processor = postcss.plugin('postcss-modules-scope', function(options) {
 
     // Find any :import and remember imported names
     const importedNames = {};
+
     css.walkRules(rule => {
       if (/^:import\(.+\)$/.test(rule.selector)) {
         rule.walkDecls(decl => {
@@ -173,10 +191,11 @@ const processor = postcss.plugin('postcss-modules-scope', function(options) {
       let parsedSelector = selectorParser().astSync(rule);
 
       rule.selector = traverseNode(parsedSelector.clone()).toString();
-      // console.log(rule.selector);
+
       rule.walkDecls(/composes|compose-with/, decl => {
         const localNames = getSingleLocalNamesForComposes(parsedSelector);
         const classes = decl.value.split(/\s+/);
+
         classes.forEach(className => {
           const global = /^global\(([^\)]+)\)$/.exec(className);
 
@@ -200,14 +219,17 @@ const processor = postcss.plugin('postcss-modules-scope', function(options) {
             );
           }
         });
+
         decl.remove();
       });
 
       rule.walkDecls(decl => {
-        var tokens = decl.value.split(/(,|'[^']*'|"[^"]*")/);
+        let tokens = decl.value.split(/(,|'[^']*'|"[^"]*")/);
+
         tokens = tokens.map((token, idx) => {
           if (idx === 0 || tokens[idx - 1] === ',') {
             const localMatch = /^(\s*):local\s*\((.+?)\)/.exec(token);
+
             if (localMatch) {
               return (
                 localMatch[1] +
@@ -221,6 +243,7 @@ const processor = postcss.plugin('postcss-modules-scope', function(options) {
             return token;
           }
         });
+
         decl.value = tokens.join('');
       });
     });
@@ -228,7 +251,8 @@ const processor = postcss.plugin('postcss-modules-scope', function(options) {
     // Find any :local keyframes
     css.walkAtRules(atrule => {
       if (/keyframes$/i.test(atrule.name)) {
-        var localMatch = /^\s*:local\s*\((.+?)\)\s*$/.exec(atrule.params);
+        const localMatch = /^\s*:local\s*\((.+?)\)\s*$/.exec(atrule.params);
+
         if (localMatch) {
           atrule.params = exportScopedName(localMatch[1]);
         }
@@ -237,8 +261,10 @@ const processor = postcss.plugin('postcss-modules-scope', function(options) {
 
     // If we found any :locals, insert an :export rule
     const exportedNames = Object.keys(exports);
+
     if (exportedNames.length > 0) {
       const exportRule = postcss.rule({ selector: ':export' });
+
       exportedNames.forEach(exportedName =>
         exportRule.append({
           prop: exportedName,
@@ -246,17 +272,26 @@ const processor = postcss.plugin('postcss-modules-scope', function(options) {
           raws: { before: '\n  ' },
         })
       );
+
       css.append(exportRule);
     }
   };
 });
 
-processor.generateScopedName = function(exportedName, path) {
+processor.generateScopedName = function(name, path) {
   const sanitisedPath = path
     .replace(/\.[^\.\/\\]+$/, '')
     .replace(/[\W_]+/g, '_')
     .replace(/^_|_$/g, '');
-  return `_${sanitisedPath}__${exportedName}`.trim();
+
+  return `_${sanitisedPath}__${name}`.trim();
+};
+
+processor.generateExportEntry = function(name, scopedName) {
+  return {
+    key: unescape(name),
+    value: unescape(scopedName),
+  };
 };
 
 module.exports = processor;

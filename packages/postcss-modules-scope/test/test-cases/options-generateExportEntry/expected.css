@@ -1,0 +1,11 @@
+._input__exportName {
+  color: green;
+}
+
+._input__exportName:hover {
+  color: red;
+}
+
+:export {
+  _exportName_: __input__exportName_;
+}
