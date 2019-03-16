@@ -67,13 +67,15 @@ element.innerHTML = '<div class="' + styles.className + '">';
 
 For local class names camelCase naming is recommended, but not enforced.
 
+> This is recommended because the common alternative, kebab-casing may cause unexpected behavior when trying to access style.class-name as a dot notation. You can still work around kebab-case with bracket notation (eg. `style['class-name']`) but `style.className` is cleaner.
+
 ## Exceptions
 
-`:global` switches to global scope for the current selector resp. identifier. `:global(.xxx)` resp. `@keyframes :global(xxx)` declares the stuff in brackets in the global scope.
+`:global` switches to global scope for the current selector respective identifier. `:global(.xxx)` respective `@keyframes :global(xxx)` declares the stuff in parenthesis in the global scope.
 
-Similar `:local` and `:local(...)` for local scope.
+Similarly, `:local` and `:local(...)` for local scope.
 
-If the selector is switched into global mode, global mode is also activated for the rules. (this allows to make `animation: abc;` local)
+If the selector is switched into global mode, global mode is also activated for the rules. (This allows us to make `animation: abc;` local.)
 
 Example: `.localA :global .global-b .global-c :local(.localD.localE) .global-d`
 
@@ -99,6 +101,8 @@ It's possible to compose multiple classes with `composes: classNameA classNameB;
 
 ## Dependencies
 
+### Composing from other files
+
 It's possible to compose class names from other **CSS Modules**.
 
 ``` css
@@ -113,6 +117,15 @@ Note that composing should not form a circular dependency. Elsewise it's *undefi
 
 Best if classes do a single thing and dependencies are hierarchic.
 
+### Composing from global class names
+
+It's possible to compose from **global** class names.
+
+```css
+.otherClassName {
+  composes: globalClassName from global;
+}
+```
 
 ## Usage with preprocessors
 
@@ -140,8 +153,9 @@ i. e. with less.js
 
 * [css-modules/webpack-demo](https://github.com/css-modules/webpack-demo)
 * [outpunk/postcss-modules-example](https://github.com/outpunk/postcss-modules-example)
-* [Theming](examples/theming.md)
-
+* [Theming](docs/theming.md)
+* [css-modules/browserify-demo](https://github.com/css-modules/browserify-demo)
+* [x-team/starting-css-modules](https://github.com/x-team/starting-css-modules)
 
 ## History
 

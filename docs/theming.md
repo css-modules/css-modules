@@ -1,4 +1,6 @@
-### Theming
+<img src="https://raw.githubusercontent.com/css-modules/logos/master/css-modules-logo.png" width="150" height="150" />
+
+# Theming
 
 Instead of importing a style in the component, the component can take a style as property. This way different themes can be used. The user can even define custom themes.
 

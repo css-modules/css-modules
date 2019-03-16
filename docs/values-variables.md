@@ -1,4 +1,6 @@
-### exporting values variables
+<img src="https://raw.githubusercontent.com/css-modules/logos/master/css-modules-logo.png" width="150" height="150" />
+
+# Exporting values variables
 
 You can export values with css modules similar to using variables in less or sass.
 
@@ -29,7 +31,7 @@ then import them into your components css module
 }
 ```
 
-## example webpack.config for postcss-modules-values
+## Example webpack.config for postcss-modules-values
 
 ```js
 var path = require('path');
@@ -50,8 +52,8 @@ module.exports = {
       { test: /\.css$/, loader: ExtractTextPlugin.extract('style-loader', 'css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss-loader') }
     ]
   },
-  postcss: [ 
-    values 
+  postcss: [
+    values
   ],
   plugins: [
     new ExtractTextPlugin('style.css', { allChunks: true })
