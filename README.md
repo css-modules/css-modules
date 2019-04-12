@@ -34,6 +34,8 @@ For local class names camelCase naming is recommended, but not enforced.
 
 Similarly, `:local` and `:local(...)` for local scope.
 
+Example: `:global(.some-selector) { ... }`
+
 If the selector is switched into global mode, global mode is also activated for the rules. (This allows us to make `animation: abc;` local.)
 
 Example: `.localA :global .global-b .global-c :local(.localD.localE) .global-d`
