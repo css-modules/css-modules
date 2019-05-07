@@ -3,8 +3,23 @@
 const postcss = require('postcss');
 const selectorParser = require('postcss-selector-parser');
 const valueParser = require('postcss-value-parser');
+const { extractICSS } = require('icss-utils');
 
 const isSpacing = node => node.type === 'combinator' && node.value === ' ';
+
+function getImportLocalAliases(icssImports) {
+  const localAliases = new Map();
+  Object.keys(icssImports).forEach(key => {
+    Object.keys(icssImports[key]).forEach(prop => {
+      localAliases.set(prop, icssImports[key][prop]);
+    });
+  });
+  return localAliases;
+}
+
+function maybeLocalizeValue(value, localAliasMap) {
+  if (localAliasMap.has(value)) return value;
+}
 
 function normalizeNodeArray(nodes) {
   const array = [];
@@ -25,7 +40,7 @@ function normalizeNodeArray(nodes) {
   return array;
 }
 
-function localizeNode(rule, mode, options) {
+function localizeNode(rule, mode, localAliasMap) {
   const isScopePseudo = node =>
     node.value === ':local' || node.value === ':global';
 
@@ -191,7 +206,14 @@ function localizeNode(rule, mode, options) {
       }
       case 'id':
       case 'class': {
-        if (!context.global) {
+        if (context.global) {
+          break;
+        }
+
+        const isImportedValue = localAliasMap.has(node.value);
+        const isImportedWithExplicitScope = isImportedValue && context.explicit;
+
+        if (!isImportedValue || isImportedWithExplicitScope) {
           const innerNode = node.clone();
           innerNode.spaces = { before: '', after: '' };
 
@@ -231,8 +253,10 @@ function localizeDeclNode(node, context) {
   switch (node.type) {
     case 'word':
       if (context.localizeNextItem) {
-        node.value = ':local(' + node.value + ')';
-        context.localizeNextItem = false;
+        if (!context.localAliasMap.has(node.value)) {
+          node.value = ':local(' + node.value + ')';
+          context.localizeNextItem = false;
+        }
       }
       break;
 
@@ -360,6 +384,7 @@ function localizeAnimationShorthandDeclValues(decl, context) {
       options: context.options,
       global: context.global,
       localizeNextItem: shouldParseAnimationName && !context.global,
+      localAliasMap: context.localAliasMap,
     };
     return localizeDeclNode(node, subContext);
   });
@@ -374,6 +399,7 @@ function localizeDeclValues(localize, decl, context) {
       options: context.options,
       global: context.global,
       localizeNextItem: localize && !context.global,
+      localAliasMap: context.localAliasMap,
     };
     nodes[index] = localizeDeclNode(node, subContext);
   });
@@ -423,6 +449,9 @@ module.exports = postcss.plugin('postcss-modules-local-by-default', function(
   const globalMode = options && options.mode === 'global';
 
   return function(css) {
+    const { icssImports } = extractICSS(css, false);
+    const localAliasMap = getImportLocalAliases(icssImports);
+
     css.walkAtRules(function(atrule) {
       if (/keyframes$/i.test(atrule.name)) {
         const globalMatch = /^\s*:global\s*\((.+)\)\s*$/.exec(atrule.params);
@@ -440,10 +469,12 @@ module.exports = postcss.plugin('postcss-modules-local-by-default', function(
           atrule.params = localMatch[0];
           globalKeyframes = false;
         } else if (!globalMode) {
-          atrule.params = ':local(' + atrule.params + ')';
+          if (atrule.params && !localAliasMap.has(atrule.params))
+            atrule.params = ':local(' + atrule.params + ')';
         }
         atrule.walkDecls(function(decl) {
           localizeDecl(decl, {
+            localAliasMap,
             options: options,
             global: globalKeyframes,
           });
@@ -452,6 +483,7 @@ module.exports = postcss.plugin('postcss-modules-local-by-default', function(
         atrule.nodes.forEach(function(decl) {
           if (decl.type === 'decl') {
             localizeDecl(decl, {
+              localAliasMap,
               options: options,
               global: globalMode,
             });
@@ -478,9 +510,10 @@ module.exports = postcss.plugin('postcss-modules-local-by-default', function(
         return;
       }
 
-      const context = localizeNode(rule, options.mode);
+      const context = localizeNode(rule, options.mode, localAliasMap);
 
       context.options = options;
+      context.localAliasMap = localAliasMap;
 
       if (pureMode && context.hasPureGlobals) {
         throw rule.error(

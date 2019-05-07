@@ -23,6 +23,7 @@
     "trailingComma": "es5"
   },
   "dependencies": {
+    "icss-utils": "^4.0.0",
     "postcss": "^7.0.6",
     "postcss-selector-parser": "^6.0.0",
     "postcss-value-parser": "^3.3.1"
