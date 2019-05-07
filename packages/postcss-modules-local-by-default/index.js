@@ -17,10 +17,6 @@ function getImportLocalAliases(icssImports) {
   return localAliases;
 }
 
-function maybeLocalizeValue(value, localAliasMap) {
-  if (localAliasMap.has(value)) return value;
-}
-
 function normalizeNodeArray(nodes) {
   const array = [];
 

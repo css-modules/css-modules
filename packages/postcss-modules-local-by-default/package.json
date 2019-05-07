@@ -18,33 +18,11 @@
     "type": "git",
     "url": "https://github.com/css-modules/postcss-modules-local-by-default.git"
   },
-  "prettier": {
-    "singleQuote": true,
-    "trailingComma": "es5"
-  },
   "dependencies": {
     "icss-utils": "^4.0.0",
     "postcss": "^7.0.6",
     "postcss-selector-parser": "^6.0.0",
     "postcss-value-parser": "^3.3.1"
-  },
-  "devDependencies": {
-    "chokidar-cli": "^1.0.1",
-    "codecov.io": "^0.1.2",
-    "coveralls": "^3.0.2",
-    "eslint": "^5.9.0",
-    "istanbul": "^0.4.5",
-    "tape": "^4.0.0"
-  },
-  "scripts": {
-    "lint": "eslint index.js test.js",
-    "pretest": "yarn lint",
-    "test": "tape test.js",
-    "autotest": "chokidar index.js test.js -c 'yarn test'",
-    "precover": "yarn lint",
-    "cover": "istanbul cover test.js",
-    "travis": "yarn lint && yarn cover -- --report lcovonly",
-    "prepublish": "yarn test"
   },
   "files": [
     "index.js"

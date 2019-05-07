@@ -1,0 +1,42 @@
+{
+  "name": "css-modules",
+  "private": true,
+  "scripts": {
+    "lint": "eslint '*.js' 'packages/*/*.js'",
+    "pretest": "yarn lint",
+    "test": "jest --coverage",
+    "test:watch": "jest --watch",
+    "prepare": "yarn test && yarn lerna run build"
+  },
+  "lint-staged": {
+    "*.js": [
+      "prettier --write",
+      "eslint",
+      "git add"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "prettier": {
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "es5"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.1.0",
+    "@babel/preset-env": "^7.1.0",
+    "babel-eslint": "^10.0.1",
+    "codecov": "^3.3.0",
+    "eslint": "^5.9.0",
+    "jest": "^24.8.0",
+    "lerna": "^3.13.4"
+  },
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
+  }
+}
