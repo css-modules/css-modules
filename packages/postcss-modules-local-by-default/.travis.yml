@@ -3,7 +3,7 @@ node_js:
   - "6"
   - "8"
   - "10"
-  - "11"
+  - "12"
 script: npm run travis
 
 after_success:
