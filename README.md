@@ -1,5 +1,10 @@
 <img src="https://raw.githubusercontent.com/css-modules/logos/master/css-modules-logo.png" width="150" height="150" />
-
+#diaplay properties
+.container{
+display : flex;
+text-alignitems: center:
+justify-containt: center;
+}
 # CSS Modules
 
 A **CSS Module** is a CSS file in which all class names and animation names are scoped locally by default. All URLs (`url(...)`) and `@imports` are in module request format (`./xxx` and `../xxx` means relative, `xxx` and `xxx/yyy` means in modules folder, i. e. in `node_modules`).
