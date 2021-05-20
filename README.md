@@ -107,6 +107,8 @@ i. e. with less.js
 * No more conflicts.
 * Explicit dependencies.
 * No global scope.
+* Using CSS Modules generates random CSS classes when displayed in the browser.
+* You can use the same CSS class in multiple CSS files
 
 ## Examples
 
