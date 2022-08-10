@@ -31,3 +31,7 @@ If you're using React, CSS Modules is a great fit. [react-css-modules](https://g
 ### Deku
 
 If you're using Deku, CSS Modules is an awesome fit. [deku-css-modules](https://github.com/StevenIseki/deku-css-modules) allows for easy integration of CSS Modules & Deku.
+
+### Ember
+
+If you're using Ember, [ember-css-modules](https://github.com/salsify/ember-css-modules) includes the usage of `local-class` attribute for easy integration of CSS modules & Ember.
