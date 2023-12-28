@@ -2,8 +2,9 @@
 
 # Import multiple css modules into a component
 
-You can import multiple css modules into a component or function using `Object.assign`
-For example if you import a button css modules to your Demo component, add this to the components default styles.
+You can import multiple CSS Modules into a component or function using `Object.assign`.
+
+For example, if you import a button CSS Module to your `Demo` component, add this to the components default styles.
 
 ```js
 let styles = {};
@@ -18,7 +19,7 @@ You can even import css modules installed from npm. e.g. [pure-css](https://gith
 npm install pure-css --save-dev
 ```
 
-Then in your component... start using pure css styles.
+Then in your component, start using pure CSS styles.
 
 ```js
 import { buttons, grids } from 'pure-css';
@@ -33,15 +34,11 @@ import demo from './Demo.css';
 import fancyButton from 'css-fancy-button';
 Object.assign(styles, fancyButton, demo);
 
-function Demo(props) {
-  const { route } = props;
-
+export default function Demo() {
   return (
     <div className={styles.demo}>
-      <button className={styles.fancyButton}>press me</button>
+      <button className={styles.fancyButton}>Press Me</button>
     </div>
   );
 }
-
-export default Demo;
 ```
