@@ -11,7 +11,23 @@ It's possible to compose selectors.
 }
 
 .otherClassName {
+  @composes className;
+
+  color: yellow;
+}
+```
+
+A `composes` declaration is also supported.
+
+``` css
+.className {
+  color: green;
+  background: red;
+}
+
+.otherClassName {
   composes: className;
+
   color: yellow;
 }
 ```

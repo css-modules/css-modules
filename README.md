@@ -49,14 +49,17 @@ It's possible to compose selectors.
 }
 
 .otherClassName {
-  composes: className;
+  @composes className;
+
   color: yellow;
 }
 ```
 
 There can be multiple `composes` rules, but `composes` rules must be before other rules. Extending works only for local-scoped selectors and only if the selector is a single class name. When a class name composes another class name, the **CSS Module** exports both class names for the local class. This can add up to multiple class names.
 
-It's possible to compose multiple classes with `composes: classNameA classNameB;`.
+It's possible to compose multiple classes with `@composes classNameA classNameB;`.
+
+It’s also possible to compose classes in a declaration with `composes: classNameA classNameB;`.
 
 ## Dependencies
 
@@ -66,7 +69,7 @@ It's possible to compose class names from other **CSS Modules**.
 
 ``` css
 .otherClassName {
-  composes: className from "./style.css";
+  @composes className from "./style.css";
 }
 ```
 
@@ -82,7 +85,7 @@ It's possible to compose from **global** class names.
 
 ```css
 .otherClassName {
-  composes: globalClassName from global;
+  @composes globalClassName from global;
 }
 ```
 
