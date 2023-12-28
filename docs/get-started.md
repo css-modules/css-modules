@@ -4,30 +4,66 @@
 
 CSS Modules works by compiling individual CSS files into both CSS and data. The CSS output is normal, global CSS, which can be injected directly into the browser or concatenated together and written to a file for production use. The data is used to map the human-readable names you've used in the files to the globally-safe output CSS.
 
-There are currently 4 ways to integrate CSS Modules into your project. You should look to each of these projects for more detailed setup instructions. 
+## Tools
+
+### Bun
+
+Bun supports CSS Modules. [Learn more](https://bun.sh/docs/bundler).
+
+### Lightning CSS
+
+Lightning CSS supports almost all features of CSS Modules. [Learn more](https://lightningcss.dev/css-modules.html).
+
+### Parcel
+
+Parcel supports CSS Modules. [Learn more](https://parceljs.org/languages/css/#css-modules).
+
+### PostCSS
+
+PostCSS supports CSS Modules through the plugin `postcss-modules`. [Learn more](https://www.npmjs.com/package/postcss-modules).
+
+### Rspack
+
+Rspack supports CSS Modules. [Learn more](https://www.rspack.dev/guide/language-support#css-modules).
 
 ### Webpack
 
-The [css-loader](https://github.com/webpack/css-loader) has CSS Modules built-in. Simply activate it by using the `?modules` flag. We maintain an example project using this at [css-modules/webpack-demo](https://github.com/css-modules/webpack-demo).
+The [css-loader](https://github.com/webpack/css-loader) has CSS Modules built-in. Simply activate it by using the `?modules` flag. We maintain an example project using this at [css-modules/webpack-demo](https://css-modules.github.io/webpack-demo/).
 
-### Browserify
+### Vite
 
-The plugin [css-modulesify](https://github.com/css-modules/css-modulesify) gives your Browserify build the ability to `require` a CSS file and compile it as a CSS Module. For an example project using this setup, check out [css-modules/browserify-demo](https://github.com/css-modules/browserify-demo).
+Vite supports CSS Modules through Lightning CSS. [Learn more](https://vitejs.dev/guide/features#css-modules).
 
-### JSPM
+## Frameworks
 
-The experimental JSPM loader [jspm-loader-css-modules](https://github.com/geelen/jspm-loader-css-modules) adds CSS Modules support to SystemJS & JSPM. There's a simple project using this at [css-modules/jspm-demo](https://github.com/css-modules/jspm-demo).
- 
-### NodeJS
+### Angular
 
-The [css-modules-require-hook](https://github.com/css-modules/css-modules-require-hook) works similarly to the Browserify plugin, but patches NodeJS's `require` to interpret CSS files as CSS Modules. This gives complete flexibility in how the output is handled, ideal for server-side rendering.
+Angular supports CSS Modules through `postcss-modules` and `posthtml-css-modules`. [Learn more](https://angularindepth.com/posts/1294/angular-css-modules).
 
-## Language integrations
+### Astro
 
-### React
+Astro supports CSS Modules. [Learn more](https://docs.astro.build/en/guides/styling/).
 
-If you're using React, CSS Modules is a great fit. [react-css-modules](https://github.com/gajus/react-css-modules) adds a `CSSModules` higher-order component or `@CSSModules` annotation for better integrating CSS Modules & React.
+### Create React App
 
-### Deku
+Create React App supports CSS Modules. [Learn more](https://create-react-app.dev/docs/adding-a-css-modules-stylesheet/).
 
-If you're using Deku, CSS Modules is an awesome fit. [deku-css-modules](https://github.com/StevenIseki/deku-css-modules) allows for easy integration of CSS Modules & Deku.
+### Next.js
+
+Next.js supports CSS Modules for both webpack and Turbopack (`next dev --turbo`). [Learn more](https://nextjs.org/docs/app/building-your-application/styling/css-modules).
+
+### Nuxt
+
+Solid supports CSS Modules. [Learn more](https://nuxt.com/docs/getting-started/styling#css-modules).
+
+### Remix
+
+Remix supports CSS Modules. [Learn more](https://remix.run/docs/en/main/styling/css-modules).
+
+### Solid
+
+Solid supports CSS Modules. [Learn more](https://docs.solidjs.com/guides/how-to-guides/styling-in-solid/css-modules).
+
+### Svelte
+
+Svelte supports CSS Modules through the preprocessor `svelte-preprocess-cssmodules`. [Learn more](https://github.com/micantoine/svelte-preprocess-cssmodules).
