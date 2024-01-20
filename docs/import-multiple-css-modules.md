@@ -11,7 +11,7 @@ You can import multiple CSS Modules into a component or function using `Object.a
 For example, if you import a button CSS Module to your `Demo` component, add this to the components default styles.
 
 ```js
-let styles = {};
+const styles = {};
 import demo from './Demo.css';
 import fancyButton from 'css-fancy-button';
 Object.assign(styles, fancyButton, demo);
