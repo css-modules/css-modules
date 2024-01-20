@@ -33,7 +33,7 @@ A full example of a demo component with 2 css modules imported.
 
 ```jsx
 import React from 'react';
-let styles = {};
+const styles = {};
 import demo from './Demo.css';
 import fancyButton from 'css-fancy-button';
 Object.assign(styles, fancyButton, demo);

@@ -102,7 +102,7 @@ Similarly, `:local` and `:local(...)` for local scope.
 
 If the selector is switched into global mode, global mode is also activated for the rules. (This allows us to make `animation: abc;` local.)
 
-Example: ``
+Example:
 
 ```css
 .localA :global .global-b .global-c :local(.localD.localE) .global-d {

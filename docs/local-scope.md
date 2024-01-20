@@ -10,10 +10,13 @@ CSS Modules have class selectors scoped locally by default. For example, the fol
 
 ```css
 .backdrop {
+  /* ... */
 }
 .prompt {
+  /* ... */
 }
 .pullquote {
+  /* ... */
 }
 ```
 

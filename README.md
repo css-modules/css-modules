@@ -6,7 +6,7 @@
 
 # CSS Modules
 
-A **CSS Module** is a CSS file where all class names and animation names are scoped locally by default. All URLs (`url(...)`) and `@imports` are in module request format (`./xxx` and `../xxx` means relative, `xxx` and `xxx/yyy` means in modules folder, i.e. in `node_modules`).
+A **CSS Module** is a CSS file where all class names and animation names are scoped locally by default. All URLs (`url(...)`) and `@imports` are in module request format (`./xxx` and `../xxx` means relative, `xxx` and `xxx/yyy` means in modules folder, i.e. in `node_modules`, `.yarn`, etc.).
 
 CSS Modules compile to a low-level interchange format called ICSS (or [Interoperable CSS](https://github.com/css-modules/icss)) but are written like normal CSS files:
 
@@ -22,7 +22,7 @@ When importing a **CSS Module** from a JavaScript Module, it exports an object w
 ```js
 import styles from './style.css';
 
-element.innerHTML = '<div class="' + styles.className + '">';
+element.innerHTML = `<div class="${styles.className}">`;
 ```
 
 ## Table of Contents

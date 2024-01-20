@@ -44,7 +44,7 @@ import themeA from 'component/theme-a.css';
 import themeB from 'component/theme-b.css';
 import customTheme from './custom-theme.css';
 
-import {Component} from 'component';
+import { Component } from 'component';
 
 <Component theme={themeA} />
 <Component theme={themeB} />
