@@ -62,7 +62,7 @@ Next.js supports CSS Modules for both webpack and Turbopack (`next dev --turbo`)
 
 ### Nuxt
 
-Solid supports CSS Modules. [Learn more](https://nuxt.com/docs/getting-started/styling#css-modules).
+Nuxt supports CSS Modules. [Learn more](https://nuxt.com/docs/getting-started/styling#css-modules).
 
 ### Remix
 
